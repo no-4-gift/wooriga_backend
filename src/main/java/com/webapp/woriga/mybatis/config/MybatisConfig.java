@@ -1,4 +1,4 @@
-package com.webapp.wooriga.config;
+package com.webapp.woriga.mybatis.config;
 
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;
@@ -11,13 +11,13 @@ import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import javax.sql.DataSource;
 
 @Configuration
-@MapperScan(basePackages = {"com.webapp.wooriga.dao"})
+@MapperScan(basePackages = {"com.webapp.woriga.mybatis.mapper"})
 public class MybatisConfig {
     @Bean
     public SqlSessionFactory sqlSessionFactory(DataSource datasource) throws Exception {
         SqlSessionFactoryBean sqlSessionFactory = new SqlSessionFactoryBean();
         sqlSessionFactory.setDataSource(datasource);
-        sqlSessionFactory.setTypeAliasesPackage("com.webapp.wooriga.domain");
+        sqlSessionFactory.setTypeAliasesPackage("com.webapp.woriga.vo");
         sqlSessionFactory.setMapperLocations(new PathMatchingResourcePatternResolver().getResources("classpath:/mapper/*.xml"));
         return sqlSessionFactory.getObject();
     }

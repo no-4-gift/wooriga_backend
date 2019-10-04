@@ -1,4 +1,4 @@
-package com.webapp.wooriga.domain;
+package com.webapp.woriga.mybatis.vo;
 
 public class FAQ {
 
