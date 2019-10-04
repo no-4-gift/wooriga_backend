@@ -1,0 +1,18 @@
+spring:
+  http:
+    multipart:
+    max-file-size: 5MB
+    max-request-size: 20MB
+  session:
+    store-type: jdbc
+    jdbc:
+      initialize-schema: always
+logging:
+  level:
+    org:
+      hibernate:
+        SQL: DEBUG
+        type:
+          descriptor:
+            sql:
+              BasicBinder: TRACE
