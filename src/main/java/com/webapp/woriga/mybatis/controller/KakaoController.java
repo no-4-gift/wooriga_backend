@@ -12,6 +12,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.HashMap;
+
 @RequiredArgsConstructor
 @Controller
 @RequestMapping("/social/login")
@@ -44,7 +46,6 @@ public class KakaoController {
                 .append("?client_id=").append(kakaoClientId)
                 .append("&response_type=code")
                 .append("&redirect_uri=").append(baseUrl).append(kakaoRedirect);
-
         System.out.println(loginUrl.toString());
 
         mav.addObject("title", "로그인");
@@ -61,8 +62,14 @@ public class KakaoController {
     @GetMapping(value = "/kakao")
     public ModelAndView redirectKakao(ModelAndView mav, @RequestParam String code) {
         System.out.println("code : " + code);
-        mav.addObject("authInfo", kakaoService.getKakaoTokenInfo(code));
+        String access_token = kakaoService.getAccessToken(code);
+        System.out.println("access : " + access_token);
+        HashMap<String, Object> userInfo = kakaoService.getUserInfo(access_token);
+        System.out.println("login Controller : " + userInfo);
+        mav.addObject("access_token", access_token);
+        mav.addObject("user", userInfo);
         mav.setViewName("redirectKakao");
         return mav;
     }
+
 }

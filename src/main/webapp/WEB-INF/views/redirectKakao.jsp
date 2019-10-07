@@ -8,10 +8,11 @@
     <title>Insert title here</title>
 </head>
 <body>
-    access_token : ${authInfo.access_token}<br>
-    token_type : ${authInfo.token_type}<br>
-    refresh_token : ${authInfo.refresh_token}<br>
-    expires_in : ${authInfo.expires_in}<br>
-    scope : ${authInfo.scope}<br>
+    nickname : ${user.nickname}<br>
+    email : ${user.email}<br>
+    ${access_token}
+    <br>
+    <a href="/logout/${access_token}">로그아웃</a>
+
 </body>
 </html>
