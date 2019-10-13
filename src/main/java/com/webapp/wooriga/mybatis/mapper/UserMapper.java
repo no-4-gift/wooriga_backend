@@ -1,8 +1,8 @@
-package com.webapp.woriga.mybatis.mapper;
+package com.webapp.wooriga.mybatis.mapper;
 
 import java.util.List;
 
-import com.webapp.woriga.mybatis.vo.User;
+import com.webapp.wooriga.mybatis.vo.User;
 
 public interface UserMapper {
 	

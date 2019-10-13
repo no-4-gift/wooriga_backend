@@ -1,4 +1,4 @@
-package com.webapp.woriga.mybatis.config;
+package com.webapp.wooriga.mybatis.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

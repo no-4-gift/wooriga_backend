@@ -1,4 +1,4 @@
-package com.webapp.woriga.mybatis.config;
+package com.webapp.wooriga.mybatis.config;
 
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionFactoryBean;

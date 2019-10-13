@@ -1,9 +1,9 @@
-package com.webapp.woriga.mybatis.controller;
+package com.webapp.wooriga.mybatis.controller;
 
 import java.util.List;
 
-import com.webapp.woriga.mybatis.service.UserService;
-import com.webapp.woriga.mybatis.vo.User;
+import com.webapp.wooriga.mybatis.service.UserService;
+import com.webapp.wooriga.mybatis.vo.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;

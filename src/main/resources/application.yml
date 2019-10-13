@@ -1,3 +1,5 @@
+server:
+  port: 8081
 spring:
   http:
     multipart:
@@ -7,6 +9,17 @@ spring:
     store-type: jdbc
     jdbc:
       initialize-schema: always
+  url:
+    base: http://localhost:8081
+  mvc:
+    view:
+      prefix: /WEB-INF/views/
+      suffix: .jsp
+  devtools:
+    restart:
+      additional-paths: .
+  jwt:
+    secret: govlepel@$;
 logging:
   level:
     org:
@@ -16,3 +29,12 @@ logging:
           descriptor:
             sql:
               BasicBinder: TRACE
+social:
+  kakao:
+    client_id: 623e83defbdfd4eb7c688561568d2a0d
+    redirect: /social/login/kakao
+    url:
+      login: https://kauth.kakao.com/oauth/authorize
+      logout: https://kapi.kakao.com/v1/user/logout
+      token: https://kauth.kakao.com/oauth/token
+      profile: https://kapi.kakao.com/v2/user/me

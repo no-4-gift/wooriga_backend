@@ -1,12 +1,10 @@
-package com.webapp.woriga.mybatis.controller;
+package com.webapp.wooriga.mybatis.controller;
 
-import com.webapp.woriga.mybatis.service.KakaoService;
+import com.webapp.wooriga.mybatis.service.KakaoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.servlet.ModelAndView;
 
 @RequiredArgsConstructor
 @Controller

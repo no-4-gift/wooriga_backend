@@ -1,8 +1,8 @@
-package com.webapp.woriga.mybatis.service;
+package com.webapp.wooriga.mybatis.service;
 
 import java.util.List;
 
-import com.webapp.woriga.mybatis.vo.User;
+import com.webapp.wooriga.mybatis.vo.User;
 
 public interface UserService {
 	

@@ -1,8 +1,8 @@
-package com.webapp.woriga.mybatis.dao;
+package com.webapp.wooriga.mybatis.dao;
 
 import java.util.List;
 
-import com.webapp.woriga.mybatis.vo.User;
+import com.webapp.wooriga.mybatis.vo.User;
 
 public interface UserDAO {
 	public List<User> selectAll();

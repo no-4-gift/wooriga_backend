@@ -1,4 +1,4 @@
-package com.webapp.woriga.mybatis.vo;
+package com.webapp.wooriga.mybatis.vo;
 
 import lombok.*;
 

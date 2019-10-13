@@ -1,4 +1,4 @@
-package com.webapp.woriga.mybatis.dao;
+package com.webapp.wooriga.mybatis.dao;
 
 import org.apache.ibatis.session.SqlSession;
 

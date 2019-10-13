@@ -1,41 +1,41 @@
-package com.webapp.woriga.mybatis.service;
+package com.webapp.wooriga.mybatis.dao;
 
 import java.util.List;
 
-import com.webapp.woriga.mybatis.dao.UserDAO;
-import com.webapp.woriga.mybatis.vo.User;
+import com.webapp.wooriga.mybatis.mapper.UserMapper;
+import com.webapp.wooriga.mybatis.vo.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-@Component("service")
-public class UserServiceImpl implements UserService {
+@Component
+public class UserDAOImpl implements UserDAO {
 
 	@Autowired
-	UserDAO dao;
+	UserMapper mapper;
 	
 	@Override
 	public List<User> selectAll() {
-		return dao.selectAll();
+		return mapper.selectAll();
 	}
 
 	@Override
 	public User selectOne(String email) {
-		return dao.selectOne(email);
+		return mapper.selectOne(email);
 	}
 
 	@Override
 	public void insert(User user) {
-		dao.insert(user);
+		mapper.insert(user);
 	}
 
 	@Override
 	public void delete(User user) {
-		dao.delete(user);
+		mapper.delete(user);
 	}
 
 	@Override
 	public void update(User user) {
-		dao.update(user);
+		mapper.update(user);
 	}
 
 }

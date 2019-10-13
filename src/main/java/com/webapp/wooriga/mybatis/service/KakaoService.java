@@ -1,9 +1,8 @@
-package com.webapp.woriga.mybatis.service;
+package com.webapp.wooriga.mybatis.service;
 
 import com.google.gson.*;
-import com.webapp.woriga.mybatis.vo.KakaoProfile;
-import com.webapp.woriga.mybatis.vo.RetKakaoAuth;
-import jdk.nashorn.internal.parser.JSONParser;
+import com.webapp.wooriga.mybatis.vo.KakaoProfile;
+import com.webapp.wooriga.mybatis.vo.RetKakaoAuth;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
@@ -15,8 +14,6 @@ import org.springframework.web.client.RestTemplate;
 
 import java.io.*;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
-import java.net.ProtocolException;
 import java.net.URL;
 import java.util.HashMap;
 

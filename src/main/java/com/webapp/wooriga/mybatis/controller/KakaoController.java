@@ -1,7 +1,7 @@
-package com.webapp.woriga.mybatis.controller;
+package com.webapp.wooriga.mybatis.controller;
 
 import com.google.gson.Gson;
-import com.webapp.woriga.mybatis.service.KakaoService;
+import com.webapp.wooriga.mybatis.service.KakaoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
