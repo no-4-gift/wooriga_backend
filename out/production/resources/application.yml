@@ -20,15 +20,6 @@ spring:
       additional-paths: .
   jwt:
     secret: govlepel@$;
-logging:
-  level:
-    org:
-      hibernate:
-        SQL: DEBUG
-        type:
-          descriptor:
-            sql:
-              BasicBinder: TRACE
 social:
   kakao:
     client_id: 623e83defbdfd4eb7c688561568d2a0d

@@ -20,11 +20,6 @@ public class WoorigaApplication {
         }
     }
 
-//    @Bean
-//    public PasswordEncoder passwordEncoder() {
-//        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
-//    }
-
     @Bean
     public RestTemplate getRestTemplate() {
         return new RestTemplate();
