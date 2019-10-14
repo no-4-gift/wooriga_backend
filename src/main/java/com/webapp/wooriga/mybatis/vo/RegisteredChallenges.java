@@ -2,7 +2,6 @@ package com.webapp.wooriga.mybatis.vo;
 
 import lombok.Getter;
 import lombok.Setter;
-import springfox.documentation.spring.web.json.Json;
 
 @Getter
 @Setter
