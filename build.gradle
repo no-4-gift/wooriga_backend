@@ -36,4 +36,5 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'io.projectreactor:reactor-test'
+    compile group: 'com.zaxxer', name: 'HikariCP', version: '3.3.1'
 }

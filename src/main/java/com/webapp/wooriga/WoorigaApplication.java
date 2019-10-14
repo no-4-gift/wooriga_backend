@@ -5,7 +5,6 @@ import org.springframework.boot.builder.SpringApplicationBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.web.client.RestTemplate;
 
-
 @SpringBootApplication
 public class WoorigaApplication {
     public static final String APPLICATION_LOCATIONS = "spring.config.location="+
@@ -20,11 +19,6 @@ public class WoorigaApplication {
             e.printStackTrace();
         }
     }
-
-//    @Bean
-//    public PasswordEncoder passwordEncoder() {
-//        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
-//    }
 
     @Bean
     public RestTemplate getRestTemplate() {

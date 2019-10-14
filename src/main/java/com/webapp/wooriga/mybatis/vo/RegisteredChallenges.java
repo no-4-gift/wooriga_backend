@@ -9,15 +9,16 @@ import springfox.documentation.spring.web.json.Json;
 public class RegisteredChallenges {
     private long registeredId;
     private String chiefIdFK;
-    private Json participantsIdFK;
-    private long challengedIdFK;
-    private Json registeredDate;
+    private String participantsIdFK;
+    private long challengeIdFK;
+    private String registeredDate;
     private String resolution;
-    public RegisteredChallenges(long registeredId,String chiefIdFK,Json participantsIdFK,long challengedIdFK,Json registeredDate,String resolution){
+
+    public RegisteredChallenges(long registeredId,String chiefIdFK,String participantsIdFK,long challengeIdFK,String registeredDate,String resolution){
         this.registeredId = registeredId;
         this.chiefIdFK = chiefIdFK;
         this.participantsIdFK = participantsIdFK;
-        this.challengedIdFK = challengedIdFK;
+        this.challengeIdFK = challengeIdFK;
         this.registeredDate = registeredDate;
         this.resolution = resolution;
     }
