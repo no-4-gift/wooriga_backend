@@ -1,8 +1,8 @@
-gradlew.bat
-gradlew
 HELP.md
 settings.gradle
 woriga.iml
 .gradle
 .idea
 mysqlIdentify.yml
+mykey.pem
+mykey.ppk

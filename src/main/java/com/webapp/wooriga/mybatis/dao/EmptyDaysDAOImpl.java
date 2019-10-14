@@ -13,7 +13,6 @@ public class EmptyDaysDAOImpl {
     private EmptyDaysMapper emptyDaysMapper;
     @Autowired
     public EmptyDaysDAOImpl(EmptyDaysMapper emptyDaysMapper){
-
         this.emptyDaysMapper = emptyDaysMapper;
     }
 
