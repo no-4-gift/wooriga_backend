@@ -13,4 +13,5 @@ public class Householders {
         this.familyId = familyId;
         this.householderId = householderId;
     }
+    public Householders(){}
 }

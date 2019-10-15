@@ -26,7 +26,7 @@ public class EmptyDaysDeserializer extends StdDeserializer<EmptyDays> {
 
     @Override
     public EmptyDays deserialize(JsonParser parser, DeserializationContext context) throws IOException, JsonProcessingException{
-        log.debug("UsersDeserializer.deserialize ::::");
+        log.debug("EmptyDaysDeserializer.deserialize ::::");
         JsonNode node = parser.getCodec().readTree(parser);
         SimpleDateFormat format = new SimpleDateFormat("yyyy-mm-dd");
         EmptyDays emptyDays = new EmptyDays();

@@ -8,12 +8,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public class RegisteredChallengesDAOImpl {
+public class RegisteredChallengesDAOImpl implements RegisteredChallengesDAO {
+    private RegisteredChallengesMapper registeredChallengesMapper;
     @Autowired
-    SqlSessionTemplate mybatis;
+    public RegisteredChallengesDAOImpl(RegisteredChallengesMapper registeredChallengesMapper){
+        this.registeredChallengesMapper = registeredChallengesMapper;
+    }
 
+    @Override
     public void insertRegisteredChallenge(RegisteredChallenges registeredChallenges){
-        RegisteredChallengesMapper registeredChallengesMapper = mybatis.getMapper(RegisteredChallengesMapper.class);
         registeredChallengesMapper.insertRegisteredChallenge(registeredChallenges);
     }
 }
