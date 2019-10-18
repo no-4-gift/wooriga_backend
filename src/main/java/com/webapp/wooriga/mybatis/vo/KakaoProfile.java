@@ -6,7 +6,7 @@ import lombok.*;
 @Setter
 @ToString
 public class KakaoProfile {
-    private Long id;
+    private long id;
     private Properties properties;
 
     @Getter

@@ -8,15 +8,16 @@ import java.util.Date;
 @Getter
 @Setter
 public class User {
+	private long uid;
 	private String name;
 	private String email;
 	private String profile;
 	private String color;
 	private Date birth;
 	
-	public User(String name, String email) {
+	public User(long uid, String name) {
+		this.uid = uid;
 		this.name = name;
-		this.email = email;
 	}
 	
 }

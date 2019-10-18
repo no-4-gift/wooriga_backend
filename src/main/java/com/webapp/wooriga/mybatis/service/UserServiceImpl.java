@@ -19,8 +19,8 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public User selectOne(String email) {
-		return dao.selectOne(email);
+	public User selectOne(long uid) {
+		return dao.selectOne(uid);
 	}
 
 	@Override

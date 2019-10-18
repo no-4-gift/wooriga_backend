@@ -12,28 +12,32 @@
 
 	<!-- 리절트 맵 정의. primary key 컬럼은 id 태그로 표시해줌 -->
 	<resultMap id="UserResult" type="User">
+		<result column="uid" property="uid"/>
 		<result column="name" property="name"/>
 		<result column="email" property="email"/>
+		<result column="profile" property="profile"/>
+		<result column="color" property="color"/>
+		<result column="birth" property="birth"/>
 	</resultMap>
 
 	<select id="selectAll" resultMap="UserResult">
-		select * from user order by email
+		select * from user order by uid
 	</select>
 	
-	<select id="selectOne" resultMap="UserResult" parameterType="String">
-		select * from user where email = #{email}
+	<select id="selectOne" resultMap="UserResult" parameterType="long">
+		select * from user where uid = #{uid}
 	</select>
 	
 	<insert id="insert" parameterType="User">
-		insert into user values(#{name}, #{email})
+		insert into user(uid, name) values(#{uid}, #{name})
 	</insert>
 	
-	<delete id="delete" parameterType="String">
-		delete from user where email = #{email}
+	<delete id="delete" parameterType="long">
+		delete from user where uid = #{uid}
 	</delete>
 	
 	<update id="update" parameterType="User">
-		update user set name = #{name} where email = #{email} 
+		update user set name = #{name} where uid = #{uid}
 	</update>
 
 </mapper>
