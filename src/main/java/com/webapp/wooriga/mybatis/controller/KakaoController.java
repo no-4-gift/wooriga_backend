@@ -72,7 +72,11 @@ public class KakaoController {
         long id = (long)userInfo.get("id");
         String nickname = (String)userInfo.get("nickname");
         System.out.println("User info : " + id + ", " + nickname);
-        userService.insert(new User(id, nickname));
+
+        if(userService.selectOne(id) == null)
+            userService.insert(new User(id, nickname));
+        else
+            System.out.println("이미 DB에 존재");
 
         mav.addObject("access_token", access_token);
         mav.addObject("user", userInfo);
