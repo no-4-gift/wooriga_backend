@@ -105,11 +105,28 @@ public class KakaoService {
             JsonObject properties = element.getAsJsonObject().get("properties").getAsJsonObject();
             JsonObject kakao_account = element.getAsJsonObject().get("kakao_account").getAsJsonObject();
 
+            long id = element.getAsJsonObject().get("id").getAsLong();
             String nickname = properties.getAsJsonObject().get("nickname").getAsString();
-            String email = kakao_account.getAsJsonObject().get("email").getAsString();
+            boolean has_email, has_gender;
+            has_email = kakao_account.getAsJsonObject().get("has_email").getAsBoolean();
+            has_gender = kakao_account.getAsJsonObject().get("has_gender").getAsBoolean();
 
+            String email, gender;
+            if(has_email) {
+                email = kakao_account.getAsJsonObject().get("email").getAsString();
+            }
+            else
+                email = "";
+//            if(has_gender) {
+//                gender = kakao_account.getAsJsonObject().get("gender").getAsString();
+//            }
+//            else
+//                gender = "";
+
+            userInfo.put("id", id);
             userInfo.put("nickname", nickname);
             userInfo.put("email", email);
+//            userInfo.put("gender", gender);
 
         } catch (IOException e) {
             // TODO Auto-generated catch block

@@ -8,9 +8,11 @@
     <title>Insert title here</title>
 </head>
 <body>
+    id : ${user.id}<br>
     nickname : ${user.nickname}<br>
     email : ${user.email}<br>
-    ${access_token}
+    <br>
+    access_token : ${access_token}
     <br>
     <a href="/logout/${access_token}">로그아웃</a>
 

@@ -2,6 +2,8 @@ package com.webapp.wooriga.mybatis.controller;
 
 import com.google.gson.Gson;
 import com.webapp.wooriga.mybatis.service.KakaoService;
+import com.webapp.wooriga.mybatis.service.UserService;
+import com.webapp.wooriga.mybatis.vo.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
@@ -23,6 +25,7 @@ public class KakaoController {
     private final RestTemplate restTemplate;
     private final Gson gson;
     private final KakaoService kakaoService;
+    private final UserService userService;
 
     @Value("${spring.url.base}")
     private String baseUrl;
@@ -66,6 +69,11 @@ public class KakaoController {
         System.out.println("access : " + access_token);
         HashMap<String, Object> userInfo = kakaoService.getUserInfo(access_token);
         System.out.println("login Controller : " + userInfo);
+        long id = (long)userInfo.get("id");
+        String nickname = (String)userInfo.get("nickname");
+        System.out.println("User info : " + id + ", " + nickname);
+        userService.insert(new User(id, nickname));
+
         mav.addObject("access_token", access_token);
         mav.addObject("user", userInfo);
         mav.setViewName("redirectKakao");

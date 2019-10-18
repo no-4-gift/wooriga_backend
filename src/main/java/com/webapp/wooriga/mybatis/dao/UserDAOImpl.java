@@ -19,8 +19,8 @@ public class UserDAOImpl implements UserDAO {
 	}
 
 	@Override
-	public User selectOne(String email) {
-		return mapper.selectOne(email);
+	public User selectOne(long uid) {
+		return mapper.selectOne(uid);
 	}
 
 	@Override
