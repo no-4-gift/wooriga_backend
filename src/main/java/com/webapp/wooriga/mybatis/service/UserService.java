@@ -2,6 +2,7 @@ package com.webapp.wooriga.mybatis.service;
 
 import java.util.List;
 
+import com.webapp.wooriga.mybatis.vo.CodeUser;
 import com.webapp.wooriga.mybatis.vo.User;
 
 public interface UserService {
@@ -11,5 +12,6 @@ public interface UserService {
 	public void insert(User user);
 	public void delete(User user);
 	public void update(User user);
-	
+	public int checkUser(long uid);
+	public void insertCodeUser(CodeUser codeuser);
 }
