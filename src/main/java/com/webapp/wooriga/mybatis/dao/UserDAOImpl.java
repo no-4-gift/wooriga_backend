@@ -3,6 +3,7 @@ package com.webapp.wooriga.mybatis.dao;
 import java.util.List;
 
 import com.webapp.wooriga.mybatis.mapper.UserMapper;
+import com.webapp.wooriga.mybatis.vo.CodeUser;
 import com.webapp.wooriga.mybatis.vo.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -38,4 +39,13 @@ public class UserDAOImpl implements UserDAO {
 		mapper.update(user);
 	}
 
+	@Override
+	public int checkUser(long uid) {
+		return mapper.checkUser(uid);
+	}
+
+	@Override
+	public void insertCodeUser(CodeUser codeuser) {
+		mapper.insertCodeUser(codeuser);
+	}
 }
