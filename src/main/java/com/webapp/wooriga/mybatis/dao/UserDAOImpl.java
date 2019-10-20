@@ -45,6 +45,11 @@ public class UserDAOImpl implements UserDAO {
 	}
 
 	@Override
+	public String getCode(long uid) {
+		return mapper.getCode(uid);
+	}
+
+	@Override
 	public void insertCodeUser(CodeUser codeuser) {
 		mapper.insertCodeUser(codeuser);
 	}
