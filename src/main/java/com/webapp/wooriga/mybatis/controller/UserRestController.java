@@ -29,7 +29,7 @@ public class UserRestController {
 
             for (int i = 0; i < 8; i++) {
                 if (rnd.nextBoolean()) {
-                    buf.append((char) ((int) (rnd.nextInt(26)) + 97));
+                    buf.append((char) ((int) (rnd.nextInt(26)) + 65));
                 } else {
                     buf.append((rnd.nextInt(10)));
                 }
