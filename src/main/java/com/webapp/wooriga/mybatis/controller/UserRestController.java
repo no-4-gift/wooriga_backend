@@ -20,6 +20,7 @@ public class UserRestController {
 
         // 랜덤코드 테이블에서 현재 관리자 코드 존재 여부 확인
         int check = service.checkUser(uid);
+        String getCode = "";
 
         System.out.println("check : " + check);
         // 없으면 8자리 생성
@@ -39,9 +40,13 @@ public class UserRestController {
 
             service.insertCodeUser(new CodeUser(uid, code));
             System.out.println(uid + "님의 생성 코드 : " + code);
+            getCode = code;
+        }
+        else {
+            getCode = service.getCode(uid);
         }
 
-        return "admin";
+        return getCode;
     }
 	
 	@RequestMapping(value = "/users", method = RequestMethod.GET)

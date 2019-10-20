@@ -45,6 +45,10 @@
 		update user set name = #{name} where uid = #{uid}
 	</update>
 
+	<select id="getCode" resultType="String" parameterType="long">
+		select code from family where uid = #{uid}
+	</select>
+
 	<select id="checkUser" resultType="int" parameterType="long">
 		select count(*) from family where uid = #{uid}
 	</select>

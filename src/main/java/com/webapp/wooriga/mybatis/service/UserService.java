@@ -13,5 +13,6 @@ public interface UserService {
 	public void delete(User user);
 	public void update(User user);
 	public int checkUser(long uid);
+	public String getCode(long uid);
 	public void insertCodeUser(CodeUser codeuser);
 }
