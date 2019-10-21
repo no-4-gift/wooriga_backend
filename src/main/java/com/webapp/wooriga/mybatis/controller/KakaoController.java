@@ -78,9 +78,10 @@ public class KakaoController {
         else
             System.out.println("이미 DB에 존재");
 
+        mav.addObject("userId", id);
         mav.addObject("access_token", access_token);
         mav.addObject("user", userInfo);
-        mav.setViewName("redirectKakao");
+        mav.setViewName("index");
         return mav;
     }
 
