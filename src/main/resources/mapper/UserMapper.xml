@@ -20,6 +20,11 @@
 		<result column="birth" property="birth"/>
 	</resultMap>
 
+	<resultMap id="CheckUserResult" type="CodeUser">
+		<result column="uid" property="uid"/>
+		<result column="code" property="code"/>
+	</resultMap>
+
 	<select id="selectAll" resultMap="UserResult">
 		select * from user order by uid
 	</select>
@@ -39,5 +44,17 @@
 	<update id="update" parameterType="User">
 		update user set name = #{name} where uid = #{uid}
 	</update>
+
+	<select id="getCode" resultType="String" parameterType="long">
+		select code from family where uid = #{uid}
+	</select>
+
+	<select id="checkUser" resultType="int" parameterType="long">
+		select count(*) from family where uid = #{uid}
+	</select>
+
+	<insert id="insertCodeUser" parameterType="CodeUser">
+		insert into family(uid, code) values(#{uid}, #{code})
+	</insert>
 
 </mapper>
