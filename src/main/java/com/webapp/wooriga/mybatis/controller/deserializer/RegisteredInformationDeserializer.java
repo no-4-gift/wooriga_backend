@@ -36,7 +36,7 @@ public class RegisteredInformationDeserializer extends StdDeserializer<Registere
         JsonNode node = parser.getCodec().readTree(parser);
         RegisteredChallenges registeredChallenges = new RegisteredChallenges();
 
-        String chiefIdFK = node.get("chiefIdFK").asText();
+        Long chiefIdFK = node.get("chiefIdFK").asLong();
         long challengeIdFK = node.get("challengeIdFK").asLong();
         String resolution = node.get("resolution").asText();
         long familyIdFK = node.get("familyIdFK").asLong();
@@ -51,7 +51,7 @@ public class RegisteredInformationDeserializer extends StdDeserializer<Registere
             participants[i] = new Participants();
         int i = 0;
         for(JsonNode objNode : participant){
-            participants[i].setParticipantFK(objNode.asText());
+            participants[i].setParticipantFK(objNode.asLong());
             i++;
         }
 
@@ -62,7 +62,7 @@ public class RegisteredInformationDeserializer extends StdDeserializer<Registere
         }
         i = 0;
         for(JsonNode objNode : registeredDate){
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-mm-dd");
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
             Date date = null;
             try{
                 date = new Date(simpleDateFormat.parse(objNode.asText()).getTime());

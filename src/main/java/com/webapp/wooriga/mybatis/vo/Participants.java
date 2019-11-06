@@ -8,7 +8,11 @@ import lombok.Setter;
 @Setter
 public class Participants {
     private long registeredIdFK;
-    private String participantFK;
+    private long participantFK;
+    public Participants(long registeredIdFK, long participantFK){
+        this.registeredIdFK = registeredIdFK;
+        this.participantFK = participantFK;
+    }
     public Participants(){
 
     }
