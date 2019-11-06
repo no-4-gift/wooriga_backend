@@ -4,7 +4,9 @@ import java.util.List;
 
 import com.webapp.wooriga.mybatis.mapper.UserMapper;
 import com.webapp.wooriga.mybatis.vo.CodeUser;
+import com.webapp.wooriga.mybatis.vo.EmptyDays;
 import com.webapp.wooriga.mybatis.vo.User;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -53,4 +55,7 @@ public class UserDAOImpl implements UserDAO {
 	public void insertCodeUser(CodeUser codeuser) {
 		mapper.insertCodeUser(codeuser);
 	}
+
+	@Override
+	public User selectUserForCalendar(EmptyDays emptyDays) { return mapper.selectUserForCalendar(emptyDays);}
 }
