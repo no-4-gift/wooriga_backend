@@ -16,6 +16,13 @@
     </c:if>
     <c:if test="${userId ne null}">
         <h1>로그인 성공입니다</h1>
+        id : ${user.id}<br>
+        nickname : ${user.nickname}<br>
+        email : ${user.email}<br>
+        <br>
+        access_token : ${access_token}
+        <br>
+        <a href="/logout/${access_token}">로그아웃</a>
     </c:if>
 </body>
 </html>

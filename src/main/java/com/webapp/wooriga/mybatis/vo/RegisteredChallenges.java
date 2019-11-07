@@ -8,12 +8,12 @@ import lombok.Setter;
 @Setter
 public class RegisteredChallenges {
     private long registeredId;
-    private String chiefIdFK;
+    private long chiefIdFK;
     private long familyIdFK;
     private long challengeIdFK;
     private String resolution;
 
-    public RegisteredChallenges(long registeredId,String chiefIdFK, long challengeIdFK,String resolution,long familyIdFK){
+    public RegisteredChallenges(long registeredId,long chiefIdFK, long challengeIdFK,String resolution,long familyIdFK){
         this.registeredId = registeredId;
         this.chiefIdFK = chiefIdFK;
         this.familyIdFK = familyIdFK;

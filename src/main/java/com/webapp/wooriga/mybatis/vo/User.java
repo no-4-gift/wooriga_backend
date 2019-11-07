@@ -14,7 +14,9 @@ public class User {
 	private String profile;
 	private String color;
 	private Date birth;
-	
+	private String familyId;
+	private String relationship;
+
 	public User(long uid, String name) {
 		this.uid = uid;
 		this.name = name;

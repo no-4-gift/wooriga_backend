@@ -3,6 +3,7 @@ package com.webapp.wooriga.mybatis.service;
 import java.util.List;
 
 import com.webapp.wooriga.mybatis.dao.UserDAO;
+import com.webapp.wooriga.mybatis.vo.CodeUser;
 import com.webapp.wooriga.mybatis.vo.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -38,4 +39,18 @@ public class UserServiceImpl implements UserService {
 		dao.update(user);
 	}
 
+	@Override
+	public int checkUser(long uid) {
+		return dao.checkUser(uid);
+	}
+
+	@Override
+	public String getCode(long uid) {
+		return dao.getCode(uid);
+	}
+
+	@Override
+	public void insertCodeUser(CodeUser codeuser) {
+		dao.insertCodeUser(codeuser);
+	}
 }

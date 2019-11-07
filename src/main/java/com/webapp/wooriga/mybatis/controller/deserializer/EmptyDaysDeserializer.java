@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 import java.io.IOException;
 import java.sql.Date;
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 
 public class EmptyDaysDeserializer extends StdDeserializer<EmptyDays> {
@@ -28,21 +29,19 @@ public class EmptyDaysDeserializer extends StdDeserializer<EmptyDays> {
     public EmptyDays deserialize(JsonParser parser, DeserializationContext context) throws IOException, JsonProcessingException{
         log.debug("EmptyDaysDeserializer.deserialize ::::");
         JsonNode node = parser.getCodec().readTree(parser);
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-mm-dd");
-        EmptyDays emptyDays = new EmptyDays();
         String emptyDateStr = node.get("emptydate").asText();
-        String userIdFK = node.get("userIdFk").asText();
-        Long familyIdFK = node.get("familyIdFk").asLong();
-        Date emptyDate = null;
+        long userIdFK = node.get("userIdFk").asLong();
+        String familyIdFK = node.get("familyIdFk").asText();
+        Date emptydate = null;
         try {
-            emptyDate = new Date(format.parse(emptyDateStr).getTime());
+            java.util.Date utilDate = new SimpleDateFormat("yyyy-MM-dd").parse(emptyDateStr);
+            emptydate = new Date(utilDate.getTime());
+            log.error(emptydate.toString());
         }
         catch (Exception e) {
             throw new IOException(e);
         }
-        emptyDays.setEmptydate(emptyDate);
-        emptyDays.setUserIdFk(userIdFK);
-        emptyDays.setFamilyIdFk(familyIdFK);
+        EmptyDays emptyDays = new EmptyDays(familyIdFK,userIdFK,emptydate);
         return emptyDays;
     }
 }
