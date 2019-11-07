@@ -38,4 +38,6 @@ dependencies {
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'io.projectreactor:reactor-test'
     compile group: 'com.zaxxer', name: 'HikariCP', version: '3.3.1'
+    compile group: 'com.amazonaws', name: 'aws-java-sdk', version: '1.11.602'
+    compile group: 'commons-fileupload', name: 'commons-fileupload', version: '1.4'
 }
