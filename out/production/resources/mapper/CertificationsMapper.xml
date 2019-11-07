@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.webapp.wooriga.mybatis.challenge.mapper.CertificationsMapper">
+    <insert id = "insertRegisteredDates" parameterType="Certifications">
+        insert into certifications values(#{registeredIdFK},date_add(#{registeredDate}, interval +1 day),#{certificationPhoto})
+    </insert>
+    <update id = "updateCertification" parameterType="Certifications">
+        update certifications set certification_photo = #{certificationPhoto}
+        where registered_fk = #{registeredIdFK} and date = date_add(#{registeredDate}, interval +1 day)
+    </update>
+</mapper>
