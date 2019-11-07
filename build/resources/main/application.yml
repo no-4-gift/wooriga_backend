@@ -9,8 +9,6 @@ spring:
     store-type: jdbc
     jdbc:
       initialize-schema: always
-  url:
-    base: http://localhost:8081
   mvc:
     view:
       prefix: /WEB-INF/views/
