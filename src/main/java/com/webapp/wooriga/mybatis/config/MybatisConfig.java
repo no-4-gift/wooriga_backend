@@ -18,7 +18,7 @@ import javax.sql.DataSource;
 
 @Configuration
 @EnableTransactionManagement
-@MapperScan(basePackages= {"com.webapp.wooriga.mybatis.mapper"})
+@MapperScan(basePackages= {"com.webapp.wooriga.mybatis.auth.mapper", "com.webapp.wooriga.mybatis.calendar.mapper", "com.webapp.wooriga.mybatis.challenge.mapper"})
 public class MybatisConfig {
 
     @Primary

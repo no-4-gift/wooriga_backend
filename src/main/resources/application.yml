@@ -1,14 +1,14 @@
 server:
   port: 8081
 spring:
-  http:
-    multipart:
-    max-file-size: 5MB
-    max-request-size: 20MB
   session:
     store-type: jdbc
     jdbc:
       initialize-schema: always
+  http:
+    multipart:
+    max-file-size: 5MB
+    max-request-size: 20MB
   mvc:
     view:
       prefix: /WEB-INF/views/
