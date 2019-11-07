@@ -8,7 +8,7 @@ import org.springframework.web.client.RestTemplate;
 @SpringBootApplication
 public class WoorigaApplication {
     public static final String APPLICATION_LOCATIONS = "spring.config.location="+
-            "classpath:/application.yml,"+ "classpath:/mysqlIdentify.yml";
+            "classpath:/application.yml,"+ "classpath:/mysqlIdentify.yml," + "classpath:/aws.yml";
     public static void main(String[] args) {
         try{
             new SpringApplicationBuilder(WoorigaApplication.class)

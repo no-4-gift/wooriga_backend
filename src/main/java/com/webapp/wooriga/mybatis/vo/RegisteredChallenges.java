@@ -9,11 +9,11 @@ import lombok.Setter;
 public class RegisteredChallenges {
     private long registeredId;
     private long chiefIdFK;
-    private long familyIdFK;
+    private String familyIdFK;
     private long challengeIdFK;
     private String resolution;
 
-    public RegisteredChallenges(long registeredId,long chiefIdFK, long challengeIdFK,String resolution,long familyIdFK){
+    public RegisteredChallenges(long registeredId,long chiefIdFK, long challengeIdFK,String resolution,String familyIdFK){
         this.registeredId = registeredId;
         this.chiefIdFK = chiefIdFK;
         this.familyIdFK = familyIdFK;

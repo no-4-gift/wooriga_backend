@@ -4,7 +4,7 @@
    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
    
 <!-- 이 xml 파일과 짝을 이뤄서 진행되는 자바mapper의 패키지명을 작성해야함 -->
-<mapper namespace="com.webapp.wooriga.mybatis.mapper.UserMapper">
+<mapper namespace="com.webapp.wooriga.mybatis.auth.mapper.UserMapper">
 
 	<!-- myBatis가 이용하는 query문장이 들어 있는 파일 java Mapper에 의해 이용됨. java Mapper - 
 		xml Mapper - myBatis java Mapper안에 있는 메소드 이름과 xml Mapper 안의 query id가 일치해야 

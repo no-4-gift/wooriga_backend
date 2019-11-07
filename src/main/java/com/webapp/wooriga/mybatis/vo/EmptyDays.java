@@ -1,13 +1,11 @@
 package com.webapp.wooriga.mybatis.vo;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.webapp.wooriga.mybatis.controller.deserializer.EmptyDaysDeserializer;
+import com.webapp.wooriga.mybatis.calendar.deserializer.EmptyDaysDeserializer;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.sql.Date;
-import java.sql.Timestamp;
-
 
 @Getter
 @Setter
