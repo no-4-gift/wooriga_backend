@@ -2,9 +2,9 @@ package com.webapp.wooriga.mybatis.challenge.service;
 
 import com.webapp.wooriga.mybatis.challenge.dao.CertificationsDAO;
 import com.webapp.wooriga.mybatis.challenge.dao.ChallengesDAO;
-import com.webapp.wooriga.mybatis.challenge.exception.NoMatchPointException;
-import com.webapp.wooriga.mybatis.challenge.exception.NoStoringException;
-import com.webapp.wooriga.mybatis.challenge.exception.WrongCodeException;
+import com.webapp.wooriga.mybatis.exception.NoMatchPointException;
+import com.webapp.wooriga.mybatis.exception.NoStoringException;
+import com.webapp.wooriga.mybatis.exception.WrongCodeException;
 import com.webapp.wooriga.mybatis.vo.Certifications;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
