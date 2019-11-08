@@ -9,4 +9,5 @@ import java.util.List;
 public interface EmptyDaysMapper {
     void insert(EmptyDays emptyDays);
     List<EmptyDays> selectList(@Param("familyId")String familyId, @Param("firstDate")String firstDate, @Param("finalDate") String finalDate);
+    int selectToId(EmptyDays emptyDays);
 }

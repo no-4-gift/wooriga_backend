@@ -5,7 +5,10 @@ import java.util.List;
 import com.webapp.wooriga.mybatis.vo.CodeUser;
 import com.webapp.wooriga.mybatis.vo.EmptyDays;
 import com.webapp.wooriga.mybatis.vo.User;
+import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
+@Mapper
 public interface UserMapper {
 	
 	public List<User> selectAll();
@@ -16,5 +19,6 @@ public interface UserMapper {
 	public int checkUser(long uid);
 	public String getCode(long uid);
 	public void insertCodeUser(CodeUser codeuser);
-	public User selectUserForCalendar(EmptyDays emptyDays);
+	User selectUserForCalendar(EmptyDays emptyDays);
+	int selectUserToFamilyId(@Param("familyId")String familyId);
 }

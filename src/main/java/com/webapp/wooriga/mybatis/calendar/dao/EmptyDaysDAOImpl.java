@@ -27,4 +27,7 @@ public class EmptyDaysDAOImpl {
     public List<EmptyDays> selectEmptyDay(@Param("familyId") String familyId, @Param("firstDate") String firstDate, @Param("finalDate") String finalDate) {
         return emptyDaysMapper.selectList(familyId, firstDate, finalDate);
     }
+    public int selectToId(EmptyDays emptyDays){
+        return emptyDaysMapper.selectToId(emptyDays);
+    }
 }

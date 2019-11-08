@@ -17,7 +17,9 @@
 		<result column="email" property="email"/>
 		<result column="profile" property="profile"/>
 		<result column="color" property="color"/>
-		<result column="birth" property="birth"/>
+		<result column="birth" property="birth" jdbcType="DATE"/>
+		<result column="family_id" property="familyId"/>
+		<result column = "relationship" property="relationship" />
 	</resultMap>
 
 	<resultMap id="CheckUserResult" type="CodeUser">
@@ -56,7 +58,10 @@
 	<insert id="insertCodeUser" parameterType="CodeUser">
 		insert into family(uid, code) values(#{uid}, #{code})
 	</insert>
+	<select id = "selectUserToFamilyId" parameterType="String" resultType="int">
+		select count(*) from user where family_id = #{familyId}
+	</select>
 	<select id = "selectUserForCalendar" parameterType="EmptyDays" resultType = "User">
-			select * from user where family_id = #{familyIdFk} and uid = #{userIdFk}
+			select * from user where family_id = #{familyId} and uid = #{userIdFk}
 	</select>
 </mapper>

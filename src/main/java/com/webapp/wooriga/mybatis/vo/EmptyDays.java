@@ -11,12 +11,12 @@ import java.sql.Date;
 @Setter
 @JsonDeserialize(using = EmptyDaysDeserializer.class)
 public class EmptyDays {
-    private String familyIdFk;
+    private String familyId;
     private long userIdFk;
     private Date emptydate;
 
-    public EmptyDays(String familyIdFk, long userIdFk, Date emptydate){
-        this.familyIdFk = familyIdFk;
+    public EmptyDays(String familyId, long userIdFk, Date emptydate){
+        this.familyId = familyId;
         this.userIdFk = userIdFk;
         this.emptydate = emptydate;
     }

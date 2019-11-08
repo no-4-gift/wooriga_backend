@@ -5,16 +5,18 @@
 <mapper namespace="com.webapp.wooriga.mybatis.calendar.mapper.EmptyDaysMapper">
 
     <resultMap id="EmptyDaysResult" type="EmptyDays">
-        <result column="family_fk" property="familyIdFk"/>
+        <result column="family_id" property="familyId"/>
         <result column="user_fk" property="userIdFk"/>
         <result column="emptydate" property="emptydate"  jdbcType="DATE" />
     </resultMap>
 
     <insert id="insert" parameterType="EmptyDays" >
-            insert into emptydays (family_fk,user_fk,emptydate) values(#{familyIdFk},#{userIdFk},date_add(#{emptydate}, interval +1 day) )
+            insert into emptydays (family_id,user_fk,emptydate) values(#{familyId},#{userIdFk},date_add(#{emptydate}, interval +1 day) )
     </insert>
     <select id="selectList" parameterType="String" resultMap="EmptyDaysResult">
-            select * from emptydays where family_fk = #{familyId} and emptydate between #{firstDate} and #{finalDate}
+            select * from emptydays where family_id = #{familyId} and emptydate between #{firstDate} and #{finalDate}
     </select>
-
+    <select id = "selectToId" parameterType="EmptyDays" resultType="int">
+            select count(*) from emptydays where user_fk = #{userIdFk} and family_id = #{familyId} and emptydate = date_add(#{emptydate}, interval +1 day)
+    </select>
 </mapper>

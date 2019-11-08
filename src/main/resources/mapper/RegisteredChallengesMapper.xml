@@ -4,7 +4,7 @@
 <mapper namespace="com.webapp.wooriga.mybatis.challenge.mapper.RegisteredChallengesMapper">
 
     <insert id="insertRegisteredChallenge" parameterType="RegisteredChallenges" useGeneratedKeys="true" keyProperty="registeredId">
-        insert into registeredchallenges (chief_fk,challenge_fk,familyid_fk,resolution) values(#{chiefIdFK},#{challengeIdFK},#{familyIdFK},#{resolution})
+        insert into registeredchallenges (chief_fk,challenge_fk,familyid,resolution) values(#{chiefIdFK},#{challengeIdFK},#{familyId},#{resolution})
     </insert>
 
 

@@ -6,12 +6,15 @@ import com.webapp.wooriga.mybatis.auth.mapper.UserMapper;
 import com.webapp.wooriga.mybatis.vo.CodeUser;
 import com.webapp.wooriga.mybatis.vo.EmptyDays;
 import com.webapp.wooriga.mybatis.vo.User;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
-@Component
+@Repository
 public class UserDAOImpl implements UserDAO {
 
+	@Autowired
 	private UserMapper mapper;
 	
 	@Override
@@ -56,4 +59,7 @@ public class UserDAOImpl implements UserDAO {
 
 	@Override
 	public User selectUserForCalendar(EmptyDays emptyDays) { return mapper.selectUserForCalendar(emptyDays);}
+
+	@Override
+	public int selectUserToFamilyId(@Param("familyId")String familyId){ return mapper.selectUserToFamilyId(familyId);}
 }
