@@ -30,7 +30,7 @@ public class EmptyDaysDeserializer extends StdDeserializer<EmptyDays> {
         JsonNode node = parser.getCodec().readTree(parser);
         String emptyDateStr = node.get("emptydate").asText();
         long userIdFK = node.get("userIdFk").asLong();
-        String familyIdFK = node.get("familyIdFk").asText();
+        String familyId = node.get("familyId").asText();
         Date emptydate = null;
         try {
             java.util.Date utilDate = new SimpleDateFormat("yyyy-MM-dd").parse(emptyDateStr);
@@ -40,7 +40,7 @@ public class EmptyDaysDeserializer extends StdDeserializer<EmptyDays> {
         catch (Exception e) {
             throw new IOException(e);
         }
-        EmptyDays emptyDays = new EmptyDays(familyIdFK,userIdFK,emptydate);
+        EmptyDays emptyDays = new EmptyDays(familyId,userIdFK,emptydate);
         return emptyDays;
     }
 }

@@ -16,7 +16,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.Optional;
 
-@Component("superS3Uploader")
+@Component("SuperS3Uploader")
 @PropertySource("classpath:aws.yml")
 public class SuperS3Uploader {
 
@@ -29,7 +29,7 @@ public class SuperS3Uploader {
         this.amazonS3Client = amazonS3Client;
     }
 
-    @Value("${cloud.aws.s3.bucket}")
+    @Value("${cloud.aws.bucket}")
     protected String bucket;
 
     protected String putS3(File uploadFile, String fileName) {

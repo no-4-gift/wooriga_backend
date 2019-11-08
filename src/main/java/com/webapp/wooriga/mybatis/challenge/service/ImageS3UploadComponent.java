@@ -17,30 +17,28 @@ public class ImageS3UploadComponent extends SuperS3Uploader {
 
     Logger log = LoggerFactory.getLogger(this.getClass());
 
-    @Value("${cloud.aws.s3.bucket}")
+    @Value("${cloud.aws.bucket}")
     private String bucket;
 
     public ImageS3UploadComponent(AmazonS3Client amazonS3Client) {
         super(amazonS3Client);
     }
 
-    public String upload(MultipartFile multipartFile, String userName, HttpServletResponse response) throws IOException {
-        response.setStatus(200);
+    public String upload(MultipartFile multipartFile, String userName) throws IOException {
         if(multipartFile != null) {
             File uploadFile = super.convert(multipartFile)
                     .orElseThrow(() -> new IllegalArgumentException("MultipartFile -> File로 전환이 실패했습니다."));
-            return upload(uploadFile, userName, response);
+            return upload(uploadFile, userName);
         }
         else return "https://woorigabucket.s3.ap-northeast-2.amazonaws.com/challenge/default.jpg";
     }
 
-    private String upload(File uploadFile, String userName, HttpServletResponse response) {
+    private String upload(File uploadFile, String userName) {
         if(userName == null) return null;
         String fileName = "challenge/" + userName;
+        log.error(fileName);
         String uploadImageUrl = super.putS3(uploadFile, fileName);
         super.removeNewFile(uploadFile);
-        if(uploadImageUrl != null)
-            response.setStatus(200);
         return uploadImageUrl;
     }
 

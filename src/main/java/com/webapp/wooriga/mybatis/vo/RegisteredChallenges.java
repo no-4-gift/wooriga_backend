@@ -1,6 +1,5 @@
 package com.webapp.wooriga.mybatis.vo;
 
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,14 +8,14 @@ import lombok.Setter;
 public class RegisteredChallenges {
     private long registeredId;
     private long chiefIdFK;
-    private String familyIdFK;
+    private String familyId;
     private long challengeIdFK;
     private String resolution;
 
-    public RegisteredChallenges(long registeredId,long chiefIdFK, long challengeIdFK,String resolution,String familyIdFK){
+    public RegisteredChallenges(long registeredId,long chiefIdFK, long challengeIdFK,String resolution,String familyId){
         this.registeredId = registeredId;
         this.chiefIdFK = chiefIdFK;
-        this.familyIdFK = familyIdFK;
+        this.familyId = familyId;
         this.challengeIdFK = challengeIdFK;
         this.resolution = resolution;
     }

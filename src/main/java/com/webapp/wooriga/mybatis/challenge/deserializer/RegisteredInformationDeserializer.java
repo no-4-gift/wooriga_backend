@@ -37,10 +37,10 @@ public class RegisteredInformationDeserializer extends StdDeserializer<Registere
         long chiefIdFK = node.get("chiefIdFK").asLong();
         long challengeIdFK = node.get("challengeIdFK").asLong();
         String resolution = node.get("resolution").asText();
-        String familyIdFK = node.get("familyIdFK").asText();
+        String familyId = node.get("familyId").asText();
         registeredChallenges.setChallengeIdFK(challengeIdFK);
         registeredChallenges.setChiefIdFK(chiefIdFK);
-        registeredChallenges.setFamilyIdFK(familyIdFK);
+        registeredChallenges.setFamilyId(familyId);
         registeredChallenges.setResolution(resolution);
 
         JsonNode participant = node.get("participantFK");
