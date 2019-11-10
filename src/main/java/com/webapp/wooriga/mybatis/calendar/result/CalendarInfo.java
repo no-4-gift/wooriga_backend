@@ -1,7 +1,10 @@
 package com.webapp.wooriga.mybatis.calendar.result;
 
-import java.sql.Date;
+import lombok.Getter;
+import lombok.Setter;
 
+@Getter
+@Setter
 public class CalendarInfo {
     private String emptyDate;
     private String color;
@@ -20,43 +23,4 @@ public class CalendarInfo {
 
     }
 
-    public void setColor(String color) {
-        this.color = color;
-    }
-
-    public void setEmptyDate(String emptyDate) {
-        this.emptyDate = emptyDate;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setProfile(String profile) {
-        this.profile = profile;
-    }
-
-    public void setRelationship(String relationship) {
-        this.relationship = relationship;
-    }
-
-    public String getEmptyDate() {
-        return emptyDate;
-    }
-
-    public String getColor() {
-        return color;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public String getRelationship() {
-        return relationship;
-    }
-
-    public String getProfile() {
-        return profile;
-    }
 }

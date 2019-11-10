@@ -1,5 +1,6 @@
 package com.webapp.wooriga.mybatis.auth.mapper;
 
+import java.util.HashMap;
 import java.util.List;
 
 import com.webapp.wooriga.mybatis.vo.CodeUser;
@@ -21,4 +22,5 @@ public interface UserMapper {
 	public void insertCodeUser(CodeUser codeuser);
 	User selectUserForCalendar(EmptyDays emptyDays);
 	int selectUserToFamilyId(@Param("familyId")String familyId);
+	List<User> selectUserId(HashMap<String,Object> userMap);
 }

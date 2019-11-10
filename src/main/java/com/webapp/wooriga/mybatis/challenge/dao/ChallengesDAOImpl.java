@@ -6,6 +6,9 @@ import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Repository
 public class ChallengesDAOImpl implements ChallengesDAO {
     @Autowired
@@ -22,5 +25,10 @@ public class ChallengesDAOImpl implements ChallengesDAO {
     @Override
     public void updateChallenge(Challenges challenges){
         challengesMapper.updateChallenge(challenges);
+    }
+
+    @Override
+    public List<Challenges> selectChallengeList(){
+        return challengesMapper.selectChallengeList();
     }
 }

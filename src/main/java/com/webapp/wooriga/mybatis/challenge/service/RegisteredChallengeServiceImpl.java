@@ -91,7 +91,7 @@ public class RegisteredChallengeServiceImpl implements RegisteredChallengeServic
                                        Participants[] participants){
         for (int i = 0; i < certifications.length; i++) {
             for (int j = 0; j < participants.length; j++) {
-                EmptyDays emptyDays = new EmptyDays(registeredChallenges.getFamilyId(),
+                EmptyDays emptyDays = new EmptyDays(null,registeredChallenges.getFamilyId(),
                         participants[j].getParticipantFK(), certifications[i].getRegisteredDate());
                 int count = emptyDaysDAOImpl.selectToId(emptyDays);
                 if (count == 0) {

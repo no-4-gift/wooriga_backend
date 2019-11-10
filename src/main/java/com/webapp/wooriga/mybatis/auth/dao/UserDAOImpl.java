@@ -1,5 +1,7 @@
 package com.webapp.wooriga.mybatis.auth.dao;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import com.webapp.wooriga.mybatis.auth.mapper.UserMapper;
@@ -62,4 +64,7 @@ public class UserDAOImpl implements UserDAO {
 
 	@Override
 	public int selectUserToFamilyId(@Param("familyId")String familyId){ return mapper.selectUserToFamilyId(familyId);}
+
+	@Override
+	public List<User> selectUserId(HashMap<String,Object> userMap){ return mapper.selectUserId(userMap);}
 }
