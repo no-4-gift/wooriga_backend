@@ -64,4 +64,11 @@
 	<select id = "selectUserForCalendar" parameterType="EmptyDays" resultType = "User">
 			select * from user where family_id = #{familyId} and uid = #{userIdFk}
 	</select>
+
+	<select id = "selectUserId" parameterType = "hashmap" resultMap = "UserResult">
+		select * from user where uid in
+		<foreach collection="userIdList" open="(" close=")" separator=",">
+			#{userIdList}
+		</foreach>
+	</select>
 </mapper>

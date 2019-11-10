@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Repository;
 
+import java.util.HashMap;
 import java.util.List;
 
 @Component
@@ -29,5 +30,9 @@ public class EmptyDaysDAOImpl {
     }
     public int selectToId(EmptyDays emptyDays){
         return emptyDaysMapper.selectToId(emptyDays);
+    }
+
+    public List<EmptyDays> selectToDate(HashMap<String,Object> emptyMap){
+        return emptyDaysMapper.selectToDate(emptyMap);
     }
 }

@@ -8,7 +8,7 @@ import com.fasterxml.jackson.databind.deser.std.StdDeserializer;
 import com.webapp.wooriga.mybatis.vo.Participants;
 import com.webapp.wooriga.mybatis.vo.RegisteredChallenges;
 import com.webapp.wooriga.mybatis.vo.Certifications;
-import com.webapp.wooriga.mybatis.vo.RegisteredInformation;
+import com.webapp.wooriga.mybatis.challenge.result.RegisteredInformation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
