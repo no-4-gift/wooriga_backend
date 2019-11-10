@@ -21,5 +21,5 @@ public class User {
 		this.uid = uid;
 		this.name = name;
 	}
-	
+
 }

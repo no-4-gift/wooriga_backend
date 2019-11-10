@@ -1,26 +1,26 @@
 package com.webapp.wooriga.mybatis.vo;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.webapp.wooriga.mybatis.controller.deserializer.EmptyDaysDeserializer;
+import com.webapp.wooriga.mybatis.calendar.deserializer.EmptyDaysDeserializer;
 import lombok.Getter;
 import lombok.Setter;
 
 import java.sql.Date;
-import java.sql.Timestamp;
-
 
 @Getter
 @Setter
 @JsonDeserialize(using = EmptyDaysDeserializer.class)
 public class EmptyDays {
-    private String familyIdFk;
+    private String familyId;
     private long userIdFk;
     private Date emptydate;
+    private String profile;
 
-    public EmptyDays(String familyIdFk, long userIdFk, Date emptydate){
-        this.familyIdFk = familyIdFk;
+    public EmptyDays(String profile,String familyId, long userIdFk, Date emptydate){
+        this.familyId = familyId;
         this.userIdFk = userIdFk;
         this.emptydate = emptydate;
+        this.profile = profile;
     }
     public EmptyDays(){
 

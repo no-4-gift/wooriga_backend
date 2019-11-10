@@ -16,7 +16,7 @@ public class SwaggerConfig {
     @Bean
     public Docket swaggerApi() {
         return new Docket(DocumentationType.SWAGGER_2).apiInfo(swaggerInfo()).select()
-                .apis(RequestHandlerSelectors.basePackage("com.webapp.wooriga.mybatis.controller"))
+                .apis(RequestHandlerSelectors.basePackage("com.webapp.wooriga.mybatis"))
                 .paths(PathSelectors.any())
                 .build()
                 .useDefaultResponseMessages(false); // 기본으로 세팅되는 200,401,403,404 메시지를 표시 하지 않음
