@@ -30,7 +30,7 @@ public class CalendarController {
          calendarService.insertDayOnCalendar(emptyDays);
     }
 
-    @ApiOperation(value = "캘린더에 들어갈 정보 전달( request : familyId,year,month)", notes = "캘린더에 들어갈 정보 전달(response : 200, date,name,relationship,color,profile - 성공 " +
+    @ApiOperation(value = "캘린더에 들어갈 정보 전달( request : familyId,year,month)", notes = "캘린더에 들어갈 정보 전달(response : 200 - 성공 " +
             " 411 - 조건과 맞지않는 정보로 찾는데 실패함 )")
     @PostMapping(value = "/familyId/year/month")
     public CalendarInfo[] sendCalendarInfo(@RequestBody Map<String,String> family){

@@ -47,7 +47,7 @@ public class EmptyDaysDeserializer extends StdDeserializer<EmptyDays> {
         catch (Exception e) {
             throw new IOException(e);
         }
-        EmptyDays emptyDays = new EmptyDays(user.getProfile(),familyId,userIdFK,emptydate);
+        EmptyDays emptyDays = new EmptyDays(familyId,userIdFK,emptydate);
         return emptyDays;
     }
 }

@@ -11,7 +11,7 @@ import java.util.ArrayList;
 @Getter
 @Setter
 public class ChallengeInfo {
-    public ArrayList<EmptyDays> emptyDays;
+    public ArrayList<UserInfo> userInfo;
     public ArrayList<Challenges> challenges;
 
     public ChallengeInfo(){

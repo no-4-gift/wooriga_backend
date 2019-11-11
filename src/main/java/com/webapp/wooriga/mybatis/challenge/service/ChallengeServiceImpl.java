@@ -5,6 +5,7 @@ import com.webapp.wooriga.mybatis.calendar.dao.EmptyDaysDAOImpl;
 import com.webapp.wooriga.mybatis.challenge.dao.CertificationsDAO;
 import com.webapp.wooriga.mybatis.challenge.dao.ChallengesDAO;
 import com.webapp.wooriga.mybatis.challenge.result.ChallengeInfo;
+import com.webapp.wooriga.mybatis.challenge.result.UserInfo;
 import com.webapp.wooriga.mybatis.exception.NoMatchPointException;
 import com.webapp.wooriga.mybatis.exception.NoStoringException;
 import com.webapp.wooriga.mybatis.exception.WrongCodeException;
@@ -95,23 +96,16 @@ public class ChallengeServiceImpl implements ChallengeService{
             }
             int dateSize = date.size();
             Iterator<Long> iterator = userMap.keySet().iterator();
+            ArrayList<UserInfo> userInfoList = new ArrayList<>();
            while(iterator.hasNext()) {
                Long key = iterator.next();
-               if (dateSize != userMap.get(key))
-                   userMap.remove(key);
+               if (dateSize == userMap.get(key)) {
+                   User user = userDAO.selectOne(key);
+                   UserInfo userInfo = new UserInfo(user.getProfile(),user.getColor(),user.getUid());
+                   userInfoList.add(userInfo);
+               }
            }
-           ArrayList<EmptyDays> resultDays = new ArrayList<>();
-            for(Iterator<EmptyDays> it = emptyDays.iterator(); it.hasNext();){
-                EmptyDays emptyDay = it.next();
-                long id = emptyDay.getUserIdFk();
-                if(!userMap.isEmpty() && userMap.containsKey(id)) {
-                    resultDays.add(emptyDay);
-                    userMap.remove(id);
-                }
-            }
-            log.error(Integer.toString(resultDays.size()));
-            challengeInfo.setEmptyDays(resultDays);
-
+           challengeInfo.setUserInfo(userInfoList);
         }catch(RuntimeException e){
             log.error(e.toString());
             throw new NoMatchPointException();

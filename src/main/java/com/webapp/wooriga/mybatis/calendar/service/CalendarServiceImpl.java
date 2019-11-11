@@ -34,7 +34,6 @@ public class CalendarServiceImpl implements CalendarService {
     public void insertDayOnCalendar(EmptyDays emptyDays) throws RuntimeException{
         try {
             User user = userDAO.selectOne(emptyDays.getUserIdFk());
-            emptyDays.setProfile(user.getProfile());
             emptyDaysDAOImpl.insertEmptyDay(emptyDays);
         }
         catch(Exception e) {

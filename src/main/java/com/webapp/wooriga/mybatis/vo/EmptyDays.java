@@ -14,13 +14,11 @@ public class EmptyDays {
     private String familyId;
     private long userIdFk;
     private Date emptydate;
-    private String profile;
 
-    public EmptyDays(String profile,String familyId, long userIdFk, Date emptydate){
+    public EmptyDays(String familyId, long userIdFk, Date emptydate){
         this.familyId = familyId;
         this.userIdFk = userIdFk;
         this.emptydate = emptydate;
-        this.profile = profile;
     }
     public EmptyDays(){
 
