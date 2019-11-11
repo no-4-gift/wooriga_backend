@@ -8,7 +8,6 @@
         <result column="family_id" property="familyId"/>
         <result column="user_fk" property="userIdFk"/>
         <result column="emptydate" property="emptydate"  jdbcType="DATE" />
-        <result column="profile" property="profile"/>
     </resultMap>
 
     <resultMap id = "UserIdResult" type = "EmptyDays">
@@ -16,7 +15,7 @@
     </resultMap>
 
     <insert id="insert" parameterType="EmptyDays" >
-            insert into emptydays (family_id,user_fk,emptydate,profile) values(#{familyId},#{userIdFk},date_add(#{emptydate}, interval +1 day),#{profile} )
+            insert into emptydays (family_id,user_fk,emptydate) values(#{familyId},#{userIdFk},date_add(#{emptydate}, interval +1 day))
     </insert>
     <select id="selectList" parameterType="String" resultMap="EmptyDaysResult">
             select * from emptydays where family_id = #{familyId} and emptydate between #{firstDate} and #{finalDate}

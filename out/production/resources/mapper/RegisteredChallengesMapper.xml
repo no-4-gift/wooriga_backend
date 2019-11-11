@@ -7,5 +7,10 @@
         insert into registeredchallenges (chief_fk,challenge_fk,familyid,resolution) values(#{chiefIdFK},#{challengeIdFK},#{familyId},#{resolution})
     </insert>
 
+    <select id = "selectRegisteredCertification" parameterType="String" resultType="java.util.HashMap" >
+        c.date,r.registered_id from registeredchallenges as r,certifications as c where c.registered_fk= r.registered_id and
+
+    </select>
+
 
 </mapper>

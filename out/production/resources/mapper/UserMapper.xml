@@ -31,7 +31,7 @@
 		select * from user order by uid
 	</select>
 	
-	<select id="selectOne" resultMap="UserResult" parameterType="long">
+	<select id="selectOne" resultType="User" parameterType="long">
 		select * from user where uid = #{uid}
 	</select>
 	
