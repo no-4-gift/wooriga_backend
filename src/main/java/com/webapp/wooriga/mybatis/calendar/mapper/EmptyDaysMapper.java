@@ -3,7 +3,6 @@ package com.webapp.wooriga.mybatis.calendar.mapper;
 import com.webapp.wooriga.mybatis.vo.EmptyDays;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
-import sun.invoke.empty.Empty;
 
 import java.util.HashMap;
 import java.util.List;
