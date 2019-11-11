@@ -14,4 +14,5 @@ public interface EmptyDaysMapper {
     List<EmptyDays> selectList(@Param("familyId")String familyId, @Param("firstDate")String firstDate, @Param("finalDate") String finalDate);
     int selectToId(EmptyDays emptyDays);
     List<EmptyDays> selectToDate(HashMap<String,Object> emptyMap);
+    void deleteToId(EmptyDays emptyDays);
 }

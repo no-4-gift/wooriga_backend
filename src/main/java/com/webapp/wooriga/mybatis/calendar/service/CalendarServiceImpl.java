@@ -1,6 +1,7 @@
 package com.webapp.wooriga.mybatis.calendar.service;
 
 import com.webapp.wooriga.mybatis.auth.dao.UserDAO;
+import com.webapp.wooriga.mybatis.calendar.dao.EmptyDaysDAO;
 import com.webapp.wooriga.mybatis.exception.NoInformationException;
 import com.webapp.wooriga.mybatis.exception.NoMatchPointException;
 import com.webapp.wooriga.mybatis.exception.NoStoringException;
@@ -20,13 +21,13 @@ import java.util.Map;
 @Transactional
 @Service
 public class CalendarServiceImpl implements CalendarService {
-    private EmptyDaysDAOImpl emptyDaysDAOImpl;
+    private EmptyDaysDAO emptyDaysDAO;
     private UserDAO userDAO;
 
     Logger log = LoggerFactory.getLogger(CalendarServiceImpl.class);
     @Autowired
-    public CalendarServiceImpl(EmptyDaysDAOImpl emptyDaysDAOImpl, UserDAO userDAO){
-        this.emptyDaysDAOImpl = emptyDaysDAOImpl;
+    public CalendarServiceImpl(EmptyDaysDAO emptyDaysDAO, UserDAO userDAO){
+        this.emptyDaysDAO = emptyDaysDAO;
         this.userDAO = userDAO;
     }
 
@@ -34,7 +35,7 @@ public class CalendarServiceImpl implements CalendarService {
     public void insertDayOnCalendar(EmptyDays emptyDays) throws RuntimeException{
         try {
             User user = userDAO.selectOne(emptyDays.getUserIdFk());
-            emptyDaysDAOImpl.insertEmptyDay(emptyDays);
+            emptyDaysDAO.insertEmptyDay(emptyDays);
         }
         catch(Exception e) {
             throw new NoStoringException();
@@ -47,7 +48,7 @@ public class CalendarServiceImpl implements CalendarService {
         String finalDate = family.get("year") +"-" +  family.get("month") + "-" + "31";
         String familyId = family.get("familyId");
         try {
-            List<EmptyDays> emptyDays = emptyDaysDAOImpl.selectEmptyDay(familyId, firstDate, finalDate);
+            List<EmptyDays> emptyDays = emptyDaysDAO.selectEmptyDay(familyId, firstDate, finalDate);
             if (emptyDays.size() > 0) {
                 CalendarInfo[] calendarInfos = new CalendarInfo[emptyDays.size()];
                 int i = 0;
@@ -63,5 +64,10 @@ public class CalendarServiceImpl implements CalendarService {
                 throw new NoMatchPointException();
             }
         return null;
+    }
+
+    @Override
+    public void deleteCalendarInfo(EmptyDays emptyDays) throws RuntimeException{
+        emptyDaysDAO.deleteToId(emptyDays);
     }
 }

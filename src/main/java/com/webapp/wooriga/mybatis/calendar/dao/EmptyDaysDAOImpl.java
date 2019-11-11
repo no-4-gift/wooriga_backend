@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 
 @Component
-public class EmptyDaysDAOImpl {
+public class EmptyDaysDAOImpl implements EmptyDaysDAO{
 
     private EmptyDaysMapper emptyDaysMapper;
 
@@ -20,19 +20,26 @@ public class EmptyDaysDAOImpl {
         this.emptyDaysMapper = emptyDaysMapper;
     }
 
-
+    @Override
     public void insertEmptyDay(EmptyDays emptyDays) throws Exception {
         emptyDaysMapper.insert(emptyDays);
     }
 
+    @Override
     public List<EmptyDays> selectEmptyDay(@Param("familyId") String familyId, @Param("firstDate") String firstDate, @Param("finalDate") String finalDate) {
         return emptyDaysMapper.selectList(familyId, firstDate, finalDate);
     }
+    @Override
     public int selectToId(EmptyDays emptyDays){
         return emptyDaysMapper.selectToId(emptyDays);
     }
 
+    @Override
     public List<EmptyDays> selectToDate(HashMap<String,Object> emptyMap){
         return emptyDaysMapper.selectToDate(emptyMap);
+    }
+    @Override
+    public void deleteToId(EmptyDays emptyDays){
+        emptyDaysMapper.deleteToId(emptyDays);
     }
 }

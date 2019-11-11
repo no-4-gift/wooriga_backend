@@ -42,7 +42,6 @@ public class EmptyDaysDeserializer extends StdDeserializer<EmptyDays> {
         try {
             java.util.Date utilDate = new SimpleDateFormat("yyyy-MM-dd").parse(emptyDateStr);
             emptydate = new Date(utilDate.getTime());
-            log.error(emptydate.toString());
         }
         catch (Exception e) {
             throw new IOException(e);

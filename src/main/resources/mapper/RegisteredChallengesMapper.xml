@@ -12,5 +12,8 @@
 
     </select>
 
+    <select id = "selectResolution" parameterType="RegisteredChallenges" resultType="String">
+        select resolution from registeredchallenges where familyid = #{familyId} and registered_id = #{registeredId}
+    </select>
 
 </mapper>

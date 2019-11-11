@@ -8,4 +8,5 @@ import java.util.Map;
 public interface CalendarService {
     void insertDayOnCalendar(EmptyDays emptyDays) throws RuntimeException;
     CalendarInfo[] selectCalendarInfo(Map<String,String> family) throws RuntimeException;
+    void deleteCalendarInfo(EmptyDays emptyDays) throws RuntimeException;
 }
