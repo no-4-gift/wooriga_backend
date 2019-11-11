@@ -1,6 +1,7 @@
 package com.webapp.wooriga.mybatis.challenge.service;
 
 import com.webapp.wooriga.mybatis.auth.dao.UserDAO;
+import com.webapp.wooriga.mybatis.calendar.dao.EmptyDaysDAO;
 import com.webapp.wooriga.mybatis.calendar.dao.EmptyDaysDAOImpl;
 import com.webapp.wooriga.mybatis.challenge.dao.CertificationsDAO;
 import com.webapp.wooriga.mybatis.challenge.dao.ChallengesDAO;
@@ -32,15 +33,15 @@ import java.util.List;
 public class ChallengeServiceImpl implements ChallengeService{
     Logger log = LoggerFactory.getLogger(this.getClass());
     private ChallengesDAO challengesDAO;
-    private EmptyDaysDAOImpl emptyDaysDAOImpl;
+    private EmptyDaysDAO emptyDaysDAO;
     private CertificationsDAO certificationsDAO;
     private ImageS3UploadComponent imageS3UploadComponent;
     private UserDAO userDAO;
     @Autowired
-    public ChallengeServiceImpl(UserDAO userDAO,EmptyDaysDAOImpl emptyDaysDAOImpl,ChallengesDAO challengesDAO, ImageS3UploadComponent imageS3UploadComponent
+    public ChallengeServiceImpl(UserDAO userDAO,EmptyDaysDAO emptyDaysDAO,ChallengesDAO challengesDAO, ImageS3UploadComponent imageS3UploadComponent
     , CertificationsDAO certificationsDAO){
         this.userDAO = userDAO;
-        this.emptyDaysDAOImpl = emptyDaysDAOImpl;
+        this.emptyDaysDAO = emptyDaysDAO;
         this.challengesDAO = challengesDAO;
         this.certificationsDAO = certificationsDAO;
         this.imageS3UploadComponent = imageS3UploadComponent;
@@ -84,7 +85,7 @@ public class ChallengeServiceImpl implements ChallengeService{
             emptyMap.put("familyId",familyId);
             emptyMap.put("date",date);
             HashMap<Long,Integer> userMap = new HashMap<>();
-            List<EmptyDays> emptyDays = emptyDaysDAOImpl.selectToDate(emptyMap);
+            List<EmptyDays> emptyDays = emptyDaysDAO.selectToDate(emptyMap);
             for(EmptyDays emptyDay : emptyDays){
                 long id = emptyDay.getUserIdFk();
                 if(!userMap.isEmpty() && userMap.containsKey(id)){

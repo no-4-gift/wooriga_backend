@@ -1,5 +1,6 @@
 package com.webapp.wooriga.mybatis.challenge.controller;
 
+import com.google.gson.JsonObject;
 import com.webapp.wooriga.mybatis.challenge.result.ChallengeInfo;
 import com.webapp.wooriga.mybatis.challenge.service.ChallengeService;
 import com.webapp.wooriga.mybatis.challenge.service.RegisteredChallengeService;
@@ -48,6 +49,12 @@ public class ChallengeController {
     public void certificateChallenge(@RequestParam(value ="file",required=false) MultipartFile file,
                                      @RequestParam String date, @RequestParam long registeredFk) throws RuntimeException{
         challengeService.certificateChallenge(registeredFk,date,file);
+    }
+
+    @ApiOperation(value = "각오의 한마디 전달", notes = "response : 200 - 성공 ")
+    @PostMapping(value = "/familyId/registeredFk")
+    public String conveyResolution(@RequestBody Map<String,Object> info) throws RuntimeException{
+        return registeredChallengeService.conveyResolution(info);
     }
 
 }

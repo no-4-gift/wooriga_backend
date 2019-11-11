@@ -29,4 +29,7 @@
             emptydate = #{data}
         </foreach>
     </select>
+    <delete id = "deleteToId" parameterType="EmptyDays">
+        delete  from emptydays where emptydate = #{emptydate} and user_fk = #{userIdFk}
+    </delete>
 </mapper>

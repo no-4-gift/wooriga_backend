@@ -37,6 +37,13 @@ public class CalendarController {
         return calendarService.selectCalendarInfo(family);
     }
 
+    @ApiOperation(value = " 일정 삭제", notes ="response 200 - 성공 409 - 삭제 실패" )
+    @DeleteMapping(value = "/uid/date")
+    public void deleteCalendarInfo (@RequestBody EmptyDays emptyDays){
+        calendarService.deleteCalendarInfo(emptyDays);
+    }
+
+
 
 
 }

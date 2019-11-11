@@ -2,6 +2,7 @@ package com.webapp.wooriga.mybatis.challenge.dao;
 
 import com.webapp.wooriga.mybatis.challenge.mapper.RegisteredChallengesMapper;
 import com.webapp.wooriga.mybatis.vo.RegisteredChallenges;
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
@@ -16,5 +17,10 @@ public class RegisteredChallengesDAOImpl implements RegisteredChallengesDAO {
     @Override
     public void insertRegisteredChallenge(RegisteredChallenges registeredChallenges){
         registeredChallengesMapper.insertRegisteredChallenge(registeredChallenges);
+    }
+
+    @Override
+    public String selectResolution(RegisteredChallenges registeredChallenges){
+        return registeredChallengesMapper.selectResolution(registeredChallenges);
     }
 }

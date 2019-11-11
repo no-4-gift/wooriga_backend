@@ -1,7 +1,6 @@
 package com.webapp.wooriga.mybatis.challenge.service;
 
-import com.webapp.wooriga.mybatis.auth.dao.UserDAO;
-import com.webapp.wooriga.mybatis.calendar.dao.EmptyDaysDAOImpl;
+import com.google.gson.JsonObject;
 import com.webapp.wooriga.mybatis.challenge.dao.CertificationsDAO;
 import com.webapp.wooriga.mybatis.challenge.dao.ParticipantsDAO;
 import com.webapp.wooriga.mybatis.challenge.dao.RegisteredChallengesDAO;
@@ -14,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Map;
+
 
 @Service
 public class RegisteredChallengeServiceImpl implements RegisteredChallengeService {
@@ -21,18 +22,15 @@ public class RegisteredChallengeServiceImpl implements RegisteredChallengeServic
     private RegisteredChallengesDAO registeredChallengesDAO;
     private CertificationsDAO certificationsDAO;
     private ParticipantsDAO participantsDAO;
-    private UserDAO userDAO;
-    private EmptyDaysDAOImpl emptyDaysDAOImpl;
+    private ChallengeModuleService challengeModuleService;
 
 
     @Autowired
-    public RegisteredChallengeServiceImpl(EmptyDaysDAOImpl emptyDaysDAOImpl, UserDAO userDAO, CertificationsDAO certificationsDAO, RegisteredChallengesDAO registeredChallengesDAO, ParticipantsDAO participantsDAO){
+    public RegisteredChallengeServiceImpl(ChallengeModuleService challengeModuleService ,CertificationsDAO certificationsDAO, RegisteredChallengesDAO registeredChallengesDAO, ParticipantsDAO participantsDAO){
         this.participantsDAO = participantsDAO;
         this.registeredChallengesDAO = registeredChallengesDAO;
         this.certificationsDAO = certificationsDAO;
-        this.userDAO = userDAO;
-        this.emptyDaysDAOImpl = emptyDaysDAOImpl;
-
+        this.challengeModuleService = challengeModuleService;
     }
 
     @Override
@@ -40,17 +38,17 @@ public class RegisteredChallengeServiceImpl implements RegisteredChallengeServic
     public void insertRegisteredChallenge(RegisteredChallenges registeredChallenges, Participants[] participants, Certifications[] certifications) throws RuntimeException {
         long registeredId;
         try {
-            if (ifCorrectUserIntheFamily(registeredChallenges))
+            if (challengeModuleService.ifCorrectUserIntheFamily(registeredChallenges))
                 registeredChallengesDAO.insertRegisteredChallenge(registeredChallenges);
         } catch(Exception e) {
             throw new NoStoringException();
         }
         try {
             registeredId = registeredChallenges.getRegisteredId();
-            validateParticipantsNum(participants.length);
-            ifCorrectParticipants(certifications, registeredChallenges, participants);
-            ifParticipantsAreCorrectUser(participants, registeredId);
-            validateChallengeDateNum(certifications.length);
+            challengeModuleService.validateParticipantsNum(participants.length);
+            challengeModuleService.ifCorrectParticipants(certifications, registeredChallenges, participants);
+            challengeModuleService.ifParticipantsAreCorrectUser(participants, registeredId);
+            challengeModuleService.validateChallengeDateNum(certifications.length);
         }catch(NoMatchPointException e) {
             throw new NoMatchPointException();
         }
@@ -69,46 +67,18 @@ public class RegisteredChallengeServiceImpl implements RegisteredChallengeServic
             throw new NoStoringException();
         }
     }
-    public Boolean ifCorrectUserIntheFamily(RegisteredChallenges registeredChallenges){
-        int count = userDAO.selectUserToFamilyId(registeredChallenges.getFamilyId());
-        if(count != 0)
-            return true;
-        else
-            throw new NoMatchPointException();
+
+    @Override
+    public String conveyResolution(Map<String,Object> info) throws RuntimeException{
+        RegisteredChallenges registeredChallenges = new RegisteredChallenges();
+        registeredChallenges.setFamilyId((String)info.get("familyId"));
+        registeredChallenges.setRegisteredId((int)info.get("registeredId"));
+        String resolution = registeredChallengesDAO.selectResolution(registeredChallenges);
+        if(resolution == null) throw new NoMatchPointException();
+        JsonObject jsonObject = new JsonObject();
+        jsonObject.addProperty("resolution",resolution);
+        jsonObject.toString();
+        return jsonObject.toString();
     }
-    public Boolean validateParticipantsNum(int participantsNum){
-        if (participantsNum > 6)
-            throw new NoMatchPointException();
-        else
-            return true;
-    }
-    public Boolean validateChallengeDateNum(int dateNum){
-        if (dateNum > 10)
-            throw new NoMatchPointException();
-        return true;
-    }
-    public Boolean ifCorrectParticipants(Certifications[] certifications,RegisteredChallenges registeredChallenges,
-                                       Participants[] participants){
-        for (int i = 0; i < certifications.length; i++) {
-            for (int j = 0; j < participants.length; j++) {
-                EmptyDays emptyDays = new EmptyDays(registeredChallenges.getFamilyId(),
-                        participants[j].getParticipantFK(), certifications[i].getRegisteredDate());
-                int count = emptyDaysDAOImpl.selectToId(emptyDays);
-                if (count == 0) {
-                    log.error(emptyDays.getEmptydate().toString() + " " + Long.toString(emptyDays.getUserIdFk()));
-                    throw new NoMatchPointException();
-                }
-            }
-        }
-        return true;
-    }
-    public Boolean ifParticipantsAreCorrectUser(Participants[] participants,long registeredId){
-        for (int i = 0; i < participants.length; i++) {
-            participants[i].setRegisteredIdFK(registeredId);
-            User user = userDAO.selectOne(participants[i].getParticipantFK());
-            if (user == null)
-                throw new NoMatchPointException();
-        }
-        return true;
-    }
+
 }
