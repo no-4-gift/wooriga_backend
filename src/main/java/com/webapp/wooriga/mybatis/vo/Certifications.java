@@ -12,6 +12,7 @@ public class Certifications {
     private long registeredIdFK;
     private Date registeredDate;
     private String certificationPhoto;
+    private RegisteredChallenges registeredChallenges;
 
     public Certifications(long registeredIdFK, Date registeredDate){
         this.registeredDate = registeredDate;

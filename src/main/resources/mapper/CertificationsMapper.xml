@@ -2,6 +2,20 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.webapp.wooriga.mybatis.challenge.mapper.CertificationsMapper">
+
+    <resultMap id = "registeredResult" type="RegisteredChallenges">
+        <result property="registeredId" column="registered_id"/>
+        <result property="chiefIdFK" column="chief_fk"/>
+        <result property="familyId" column="familyid"/>
+        <result property="challengeIdFK" column="challenge_fk"/>
+        <result property="resolution" column="resolution"/>
+    </resultMap>
+    <resultMap id = "rcResult" type="Certifications">
+        <result property="registeredIdFK" column="registered_fk"/>
+        <result property="registeredDate" column="date" jdbcType="DATE"/>
+        <result property="certificationPhoto" column="certification_photo"/>
+        <collection property="registeredChallenges" resultMap="registeredResult"/>
+    </resultMap>
     <insert id = "insertRegisteredDates" parameterType="Certifications">
         insert into certifications values(#{registeredIdFK},date_add(#{registeredDate}, interval +1 day),#{certificationPhoto})
     </insert>
@@ -9,4 +23,9 @@
         update certifications set certification_photo = #{certificationPhoto}
         where registered_fk = #{registeredIdFK} and date = date_add(#{registeredDate}, interval +1 day)
     </update>
+    <select id="selectList" parameterType="String" resultMap="rcResult">
+            select r.registered_id,c.date,r.challenge_fk,r.chief_fk from registeredchallenges r,
+             certifications c where r.registered_id = c.registered_fk and c.date
+  between #{firstdate} and #{finaldate} and r.familyid = #{familyId};
+    </select>
 </mapper>

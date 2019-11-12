@@ -1,8 +1,8 @@
 package com.webapp.wooriga.mybatis.calendar.controller;
 
 import com.webapp.wooriga.mybatis.calendar.result.CalendarInfo;
+import com.webapp.wooriga.mybatis.calendar.result.EmptyDayUserInfo;
 import com.webapp.wooriga.mybatis.calendar.service.CalendarService;
-import com.webapp.wooriga.mybatis.calendar.service.CalendarServiceImpl;
 import com.webapp.wooriga.mybatis.vo.EmptyDays;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -33,7 +33,7 @@ public class CalendarController {
     @ApiOperation(value = "캘린더에 들어갈 정보 전달( request : familyId,year,month)", notes = "캘린더에 들어갈 정보 전달(response : 200 - 성공 " +
             " 411 - 조건과 맞지않는 정보로 찾는데 실패함 )")
     @PostMapping(value = "/familyId/year/month")
-    public CalendarInfo[] sendCalendarInfo(@RequestBody Map<String,String> family){
+    public CalendarInfo sendCalendarInfo(@RequestBody Map<String,String> family){
         return calendarService.selectCalendarInfo(family);
     }
 
@@ -42,8 +42,6 @@ public class CalendarController {
     public void deleteCalendarInfo (@RequestBody EmptyDays emptyDays){
         calendarService.deleteCalendarInfo(emptyDays);
     }
-
-
 
 
 }
