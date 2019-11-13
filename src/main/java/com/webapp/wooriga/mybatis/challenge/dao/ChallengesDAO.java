@@ -11,5 +11,5 @@ public interface ChallengesDAO {
     Challenges selectChallenge(@Param("challengeId")long challengeId);
     void insertChallenge(Challenges challenges);
     void updateChallenge(Challenges challenges);
-    List<Challenges> selectChallengeList();
+    ArrayList<Challenges> selectChallengeList();
 }

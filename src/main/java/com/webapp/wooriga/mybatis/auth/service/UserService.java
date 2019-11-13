@@ -1,7 +1,9 @@
 package com.webapp.wooriga.mybatis.auth.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import com.webapp.wooriga.mybatis.challenge.result.UserInfo;
 import com.webapp.wooriga.mybatis.vo.CodeUser;
 import com.webapp.wooriga.mybatis.vo.User;
 
@@ -15,4 +17,5 @@ public interface UserService {
 	public int checkUser(long uid);
 	public String getCode(long uid);
 	public void insertCodeUser(CodeUser codeuser);
+	ArrayList<UserInfo> sendUserInfo(String familyId) throws RuntimeException;
 }

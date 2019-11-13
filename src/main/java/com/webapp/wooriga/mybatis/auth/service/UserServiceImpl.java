@@ -1,8 +1,11 @@
 package com.webapp.wooriga.mybatis.auth.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.webapp.wooriga.mybatis.auth.dao.UserDAO;
+import com.webapp.wooriga.mybatis.challenge.result.UserInfo;
+import com.webapp.wooriga.mybatis.exception.NoInformationException;
 import com.webapp.wooriga.mybatis.vo.CodeUser;
 import com.webapp.wooriga.mybatis.vo.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,5 +55,17 @@ public class UserServiceImpl implements UserService {
 	@Override
 	public void insertCodeUser(CodeUser codeuser) {
 		dao.insertCodeUser(codeuser);
+	}
+
+	@Override
+	public ArrayList<UserInfo> sendUserInfo(String familyId) throws RuntimeException{
+		List<User> userInfoList = dao.selectfamilyId(familyId);
+		ArrayList<UserInfo> userInfoArrayList = new ArrayList<>();
+		for(User user : userInfoList){
+			UserInfo userInfo = new UserInfo(user.getProfile(),user.getColor(),user.getUid());
+			userInfoArrayList.add(userInfo);
+		}
+		if(userInfoArrayList.size() == 0) throw new NoInformationException();
+		return userInfoArrayList;
 	}
 }

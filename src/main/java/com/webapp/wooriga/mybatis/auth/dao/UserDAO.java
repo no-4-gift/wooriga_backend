@@ -21,4 +21,5 @@ public interface UserDAO {
 	User selectUserForCalendar(EmptyDays emptyDays);
 	int selectUserToFamilyId(@Param("familyId")String familyId);
 	List<User> selectUserId(HashMap<String,Object> userMap);
+	List<User> selectfamilyId(@Param("familyId")String familyId);
 }

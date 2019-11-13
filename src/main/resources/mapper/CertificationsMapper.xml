@@ -14,18 +14,24 @@
         <result property="registeredIdFK" column="registered_fk"/>
         <result property="registeredDate" column="date" jdbcType="DATE"/>
         <result property="certificationPhoto" column="certification_photo"/>
+        <result property="certificationTrue" column="certification_true"/>
         <collection property="registeredChallenges" resultMap="registeredResult"/>
     </resultMap>
     <insert id = "insertRegisteredDates" parameterType="Certifications">
-        insert into certifications values(#{registeredIdFK},date_add(#{registeredDate}, interval +1 day),#{certificationPhoto})
+        insert into certifications values(#{registeredIdFK},date_add(#{registeredDate}, interval +1 day),#{certificationPhoto},#{certificationTrue})
     </insert>
     <update id = "updateCertification" parameterType="Certifications">
-        update certifications set certification_photo = #{certificationPhoto}
+        update certifications set  certification_true = #{certificationTrue},certification_photo = #{certificationPhoto}
         where registered_fk = #{registeredIdFK} and date = date_add(#{registeredDate}, interval +1 day)
     </update>
     <select id="selectList" parameterType="String" resultMap="rcResult">
-            select r.registered_id,c.date,r.challenge_fk,r.chief_fk from registeredchallenges r,
-             certifications c where r.registered_id = c.registered_fk and c.date
-  between #{firstdate} and #{finaldate} and r.familyid = #{familyId};
+            select registered_fk,c.date,r.challenge_fk,r.chief_fk from registeredchallenges r,
+             certifications c where r.registered_id = c.registered_fk and date
+  between #{firstdate} and #{finaldate} and familyid = #{familyId};
+    </select>
+    <select id = "selectMyChallengeViewInfo" parameterType="java.util.HashMap" resultMap="rcResult">
+        select registered_fk,c.date,r.challenge_fk,r.chief_fk from registeredchallenges r,
+        certifications c where r.registered_id = c.registered_fk and familyid = #{familyId} and
+        date > now() and r.chief_fk = #{uid}
     </select>
 </mapper>

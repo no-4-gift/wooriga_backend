@@ -28,7 +28,7 @@ public class ChallengesDAOImpl implements ChallengesDAO {
     }
 
     @Override
-    public List<Challenges> selectChallengeList(){
+    public ArrayList<Challenges> selectChallengeList(){
         return challengesMapper.selectChallengeList();
     }
 }

@@ -11,16 +11,28 @@ import org.apache.ibatis.annotations.Param;
 
 @Mapper
 public interface UserMapper {
-	
+
 	public List<User> selectAll();
+
 	public User selectOne(long uid);
+
 	public void insert(User user);
+
 	public void delete(User user);
+
 	public void update(User user);
+
 	public int checkUser(long uid);
+
 	public String getCode(long uid);
+
 	public void insertCodeUser(CodeUser codeuser);
+
 	User selectUserForCalendar(EmptyDays emptyDays);
-	int selectUserToFamilyId(@Param("familyId")String familyId);
-	List<User> selectUserId(HashMap<String,Object> userMap);
+
+	int selectUserToFamilyId(@Param("familyId") String familyId);
+
+	List<User> selectUserId(HashMap<String, Object> userMap);
+
+	List<User> selectfamilyId(@Param("familyId") String familyId);
 }
