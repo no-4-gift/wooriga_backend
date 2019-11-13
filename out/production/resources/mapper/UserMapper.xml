@@ -71,4 +71,7 @@
 			#{userIdList}
 		</foreach>
 	</select>
+	<select id = "selectfamilyId" parameterType="String" resultMap = "UserResult">
+		select * from user where family_id = #{familyId}
+	</select>
 </mapper>

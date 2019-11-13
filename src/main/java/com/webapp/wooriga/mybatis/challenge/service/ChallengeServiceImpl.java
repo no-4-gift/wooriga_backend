@@ -55,13 +55,13 @@ public class ChallengeServiceImpl implements ChallengeService{
             Date registeredDate = new Date( simpleDateFormat.parse(date).getTime());
             certifications.setRegisteredDate(registeredDate);
             certifications.setRegisteredIdFK(registeredId);
+            certifications.setCertificationTrue(1);
         }
         catch(Exception e){
             throw new NoMatchPointException();
         }
         try {
             String url = imageS3UploadComponent.upload(file, "challenge"+Long.toString(registeredId) + date);
-            log.info(url);
             if(url == null) throw new NoStoringException();
             else certifications.setCertificationPhoto(url);
         }
@@ -72,6 +72,7 @@ public class ChallengeServiceImpl implements ChallengeService{
             certificationsDAO.updateCertification(certifications);
         }
         catch(Exception e){
+            log.error(e.toString());
             throw new NoStoringException();
         }
     }
@@ -79,7 +80,7 @@ public class ChallengeServiceImpl implements ChallengeService{
     public ChallengeInfo sendChallengeInfo(ArrayList<String> date, String familyId) throws RuntimeException{
         ChallengeInfo challengeInfo = new ChallengeInfo();
         try {
-            challengeInfo.setChallenges((ArrayList<Challenges>) challengesDAO.selectChallengeList());
+            challengeInfo.setChallenges(challengesDAO.selectChallengeList());
             if(date.size() > 10) throw new NoMatchPointException();
             HashMap<String,Object> emptyMap = new HashMap<>();
             emptyMap.put("familyId",familyId);

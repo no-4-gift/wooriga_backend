@@ -1,8 +1,10 @@
 package com.webapp.wooriga.mybatis.calendar.controller;
 
+import com.webapp.wooriga.mybatis.auth.service.UserService;
 import com.webapp.wooriga.mybatis.calendar.result.CalendarInfo;
 import com.webapp.wooriga.mybatis.calendar.result.EmptyDayUserInfo;
 import com.webapp.wooriga.mybatis.calendar.service.CalendarService;
+import com.webapp.wooriga.mybatis.challenge.result.UserInfo;
 import com.webapp.wooriga.mybatis.vo.EmptyDays;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -11,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Map;
 
 @Api(tags = {"1. Calendar"})
@@ -18,10 +21,12 @@ import java.util.Map;
 @RestController
 public class CalendarController {
     private CalendarService calendarService;
+    private UserService userService;
 
     @Autowired
-    public void CalendarController(CalendarService calendarService) {
+    public void CalendarController(UserService userService,CalendarService calendarService) {
         this.calendarService = calendarService;
+        this.userService = userService;
     }
 
     @ApiOperation(value = "비어있는 날 입력", notes = "일정이 비어있는 날짜 입력 (response :200 - 성공 409 - 날짜가 겹쳐서 저장되지 않음)")
@@ -43,5 +48,10 @@ public class CalendarController {
         calendarService.deleteCalendarInfo(emptyDays);
     }
 
+    @ApiOperation(value = "소속된 멤버들 정보(request : familyId)",notes="response 200 - 성공 404 - 없는 가족 번호")
+    @PostMapping(value = "/familyId")
+    public ArrayList<UserInfo> sendUserInfo(@RequestParam String familyId){
+        return userService.sendUserInfo(familyId);
+    }
 
 }

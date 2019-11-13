@@ -26,7 +26,7 @@ public class RegisteredChallengeServiceImpl implements RegisteredChallengeServic
 
 
     @Autowired
-    public RegisteredChallengeServiceImpl(ChallengeModuleService challengeModuleService ,CertificationsDAO certificationsDAO, RegisteredChallengesDAO registeredChallengesDAO, ParticipantsDAO participantsDAO){
+    public RegisteredChallengeServiceImpl(ChallengeModuleService challengeModuleService, CertificationsDAO certificationsDAO, RegisteredChallengesDAO registeredChallengesDAO, ParticipantsDAO participantsDAO){
         this.participantsDAO = participantsDAO;
         this.registeredChallengesDAO = registeredChallengesDAO;
         this.certificationsDAO = certificationsDAO;
@@ -56,6 +56,7 @@ public class RegisteredChallengeServiceImpl implements RegisteredChallengeServic
                 for (int i = 0; i < certifications.length; i++) {
                     certifications[i].setRegisteredIdFK(registeredId);
                     certifications[i].setCertificationPhoto("https://woorigabucket.s3.ap-northeast-2.amazonaws.com/challenge/default.jpg");
+                    certifications[i].setCertificationTrue(0);
                     certificationsDAO.insertRegisteredDate(certifications[i]);
                 }
                 for (int i = 0; i < participants.length; i++) {
@@ -64,6 +65,7 @@ public class RegisteredChallengeServiceImpl implements RegisteredChallengeServic
                 }
         }
         catch(Exception e){
+            log.error(e.toString());
             throw new NoStoringException();
         }
     }

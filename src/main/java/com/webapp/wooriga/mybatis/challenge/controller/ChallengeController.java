@@ -1,11 +1,12 @@
 package com.webapp.wooriga.mybatis.challenge.controller;
 
-import com.google.gson.JsonObject;
+import com.webapp.wooriga.mybatis.challenge.result.ChallengeBarInfo;
 import com.webapp.wooriga.mybatis.challenge.result.ChallengeInfo;
+import com.webapp.wooriga.mybatis.challenge.result.ChallengeViewInfo;
 import com.webapp.wooriga.mybatis.challenge.service.ChallengeService;
+import com.webapp.wooriga.mybatis.challenge.service.ChallengeViewService;
 import com.webapp.wooriga.mybatis.challenge.service.RegisteredChallengeService;
 import com.webapp.wooriga.mybatis.challenge.result.RegisteredInformation;
-import com.webapp.wooriga.mybatis.vo.EmptyDays;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -13,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.sql.Date;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -23,11 +23,13 @@ import java.util.Map;
 public class ChallengeController {
     private RegisteredChallengeService registeredChallengeService;
     private ChallengeService challengeService;
+    private ChallengeViewService challengeViewService;
 
     @Autowired
-    public ChallengeController(RegisteredChallengeService registeredChallengeService, ChallengeService challengeService) {
+    public ChallengeController(ChallengeViewService challengeViewService,RegisteredChallengeService registeredChallengeService, ChallengeService challengeService) {
         this.registeredChallengeService = registeredChallengeService;
         this.challengeService = challengeService;
+        this.challengeViewService = challengeViewService;
     }
 
     @ApiOperation(value = "챌린지 신청", notes = "response : 200 - 성공 409 - 전송 데이터 중 존재하지 않는 데이터를 포함하고 있어 db에 저장되지 않음 411 - 조건에 맞지 않음")
@@ -57,4 +59,14 @@ public class ChallengeController {
         return registeredChallengeService.conveyResolution(info);
     }
 
+    @ApiOperation(value = "도전중인 챌린지 정보 전달", notes = "response: 200 - 성공 411 - 조건과 맞는 데이터가 없음")
+    @PostMapping(value = "/familyId/uid")
+    public ChallengeViewInfo conveyMyChallengeInfo(@RequestBody Map<String,Object> info) throws RuntimeException{
+        return challengeViewService.sendChallengeViewInfo(false,info);
+    }
+    @ApiOperation(value = "함께하는 챌린지 정보 전달", notes = "response: 200 - 성공 411 - 조건과 맞는 데이터가 없음")
+    @PostMapping(value = "/familyId/uid/bool")
+    public ChallengeViewInfo conveyOurChallengeInfo(@RequestBody Map<String,Object> info) throws RuntimeException{
+        return challengeViewService.sendChallengeViewInfo(true,info);
+    }
 }
