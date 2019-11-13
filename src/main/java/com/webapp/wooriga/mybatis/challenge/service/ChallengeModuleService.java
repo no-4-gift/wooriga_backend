@@ -15,5 +15,4 @@ public interface ChallengeModuleService {
     Boolean ifCorrectParticipants(Certifications[] certifications, RegisteredChallenges registeredChallenges,
                                   Participants[] participants);
     Boolean ifParticipantsAreCorrectUser(Participants[] participants,long registeredId);
-    ArrayList<ChallengeBarInfo> sendChallengeViewInfo(List<Certifications> certificationsList);
 }

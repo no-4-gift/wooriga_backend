@@ -62,15 +62,15 @@ public class CalendarModuleServiceImpl implements CalendarModuleService {
         ArrayList<Date> dateList = new ArrayList<>();
         dateList.add(certifications.getRegisteredDate());
         if(!viewTrue)
-        return new ChallengeBarInfo(null,challenges.getChallengeId(),registeredId, registeredChallenges.getChiefIdFK(), challenges.getTitle(), dateList, user.getColor());
+        return new ChallengeBarInfo(null,registeredChallenges.getChallengeIdFK(),registeredId, registeredChallenges.getChiefIdFK(), challenges.getTitle(), dateList, user.getColor());
         else
-            return new ChallengeBarInfo(challenges.getImage(),challenges.getChallengeId(),registeredId, registeredChallenges.getChiefIdFK(), challenges.getTitle(), dateList, user.getColor());
+            return new ChallengeBarInfo(challenges.getImage(),registeredChallenges.getChallengeIdFK(),registeredId, registeredChallenges.getChiefIdFK(), challenges.getTitle(), dateList, user.getColor());
     }
 
     @Override
-    public ArrayList<ChallengeBarInfo> setChallengeBarInfoList(List<Certifications> certificationsList){
+    public ArrayList<ChallengeBarInfo> setChallengeBarInfoList(Boolean viewTrue,List<Certifications> certificationsList){
         ArrayList<ChallengeBarInfo> challengeBarInfoList = new ArrayList<>();
-        HashMap<Long,ChallengeBarInfo> challengeBarInfoHashMap = this.setChallengeInfoHashMap(false,certificationsList);
+        HashMap<Long,ChallengeBarInfo> challengeBarInfoHashMap = this.setChallengeInfoHashMap(viewTrue,certificationsList);
         for(Long key : challengeBarInfoHashMap.keySet())
             challengeBarInfoList.add(challengeBarInfoHashMap.get(key));
         return challengeBarInfoList;

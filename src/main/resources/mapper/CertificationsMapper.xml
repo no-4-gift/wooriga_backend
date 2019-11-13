@@ -34,4 +34,9 @@
         certifications c where r.registered_id = c.registered_fk and familyid = #{familyId} and
         date > now() and r.chief_fk = #{uid}
     </select>
+    <select id = "selectOurChallengeViewInfo" parameterType="java.util.HashMap" resultMap="rcResult">
+        select registered_fk,c.date,r.challenge_fk,r.chief_fk from registeredchallenges r,
+        certifications c where r.registered_id = c.registered_fk and familyid = #{familyId} and
+        date > now() and r.chief_fk != #{uid}
+    </select>
 </mapper>

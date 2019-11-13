@@ -72,9 +72,4 @@ public class ChallengeModuleServiceImpl implements ChallengeModuleService{
         }
         return true;
     }
-    @Override
-    public ArrayList<ChallengeBarInfo> sendChallengeViewInfo(List<Certifications> certificationsList){
-        HashMap<Long,ChallengeBarInfo> challengeBarInfoHashMap = calendarModuleService.setChallengeInfoHashMap(true,certificationsList);
-
-    }
 }

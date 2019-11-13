@@ -13,5 +13,5 @@ import java.util.List;
 public interface CalendarModuleService {
     ArrayList<EmptyDayUserInfo> setEmptyDayUserInfoList(List<EmptyDays> emptyDaysList);
     HashMap<Long, ChallengeBarInfo> setChallengeInfoHashMap(Boolean viewTrue,List<Certifications> certificationsList);
-    ArrayList<ChallengeBarInfo> setChallengeBarInfoList(List<Certifications> certificationsList);
+    ArrayList<ChallengeBarInfo> setChallengeBarInfoList(Boolean viewTrue,List<Certifications> certificationsList);
 }
