@@ -2,7 +2,6 @@ package com.webapp.wooriga.mybatis.challenge.controller;
 
 import com.webapp.wooriga.mybatis.challenge.result.ChallengeBarInfo;
 import com.webapp.wooriga.mybatis.challenge.result.ChallengeInfo;
-import com.webapp.wooriga.mybatis.challenge.result.ChallengeViewInfo;
 import com.webapp.wooriga.mybatis.challenge.service.ChallengeService;
 import com.webapp.wooriga.mybatis.challenge.service.ChallengeViewService;
 import com.webapp.wooriga.mybatis.challenge.service.RegisteredChallengeService;
@@ -61,12 +60,12 @@ public class ChallengeController {
 
     @ApiOperation(value = "도전중인 챌린지 정보 전달", notes = "response: 200 - 성공 411 - 조건과 맞는 데이터가 없음")
     @GetMapping(value = "/familyId/uid")
-    public ChallengeViewInfo conveyMyChallengeInfo(@RequestParam String familyId,@RequestParam long uid) throws RuntimeException{
+    public ArrayList<ChallengeBarInfo> conveyMyChallengeInfo(@RequestParam String familyId, @RequestParam long uid) throws RuntimeException{
         return challengeViewService.sendChallengeViewInfo(false,familyId,uid);
     }
     @ApiOperation(value = "함께하는 챌린지 정보 전달", notes = "response: 200 - 성공 411 - 조건과 맞는 데이터가 없음")
     @GetMapping(value = "/familyId/uid/bool")
-    public ChallengeViewInfo conveyOurChallengeInfo(@RequestParam String familyId, @RequestParam long uid) throws RuntimeException {
+    public ArrayList<ChallengeBarInfo> conveyOurChallengeInfo(@RequestParam String familyId, @RequestParam long uid) throws RuntimeException {
         return challengeViewService.sendChallengeViewInfo(true, familyId, uid);
     }
 }
