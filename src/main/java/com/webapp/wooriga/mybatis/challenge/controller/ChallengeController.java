@@ -1,12 +1,9 @@
 package com.webapp.wooriga.mybatis.challenge.controller;
 
-import com.webapp.wooriga.mybatis.challenge.result.ChallengeBarInfo;
-import com.webapp.wooriga.mybatis.challenge.result.ChallengeInfo;
-import com.webapp.wooriga.mybatis.challenge.result.ChallengeViewInfo;
+import com.webapp.wooriga.mybatis.challenge.result.*;
 import com.webapp.wooriga.mybatis.challenge.service.ChallengeService;
 import com.webapp.wooriga.mybatis.challenge.service.ChallengeViewService;
 import com.webapp.wooriga.mybatis.challenge.service.RegisteredChallengeService;
-import com.webapp.wooriga.mybatis.challenge.result.RegisteredInformation;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -19,6 +16,7 @@ import java.util.Map;
 
 @Api(tags = {"2. Challenge"})
 @RequestMapping(value = "/api")
+@CrossOrigin(origins = {"*"})
 @RestController
 public class ChallengeController {
     private RegisteredChallengeService registeredChallengeService;
@@ -61,12 +59,22 @@ public class ChallengeController {
 
     @ApiOperation(value = "도전중인 챌린지 정보 전달", notes = "response: 200 - 성공 411 - 조건과 맞는 데이터가 없음")
     @GetMapping(value = "/familyId/uid")
-    public ChallengeViewInfo conveyMyChallengeInfo(@RequestParam String familyId,@RequestParam long uid) throws RuntimeException{
+    public ArrayList<ChallengeBarInfo> conveyMyChallengeInfo(@RequestParam String familyId, @RequestParam long uid) throws RuntimeException{
         return challengeViewService.sendChallengeViewInfo(false,familyId,uid);
     }
     @ApiOperation(value = "함께하는 챌린지 정보 전달", notes = "response: 200 - 성공 411 - 조건과 맞는 데이터가 없음")
     @GetMapping(value = "/familyId/uid/bool")
-    public ChallengeViewInfo conveyOurChallengeInfo(@RequestParam String familyId, @RequestParam long uid) throws RuntimeException {
+    public ArrayList<ChallengeBarInfo> conveyOurChallengeInfo(@RequestParam String familyId, @RequestParam long uid) throws RuntimeException {
         return challengeViewService.sendChallengeViewInfo(true, familyId, uid);
+    }
+    @ApiOperation(value = "챌린지 디테일 정보 전달(프로필 사진 제외)", notes = "response : 200 - 성공 411 - 조건과 맞는 데이터가 없음")
+    @GetMapping(value = "/uid/registeredId")
+    public ChallengeDetailInfo conveyChallengeDetailInfo(@RequestParam long uid, @RequestParam long registeredId){
+        return challengeViewService.sendChallengeDetailInfo(uid,registeredId);
+    }
+    @ApiOperation(value = "챌린지 디테일 내 참여자 프로필 사진 전달", notes = "response : 200 - 성공 411 - 조건과 맞는 데이터가 없음")
+    @GetMapping(value = "/registeredId")
+    public ArrayList<UserInfo> conveyParticipantsInfo(@RequestParam long registeredId){
+        return challengeViewService.sendParticipantsInfo(registeredId);
     }
 }

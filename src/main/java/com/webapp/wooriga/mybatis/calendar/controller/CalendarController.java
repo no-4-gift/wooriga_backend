@@ -18,6 +18,7 @@ import java.util.Map;
 
 @Api(tags = {"1. Calendar"})
 @RequestMapping(value = "/api")
+@CrossOrigin(origins = {"*"})
 @RestController
 public class CalendarController {
     private CalendarService calendarService;

@@ -17,7 +17,8 @@ public class ChallengeBarInfo {
     private String challengeTitle;
     private long challengeId;
     private String challengeImage;
-
+    private int totalNum;
+    private int certificationNum;
     public ChallengeBarInfo(){}
     public ChallengeBarInfo(String resolution,String challengeImage,long challengeId,long registeredId,long chiefId, String challengeTitle, ArrayList<Date> date,String chiefColor){
         this.challengeTitle = challengeTitle;
