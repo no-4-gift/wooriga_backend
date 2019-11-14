@@ -9,6 +9,7 @@
         <result property="summary" column="summary"/>
         <result property="title" column="title"/>
         <result property="content" column="content"/>
+        <result property="image" column="image"/>
     </resultMap>
     <select id = "selectChallenge" parameterType="long" resultType="Challenges">
         select * from challenges where challenge_id = #{challengeId}

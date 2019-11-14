@@ -30,7 +30,7 @@ public class CalendarModuleServiceImpl implements CalendarModuleService {
         ArrayList<EmptyDayUserInfo> emptyDayUserInfoList = new ArrayList<>();
         for (EmptyDays emptyDay : emptyDaysList) {
             User user = userDAO.selectUserForCalendar(emptyDay);
-            EmptyDayUserInfo emptyDayUserInfo = new EmptyDayUserInfo(emptyDay.getEmptydate().toString(), user.getColor(), user.getName(), user.getRelationship(), user.getProfile());
+            EmptyDayUserInfo emptyDayUserInfo = new EmptyDayUserInfo(user.getUid(),emptyDay.getEmptydate().toString(), user.getColor(), user.getName(), user.getRelationship(), user.getProfile());
             emptyDayUserInfoList.add(emptyDayUserInfo);
         }
         return emptyDayUserInfoList;
@@ -62,7 +62,7 @@ public class CalendarModuleServiceImpl implements CalendarModuleService {
         ArrayList<Date> dateList = new ArrayList<>();
         dateList.add(certifications.getRegisteredDate());
         if(!viewTrue)
-        return new ChallengeBarInfo(registeredChallenges.getResolution(),null,registeredChallenges.getChallengeIdFK(),registeredId, registeredChallenges.getChiefIdFK(), challenges.getTitle(), dateList, user.getColor());
+        return new ChallengeBarInfo(registeredChallenges.getResolution(),challenges.getImage(),registeredChallenges.getChallengeIdFK(),registeredId, registeredChallenges.getChiefIdFK(), challenges.getTitle(), dateList, user.getColor());
         else
             return new ChallengeBarInfo(registeredChallenges.getResolution(),challenges.getImage(),registeredChallenges.getChallengeIdFK(),registeredId, registeredChallenges.getChiefIdFK(), challenges.getTitle(), dateList, user.getColor());
     }
