@@ -9,8 +9,10 @@ public class UserInfo {
     private String profile;
     private String color;
     private long uid;
-    public UserInfo(String profile,String color, long uid){
+    private String name;
+    public UserInfo(String name,String profile,String color, long uid){
         this.profile = profile;
+        this.name = name;
         this.color = color;
         this.uid = uid;
     }

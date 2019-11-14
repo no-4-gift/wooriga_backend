@@ -25,17 +25,17 @@
         where registered_fk = #{registeredIdFK} and date = date_add(#{registeredDate}, interval +1 day)
     </update>
     <select id="selectList" parameterType="String" resultMap="rcResult">
-            select registered_fk,c.date,r.challenge_fk,r.chief_fk from registeredchallenges r,
+            select registered_fk,c.date,r.challenge_fk,r.chief_fk,r.resolution from registeredchallenges r,
              certifications c where r.registered_id = c.registered_fk and date
   between #{firstdate} and #{finaldate} and familyid = #{familyId};
     </select>
     <select id = "selectMyChallengeViewInfo" parameterType="java.util.HashMap" resultMap="rcResult">
-        select registered_fk,c.date,r.challenge_fk,r.chief_fk from registeredchallenges r,
+        select registered_fk,c.date,r.challenge_fk,r.chief_fk,r.resolution from registeredchallenges r,
         certifications c where r.registered_id = c.registered_fk and familyid = #{familyId} and
         date > now() and r.chief_fk = #{uid}
     </select>
     <select id = "selectOurChallengeViewInfo" parameterType="java.util.HashMap" resultMap="rcResult">
-        select registered_fk,c.date,r.challenge_fk,r.chief_fk from registeredchallenges r,
+        select registered_fk,c.date,r.challenge_fk,r.chief_fk,r.resolution from registeredchallenges r,
         certifications c where r.registered_id = c.registered_fk and familyid = #{familyId} and
         date > now() and r.chief_fk != #{uid}
     </select>

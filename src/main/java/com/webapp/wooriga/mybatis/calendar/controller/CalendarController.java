@@ -37,9 +37,9 @@ public class CalendarController {
 
     @ApiOperation(value = "캘린더에 들어갈 정보 전달( request : familyId,year,month)", notes = "캘린더에 들어갈 정보 전달(response : 200 - 성공 " +
             " 411 - 조건과 맞지않는 정보로 찾는데 실패함 )")
-    @PostMapping(value = "/familyId/year/month")
-    public CalendarInfo sendCalendarInfo(@RequestBody Map<String,String> family){
-        return calendarService.selectCalendarInfo(family);
+    @GetMapping(value = "/familyId/year/month")
+    public CalendarInfo sendCalendarInfo(@RequestParam String familyId, @RequestParam String year, @RequestParam String month){
+        return calendarService.selectCalendarInfo(familyId,year,month);
     }
 
     @ApiOperation(value = " 일정 삭제", notes ="response 200 - 성공 409 - 삭제 실패" )
@@ -49,7 +49,7 @@ public class CalendarController {
     }
 
     @ApiOperation(value = "소속된 멤버들 정보(request : familyId)",notes="response 200 - 성공 404 - 없는 가족 번호")
-    @PostMapping(value = "/familyId")
+    @GetMapping(value = "/familyId")
     public ArrayList<UserInfo> sendUserInfo(@RequestParam String familyId){
         return userService.sendUserInfo(familyId);
     }

@@ -103,7 +103,7 @@ public class ChallengeServiceImpl implements ChallengeService{
                Long key = iterator.next();
                if (dateSize == userMap.get(key)) {
                    User user = userDAO.selectOne(key);
-                   UserInfo userInfo = new UserInfo(user.getProfile(),user.getColor(),user.getUid());
+                   UserInfo userInfo = new UserInfo(user.getName(),user.getProfile(),user.getColor(),user.getUid());
                    userInfoList.add(userInfo);
                }
            }

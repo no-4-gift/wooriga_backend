@@ -62,9 +62,9 @@ public class CalendarModuleServiceImpl implements CalendarModuleService {
         ArrayList<Date> dateList = new ArrayList<>();
         dateList.add(certifications.getRegisteredDate());
         if(!viewTrue)
-        return new ChallengeBarInfo(null,registeredChallenges.getChallengeIdFK(),registeredId, registeredChallenges.getChiefIdFK(), challenges.getTitle(), dateList, user.getColor());
+        return new ChallengeBarInfo(registeredChallenges.getResolution(),null,registeredChallenges.getChallengeIdFK(),registeredId, registeredChallenges.getChiefIdFK(), challenges.getTitle(), dateList, user.getColor());
         else
-            return new ChallengeBarInfo(challenges.getImage(),registeredChallenges.getChallengeIdFK(),registeredId, registeredChallenges.getChiefIdFK(), challenges.getTitle(), dateList, user.getColor());
+            return new ChallengeBarInfo(registeredChallenges.getResolution(),challenges.getImage(),registeredChallenges.getChallengeIdFK(),registeredId, registeredChallenges.getChiefIdFK(), challenges.getTitle(), dateList, user.getColor());
     }
 
     @Override

@@ -13,13 +13,15 @@ public class ChallengeBarInfo {
     private String chiefColor;
     private ArrayList<Date> date;
     private long registeredId;
+    private String resolution;
     private String challengeTitle;
     private long challengeId;
     private String challengeImage;
 
     public ChallengeBarInfo(){}
-    public ChallengeBarInfo(String challengeImage,long challengeId,long registeredId,long chiefId, String challengeTitle, ArrayList<Date> date,String chiefColor){
+    public ChallengeBarInfo(String resolution,String challengeImage,long challengeId,long registeredId,long chiefId, String challengeTitle, ArrayList<Date> date,String chiefColor){
         this.challengeTitle = challengeTitle;
+        this.resolution = resolution;
         this.date = date;
         this.registeredId = registeredId;
         this.chiefColor = chiefColor;
