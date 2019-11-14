@@ -12,4 +12,5 @@ public interface CertificationsDAO {
     List<Certifications> selectList(@Param("familyId") String familyId, @Param("firstdate") String firstdate, @Param("finaldate") String finaldate);
     List<Certifications> selectMyChallengeViewInfo(HashMap<String,Object> infoHashMap);
     List<Certifications> selectOurChallengeViewInfo(HashMap<String,Object> infoHashMap);
+    List<Certifications> selectChallengeDetailInfo(@Param("registeredId") long registeredId);
 }

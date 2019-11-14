@@ -2,9 +2,14 @@ package com.webapp.wooriga.mybatis.challenge.service;
 
 import com.webapp.wooriga.mybatis.calendar.service.CalendarModuleService;
 import com.webapp.wooriga.mybatis.challenge.dao.CertificationsDAO;
+import com.webapp.wooriga.mybatis.challenge.dao.ChallengesDAO;
 import com.webapp.wooriga.mybatis.challenge.result.ChallengeBarInfo;
+import com.webapp.wooriga.mybatis.challenge.result.ChallengeDetailInfo;
+import com.webapp.wooriga.mybatis.challenge.result.UserInfo;
 import com.webapp.wooriga.mybatis.exception.NoMatchPointException;
 import com.webapp.wooriga.mybatis.vo.Certifications;
+import com.webapp.wooriga.mybatis.vo.Challenges;
+import com.webapp.wooriga.mybatis.vo.RegisteredChallenges;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -16,14 +21,16 @@ import java.util.List;
 public class ChallengeViewServiceImpl implements ChallengeViewService {
     private CalendarModuleService calendarModuleService;
     private CertificationsDAO certificationsDAO;
+    private ChallengesDAO challengesDAO;
 
     public ChallengeViewServiceImpl() {
     }
 
     @Autowired
-    public ChallengeViewServiceImpl(CertificationsDAO certificationsDAO, CalendarModuleService calendarModuleService) {
+    public ChallengeViewServiceImpl(ChallengesDAO challengesDAO,CertificationsDAO certificationsDAO, CalendarModuleService calendarModuleService) {
         this.calendarModuleService = calendarModuleService;
         this.certificationsDAO = certificationsDAO;
+        this.challengesDAO = challengesDAO;
     }
 
     @Override
@@ -69,6 +76,34 @@ public class ChallengeViewServiceImpl implements ChallengeViewService {
             challengeBarInfo.setTotalNum(totalNum.get(registeredId));
         }
         return challengeBarInfoArrayList;
+    }
+
+    @Override
+    public ChallengeDetailInfo sendChallengeDetailInfo(long uid, long registeredId){
+        ChallengeDetailInfo challengeDetailInfo = new ChallengeDetailInfo();
+        ArrayList<Certifications> certificationsList = (ArrayList<Certifications>)certificationsDAO.selectChallengeDetailInfo(registeredId);
+        if(certificationsList == null) throw new NoMatchPointException();
+
+        for(Certifications certifications : certificationsList) {
+            RegisteredChallenges registeredChallenges = certifications.getRegisteredChallenges();
+            challengeDetailInfo.setResolution(registeredChallenges.getResolution());
+            if (uid != registeredChallenges.getChiefIdFK())
+                challengeDetailInfo.setCertificationAvailableTrue(false);
+            else
+                challengeDetailInfo.setCertificationAvailableTrue(true);
+            long challengeId = registeredChallenges.getChallengeIdFK();
+            Challenges challenges = challengesDAO.selectChallenge(challengeId);
+            challengeDetailInfo.setChallenges(challenges);
+            break;
+        }
+        challengeDetailInfo.setCertificationsArrayList(certificationsList);
+        return challengeDetailInfo;
+    }
+    @Override
+    public ArrayList<UserInfo> sendParticipantsInfo(long registeredId){
+        ArrayList<UserInfo> userInfoArrayList = new ArrayList<>();
+
+        return userInfoArrayList;
     }
 
 }

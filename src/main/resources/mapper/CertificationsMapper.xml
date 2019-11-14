@@ -39,4 +39,8 @@
         certifications c where r.registered_id = c.registered_fk and familyid = #{familyId} and
         date > now() and r.chief_fk != #{uid}
     </select>
+    <select id = "selectChallengeDetailInfo" parameterType="long" resultMap="rcResult">
+        select * from registeredchallenges r, certifications c where r.registered_id =
+        c.registered_fk and r.registered_id = #{registeredId}
+    </select>
 </mapper>

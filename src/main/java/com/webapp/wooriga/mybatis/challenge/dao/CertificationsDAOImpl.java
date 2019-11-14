@@ -35,4 +35,8 @@ public class CertificationsDAOImpl implements CertificationsDAO {
     public List<Certifications> selectOurChallengeViewInfo(HashMap<String,Object> infoHashMap){
         return certificationsMapper.selectOurChallengeViewInfo(infoHashMap);
     }
+    @Override
+    public List<Certifications> selectChallengeDetailInfo(@Param("registeredId") long registeredId){
+        return certificationsMapper.selectChallengeDetailInfo(registeredId);
+    }
 }
