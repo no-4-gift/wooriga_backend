@@ -65,10 +65,10 @@
 			select * from user where family_id = #{familyId} and uid = #{userIdFk}
 	</select>
 
-	<select id = "selectUserId" parameterType = "hashmap" resultMap = "UserResult">
+	<select id = "selectUserId" parameterType = "java.util.List" resultMap = "UserResult">
 		select * from user where uid in
-		<foreach collection="userIdList" open="(" close=")" separator=",">
-			#{userIdList}
+		<foreach collection="param1" item = "item" index="index" open="(" close=")" separator=",">
+			#{item}
 		</foreach>
 	</select>
 	<select id = "selectfamilyId" parameterType="String" resultMap = "UserResult">

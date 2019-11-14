@@ -9,7 +9,7 @@ import java.util.ArrayList;
 
 @Data
 public class ChallengeDetailInfo {
-    private ArrayList<Certifications> certificationsArrayList;
+    private ArrayList<CertificationInfo> certificationInfoArrayList;
     private String resolution;
     private Challenges challenges;
     private Boolean certificationAvailableTrue;

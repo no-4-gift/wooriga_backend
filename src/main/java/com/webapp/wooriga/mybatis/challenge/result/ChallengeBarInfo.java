@@ -11,7 +11,7 @@ import java.util.ArrayList;
 public class ChallengeBarInfo {
     private long chiefId;
     private String chiefColor;
-    private ArrayList<Date> date;
+    private ArrayList<String> date;
     private long registeredId;
     private String resolution;
     private String challengeTitle;
@@ -20,7 +20,7 @@ public class ChallengeBarInfo {
     private int totalNum;
     private int certificationNum;
     public ChallengeBarInfo(){}
-    public ChallengeBarInfo(String resolution,String challengeImage,long challengeId,long registeredId,long chiefId, String challengeTitle, ArrayList<Date> date,String chiefColor){
+    public ChallengeBarInfo(String resolution,String challengeImage,long challengeId,long registeredId,long chiefId, String challengeTitle, ArrayList<String> date,String chiefColor){
         this.challengeTitle = challengeTitle;
         this.resolution = resolution;
         this.date = date;

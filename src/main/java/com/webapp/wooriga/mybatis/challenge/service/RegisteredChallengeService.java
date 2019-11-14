@@ -10,5 +10,4 @@ import java.util.Map;
 
 public interface RegisteredChallengeService {
     void insertRegisteredChallenge(RegisteredChallenges registeredChallenges, Participants[] participants, Certifications[] certifications) throws RuntimeException;
-    String conveyResolution(Map<String,Object> info) throws RuntimeException;
 }

@@ -1,5 +1,6 @@
 package com.webapp.wooriga.mybatis.auth.mapper;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -32,7 +33,7 @@ public interface UserMapper {
 
 	int selectUserToFamilyId(@Param("familyId") String familyId);
 
-	List<User> selectUserId(HashMap<String, Object> userMap);
+	List<User> selectUserId(@Param("userIdList")List<Long> userIdList);
 
 	List<User> selectfamilyId(@Param("familyId") String familyId);
 }

@@ -1,36 +1,47 @@
 package com.webapp.wooriga.mybatis.challenge.service;
 
+import com.webapp.wooriga.mybatis.auth.dao.UserDAO;
 import com.webapp.wooriga.mybatis.calendar.service.CalendarModuleService;
 import com.webapp.wooriga.mybatis.challenge.dao.CertificationsDAO;
 import com.webapp.wooriga.mybatis.challenge.dao.ChallengesDAO;
+import com.webapp.wooriga.mybatis.challenge.dao.ParticipantsDAO;
+import com.webapp.wooriga.mybatis.challenge.dao.RegisteredChallengesDAO;
+import com.webapp.wooriga.mybatis.challenge.result.CertificationInfo;
 import com.webapp.wooriga.mybatis.challenge.result.ChallengeBarInfo;
 import com.webapp.wooriga.mybatis.challenge.result.ChallengeDetailInfo;
 import com.webapp.wooriga.mybatis.challenge.result.UserInfo;
 import com.webapp.wooriga.mybatis.exception.NoMatchPointException;
-import com.webapp.wooriga.mybatis.vo.Certifications;
-import com.webapp.wooriga.mybatis.vo.Challenges;
-import com.webapp.wooriga.mybatis.vo.RegisteredChallenges;
+import com.webapp.wooriga.mybatis.vo.*;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
 @Service
 public class ChallengeViewServiceImpl implements ChallengeViewService {
+    Logger log = LoggerFactory.getLogger(this.getClass());
     private CalendarModuleService calendarModuleService;
     private CertificationsDAO certificationsDAO;
     private ChallengesDAO challengesDAO;
-
+    private ParticipantsDAO participantsDAO;
+    private RegisteredChallengesDAO registeredChallengesDAO;
+    private UserDAO userDAO;
     public ChallengeViewServiceImpl() {
     }
 
     @Autowired
-    public ChallengeViewServiceImpl(ChallengesDAO challengesDAO,CertificationsDAO certificationsDAO, CalendarModuleService calendarModuleService) {
+    public ChallengeViewServiceImpl(UserDAO userDAO,ParticipantsDAO participantsDAO,ChallengesDAO challengesDAO,CertificationsDAO certificationsDAO, CalendarModuleService calendarModuleService,RegisteredChallengesDAO registeredChallengesDAO) {
         this.calendarModuleService = calendarModuleService;
         this.certificationsDAO = certificationsDAO;
         this.challengesDAO = challengesDAO;
+        this.registeredChallengesDAO = registeredChallengesDAO;
+        this.participantsDAO = participantsDAO;
+        this.userDAO = userDAO;
     }
 
     @Override
@@ -81,9 +92,9 @@ public class ChallengeViewServiceImpl implements ChallengeViewService {
     @Override
     public ChallengeDetailInfo sendChallengeDetailInfo(long uid, long registeredId){
         ChallengeDetailInfo challengeDetailInfo = new ChallengeDetailInfo();
-        ArrayList<Certifications> certificationsList = (ArrayList<Certifications>)certificationsDAO.selectChallengeDetailInfo(registeredId);
+        List<Certifications> certificationsList = certificationsDAO.selectChallengeDetailInfo(registeredId);
         if(certificationsList == null) throw new NoMatchPointException();
-
+        ArrayList<CertificationInfo> certificationInfoArrayList = new ArrayList<>();
         for(Certifications certifications : certificationsList) {
             RegisteredChallenges registeredChallenges = certifications.getRegisteredChallenges();
             challengeDetailInfo.setResolution(registeredChallenges.getResolution());
@@ -93,16 +104,34 @@ public class ChallengeViewServiceImpl implements ChallengeViewService {
                 challengeDetailInfo.setCertificationAvailableTrue(true);
             long challengeId = registeredChallenges.getChallengeIdFK();
             Challenges challenges = challengesDAO.selectChallenge(challengeId);
+            challenges.setChallengeId(challengeId);
             challengeDetailInfo.setChallenges(challenges);
             break;
         }
-        challengeDetailInfo.setCertificationsArrayList(certificationsList);
+        for(Certifications certifications : certificationsList){
+            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+            CertificationInfo certificationInfo = new CertificationInfo(simpleDateFormat.format(certifications.getRegisteredDate()),certifications.getCertificationPhoto(),
+            certifications.getCertificationTrue());
+            certificationInfoArrayList.add(certificationInfo);
+        }
+        challengeDetailInfo.setCertificationInfoArrayList(certificationInfoArrayList);
         return challengeDetailInfo;
     }
     @Override
     public ArrayList<UserInfo> sendParticipantsInfo(long registeredId){
         ArrayList<UserInfo> userInfoArrayList = new ArrayList<>();
-
+        List<Long> userIdList = new ArrayList<>();
+        Long chiefId = registeredChallengesDAO.selectRegisteredCertification(registeredId);
+        if(chiefId == null) throw new NoMatchPointException();
+        userIdList.add(chiefId);
+        List<Participants> participantsList = participantsDAO.selectParticipants(registeredId);
+        for(Participants participants : participantsList)
+            userIdList.add(participants.getParticipantFK());
+        List<User> userList = userDAO.selectUserId(userIdList);
+        for(User user : userList){
+            UserInfo userInfo = new UserInfo(user.getRelationship(),user.getName(),user.getProfile(),user.getColor(),user.getUid());
+            userInfoArrayList.add(userInfo);
+        }
         return userInfoArrayList;
     }
 

@@ -70,17 +70,5 @@ public class RegisteredChallengeServiceImpl implements RegisteredChallengeServic
         }
     }
 
-    @Override
-    public String conveyResolution(Map<String,Object> info) throws RuntimeException{
-        RegisteredChallenges registeredChallenges = new RegisteredChallenges();
-        registeredChallenges.setFamilyId((String)info.get("familyId"));
-        registeredChallenges.setRegisteredId((int)info.get("registeredId"));
-        String resolution = registeredChallengesDAO.selectResolution(registeredChallenges);
-        if(resolution == null) throw new NoMatchPointException();
-        JsonObject jsonObject = new JsonObject();
-        jsonObject.addProperty("resolution",resolution);
-        jsonObject.toString();
-        return jsonObject.toString();
-    }
 
 }

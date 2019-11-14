@@ -20,6 +20,6 @@ public interface UserDAO {
 	public void insertCodeUser(CodeUser codeuser);
 	User selectUserForCalendar(EmptyDays emptyDays);
 	int selectUserToFamilyId(@Param("familyId")String familyId);
-	List<User> selectUserId(HashMap<String,Object> userMap);
+	List<User> selectUserId(@Param("userIdList")List<Long> userIdList);
 	List<User> selectfamilyId(@Param("familyId")String familyId);
 }

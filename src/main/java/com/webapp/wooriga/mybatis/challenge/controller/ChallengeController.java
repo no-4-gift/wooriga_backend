@@ -51,12 +51,6 @@ public class ChallengeController {
         challengeService.certificateChallenge(registeredFk,date,file);
     }
 
-    @ApiOperation(value = "각오의 한마디 전달", notes = "response : 200 - 성공 ")
-    @PostMapping(value = "/familyId/registeredFk")
-    public String conveyResolution(@RequestBody Map<String,Object> info) throws RuntimeException{
-        return registeredChallengeService.conveyResolution(info);
-    }
-
     @ApiOperation(value = "도전중인 챌린지 정보 전달", notes = "response: 200 - 성공 411 - 조건과 맞는 데이터가 없음")
     @GetMapping(value = "/familyId/uid")
     public ArrayList<ChallengeBarInfo> conveyMyChallengeInfo(@RequestParam String familyId, @RequestParam long uid) throws RuntimeException{

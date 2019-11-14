@@ -5,5 +5,5 @@ import org.apache.ibatis.annotations.Param;
 
 public interface RegisteredChallengesDAO {
    void insertRegisteredChallenge(RegisteredChallenges registeredChallenges);
-   String selectResolution(RegisteredChallenges registeredChallenges);
+   Long selectRegisteredCertification(@Param("registeredId") long registeredId);
 }

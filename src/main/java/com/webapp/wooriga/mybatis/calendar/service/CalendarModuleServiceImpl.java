@@ -8,7 +8,7 @@ import com.webapp.wooriga.mybatis.vo.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.sql.Date;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -44,8 +44,9 @@ public class CalendarModuleServiceImpl implements CalendarModuleService {
 
             if (challengeBarInfoHashMap.containsKey(registeredId)) {
                 ChallengeBarInfo challengeBarInfo = challengeBarInfoHashMap.get(registeredId);
-                ArrayList<Date> dateList = challengeBarInfo.getDate();
-                dateList.add(certifications.getRegisteredDate());
+                ArrayList<String> dateList = challengeBarInfo.getDate();
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                dateList.add(simpleDateFormat.format(certifications.getRegisteredDate()));
                 challengeBarInfo.setDate(dateList);
                 challengeBarInfoHashMap.remove(registeredId);
                 challengeBarInfoHashMap.put(registeredId, challengeBarInfo);
@@ -59,8 +60,9 @@ public class CalendarModuleServiceImpl implements CalendarModuleService {
     private ChallengeBarInfo setChallengeBar(Boolean viewTrue,Certifications certifications,long registeredId, RegisteredChallenges registeredChallenges){
         User user = userDAO.selectOne(registeredChallenges.getChiefIdFK());
         Challenges challenges = challengesDAO.selectChallenge(registeredChallenges.getChallengeIdFK());
-        ArrayList<Date> dateList = new ArrayList<>();
-        dateList.add(certifications.getRegisteredDate());
+        ArrayList<String> dateList = new ArrayList<>();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        dateList.add(simpleDateFormat.format(certifications.getRegisteredDate()));
         if(!viewTrue)
         return new ChallengeBarInfo(registeredChallenges.getResolution(),challenges.getImage(),registeredChallenges.getChallengeIdFK(),registeredId, registeredChallenges.getChiefIdFK(), challenges.getTitle(), dateList, user.getColor());
         else
