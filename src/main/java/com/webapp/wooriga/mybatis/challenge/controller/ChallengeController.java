@@ -47,7 +47,7 @@ public class ChallengeController {
 
     @ApiOperation(value = "챌린지 인증 등록(request : 등록된 챌린지 번호,날짜,인증 사진)", notes = "response : 200 - 성공," +
             " 409 - 전송 데이터 중 존재하지 않는 데이터를 포함하고 있어 db에 저장되지 않음 411 - 조건에 맞지 않음 422- 내부 문제로 인해 오류")
-    @GetMapping(value = "/registeredFk" , consumes = "multipart/form-data")
+    @PostMapping(value = "/registeredFk" , consumes = "multipart/form-data")
     public void certificateChallenge(@RequestParam(value ="file",required=false) MultipartFile file,
                                      @RequestParam String date, @RequestParam long registeredFk) throws RuntimeException{
         challengeService.certificateChallenge(registeredFk,date,file);

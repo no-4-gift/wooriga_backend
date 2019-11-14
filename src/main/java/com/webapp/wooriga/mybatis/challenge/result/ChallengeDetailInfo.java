@@ -13,5 +13,5 @@ public class ChallengeDetailInfo {
     private ArrayList<Certifications> certificationsArrayList;
     private ArrayList<Challenges> challengesArrayList;
 
-    
+
 }

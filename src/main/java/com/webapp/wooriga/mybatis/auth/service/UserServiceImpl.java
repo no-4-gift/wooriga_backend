@@ -63,7 +63,7 @@ public class UserServiceImpl implements UserService {
 		List<User> userInfoList = dao.selectfamilyId(familyId);
 		ArrayList<UserInfo> userInfoArrayList = new ArrayList<>();
 		for(User user : userInfoList){
-			UserInfo userInfo = new UserInfo(user.getName(),user.getProfile(),user.getColor(),user.getUid());
+			UserInfo userInfo = new UserInfo(user.getRelationship(),user.getName(),user.getProfile(),user.getColor(),user.getUid());
 			userInfoArrayList.add(userInfo);
 		}
 		if(userInfoArrayList.size() == 0) throw new NoInformationException();
