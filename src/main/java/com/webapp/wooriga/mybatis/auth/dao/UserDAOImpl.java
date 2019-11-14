@@ -66,7 +66,7 @@ public class UserDAOImpl implements UserDAO {
 	public int selectUserToFamilyId(@Param("familyId")String familyId){ return mapper.selectUserToFamilyId(familyId);}
 
 	@Override
-	public List<User> selectUserId(HashMap<String,Object> userMap){ return mapper.selectUserId(userMap);}
+	public List<User> selectUserId(@Param("userIdList")List<Long> userIdList){ return mapper.selectUserId(userIdList);}
 	@Override
 	public List<User> selectfamilyId(@Param("familyId")String familyId){ return mapper.selectfamilyId(familyId);}
 }
