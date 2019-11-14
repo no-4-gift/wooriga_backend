@@ -26,11 +26,11 @@ public class ChallengeViewServiceImpl implements ChallengeViewService {
         this.certificationsDAO = certificationsDAO;
     }
     @Override
-    public ChallengeViewInfo sendChallengeViewInfo(Boolean ourTrue, Map<String,Object> info) throws RuntimeException{
+    public ChallengeViewInfo sendChallengeViewInfo(Boolean ourTrue, String familyId, long uid) throws RuntimeException{
         HashMap<String,Object> infoHashMap = new HashMap<>();
         ChallengeViewInfo challengeViewInfo = new ChallengeViewInfo();
-        infoHashMap.put("familyId", info.get("familyId"));
-        infoHashMap.put("uid",info.get("uid"));
+        infoHashMap.put("familyId", familyId);
+        infoHashMap.put("uid",uid);
         List<Certifications> certificationsList;
         if(!ourTrue) {
             certificationsList = certificationsDAO.selectMyChallengeViewInfo(infoHashMap);

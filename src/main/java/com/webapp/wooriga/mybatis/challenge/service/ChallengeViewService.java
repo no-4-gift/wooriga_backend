@@ -9,6 +9,6 @@ import java.util.List;
 import java.util.Map;
 
 public interface ChallengeViewService {
-    ChallengeViewInfo sendChallengeViewInfo(Boolean ourTrue, Map<String,Object> info);
+    ChallengeViewInfo sendChallengeViewInfo(Boolean ourTrue, String familyId, long uid);
     HashMap<String,Integer> sendCertificationAndTotalNum(List<Certifications> certificationsList);
 }

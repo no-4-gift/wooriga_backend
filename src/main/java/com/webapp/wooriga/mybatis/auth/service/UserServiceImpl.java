@@ -1,6 +1,7 @@
 package com.webapp.wooriga.mybatis.auth.service;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 import com.webapp.wooriga.mybatis.auth.dao.UserDAO;
@@ -62,10 +63,22 @@ public class UserServiceImpl implements UserService {
 		List<User> userInfoList = dao.selectfamilyId(familyId);
 		ArrayList<UserInfo> userInfoArrayList = new ArrayList<>();
 		for(User user : userInfoList){
-			UserInfo userInfo = new UserInfo(user.getProfile(),user.getColor(),user.getUid());
+			UserInfo userInfo = new UserInfo(user.getName(),user.getProfile(),user.getColor(),user.getUid());
 			userInfoArrayList.add(userInfo);
 		}
 		if(userInfoArrayList.size() == 0) throw new NoInformationException();
+		userInfoArrayList.sort((arg0,arg1)->{
+				String name0 = arg0.getName();
+				String name1 = arg1.getName();
+				if(name0.equals(name1)) return 0;
+				int i = 0;
+				for(char ch : name0.toCharArray()) {
+					if(ch == name1.charAt(i)) i++;
+					else if (ch > name1.charAt(i)) return 1;
+				 	else return -1;
+				}
+				return -1;
+			});
 		return userInfoArrayList;
 	}
 }

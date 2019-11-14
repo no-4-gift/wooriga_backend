@@ -47,10 +47,9 @@ public class CalendarServiceImpl implements CalendarService {
     }
 
     @Override
-    public CalendarInfo selectCalendarInfo(Map<String,String> family) throws RuntimeException{
-        String firstDate = family.get("year") + "-" + family.get("month") + "-" + "01";
-        String finalDate = family.get("year") +"-" +  family.get("month") + "-" + "31";
-        String familyId = family.get("familyId");
+    public CalendarInfo selectCalendarInfo(String familyId, String year, String month) throws RuntimeException{
+        String firstDate = year + "-" + month + "-" + "01";
+        String finalDate = year +"-" +  month + "-" + "31";
         CalendarInfo calendarInfo = new CalendarInfo();
             List<EmptyDays> emptyDaysList = emptyDaysDAO.selectEmptyDay(familyId, firstDate, finalDate);
             if(emptyDaysList.size() > 0) {
