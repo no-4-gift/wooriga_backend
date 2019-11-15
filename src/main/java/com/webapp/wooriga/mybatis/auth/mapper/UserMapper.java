@@ -22,6 +22,12 @@ public interface UserMapper {
 
 	public void update(User user);
 
+	public void updateFamilyId(User user);
+
+	public List<User> familyAll(String family_id);
+
+	public String checkFamilyId(long uid);
+
 	public int checkUser(long uid);
 
 	public String getCode(long uid);

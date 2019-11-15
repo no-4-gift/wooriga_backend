@@ -47,8 +47,20 @@
 		update user set name = #{name} where uid = #{uid}
 	</update>
 
+	<update id="updateFamilyId" parameterType="User">
+		update user set family_id = #{family_id} where uid = #{uid}
+	</update>
+
 	<select id="getCode" resultType="String" parameterType="long">
 		select code from family where uid = #{uid}
+	</select>
+
+	<select id="familyAll" resultMap="UserResult" parameterType="String">
+		select * from user where family_id = #{family_id}
+	</select>
+
+	<select id="checkFamilyId" resultType="String" parameterType="long">
+		select family_id from user where uid = #{uid}
 	</select>
 
 	<select id="checkUser" resultType="int" parameterType="long">

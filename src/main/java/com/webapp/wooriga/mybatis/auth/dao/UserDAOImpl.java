@@ -45,6 +45,19 @@ public class UserDAOImpl implements UserDAO {
 	}
 
 	@Override
+	public void updateFamilyId(User user) {
+		mapper.updateFamilyId(user);
+	}
+
+	@Override
+	public List<User> familyAll(String family_id) { return mapper.familyAll(family_id); }
+
+	@Override
+	public String checkFamilyId(long uid) {
+		return mapper.checkFamilyId(uid);
+	}
+
+	@Override
 	public int checkUser(long uid) {
 		return mapper.checkUser(uid);
 	}
