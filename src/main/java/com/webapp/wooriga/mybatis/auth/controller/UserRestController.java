@@ -42,10 +42,13 @@ public class UserRestController {
 	    return userList;
     }
 
-    @RequestMapping(value = "/family", method = RequestMethod.GET)
-    public String family() {
-
-	    return "";
+    @RequestMapping(value = "/family", method = RequestMethod.PUT)
+    public Map family(@RequestBody User user, @RequestBody String code) {
+        HashMap<String, String> map = new HashMap<String, String>();
+        user.setFamilyId(code);
+        service.updateFamilyId(user);
+        map.put("success", "true");
+	    return map;
     }
 
     @RequestMapping(value = "/admin", method = RequestMethod.GET)
