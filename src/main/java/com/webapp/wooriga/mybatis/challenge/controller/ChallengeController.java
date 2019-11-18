@@ -71,4 +71,10 @@ public class ChallengeController {
     public ArrayList<UserInfo> conveyParticipantsInfo(@RequestParam long registeredId){
         return challengeViewService.sendParticipantsInfo(registeredId);
     }
+    @ApiOperation(value = "챌린지 인증 취소", notes = "response : 200 - 성공, 411- 조건에 맞는 데이터가 없어 실패")
+    @PutMapping(value = "/registeredId/date")
+    public void cancelChallengeCertifications(@RequestBody Map<String,Object> info){
+        registeredChallengeService.cancelChallengeCertification(info);
+    }
+
 }

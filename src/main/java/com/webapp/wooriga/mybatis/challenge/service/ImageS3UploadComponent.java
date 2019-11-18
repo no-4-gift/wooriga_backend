@@ -1,6 +1,7 @@
 package com.webapp.wooriga.mybatis.challenge.service;
 
 import com.amazonaws.services.s3.AmazonS3Client;
+import com.amazonaws.services.s3.model.AmazonS3Exception;
 import com.webapp.wooriga.mybatis.SuperS3Uploader;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -42,7 +43,17 @@ public class ImageS3UploadComponent extends SuperS3Uploader {
         return uploadImageUrl;
     }
 
-
+    // 파일 삭제
+    public void fileDelete(String userName) {
+        String fileName = "challenge/" + userName;
+        String imgName = (fileName).replace(File.separatorChar, '/');
+        try {
+            amazonS3Client.deleteObject(bucket, imgName);
+        }
+        catch(AmazonS3Exception e) {
+            log.error(e.toString());
+        }
+    }
 
 }
 

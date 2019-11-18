@@ -1,6 +1,7 @@
 package com.webapp.wooriga.mybatis.challenge.service;
 
 import com.webapp.wooriga.mybatis.auth.dao.UserDAO;
+import com.webapp.wooriga.mybatis.auth.service.UserService;
 import com.webapp.wooriga.mybatis.calendar.service.CalendarModuleService;
 import com.webapp.wooriga.mybatis.challenge.dao.CertificationsDAO;
 import com.webapp.wooriga.mybatis.challenge.dao.ChallengesDAO;
@@ -31,12 +32,14 @@ public class ChallengeViewServiceImpl implements ChallengeViewService {
     private ParticipantsDAO participantsDAO;
     private RegisteredChallengesDAO registeredChallengesDAO;
     private UserDAO userDAO;
+    private UserService userService;
     public ChallengeViewServiceImpl() {
     }
 
     @Autowired
-    public ChallengeViewServiceImpl(UserDAO userDAO,ParticipantsDAO participantsDAO,ChallengesDAO challengesDAO,CertificationsDAO certificationsDAO, CalendarModuleService calendarModuleService,RegisteredChallengesDAO registeredChallengesDAO) {
+    public ChallengeViewServiceImpl(UserService userService,UserDAO userDAO,ParticipantsDAO participantsDAO,ChallengesDAO challengesDAO,CertificationsDAO certificationsDAO, CalendarModuleService calendarModuleService,RegisteredChallengesDAO registeredChallengesDAO) {
         this.calendarModuleService = calendarModuleService;
+        this.userService = userService;
         this.certificationsDAO = certificationsDAO;
         this.challengesDAO = challengesDAO;
         this.registeredChallengesDAO = registeredChallengesDAO;
@@ -123,15 +126,15 @@ public class ChallengeViewServiceImpl implements ChallengeViewService {
         List<Long> userIdList = new ArrayList<>();
         Long chiefId = registeredChallengesDAO.selectRegisteredCertification(registeredId);
         if(chiefId == null) throw new NoMatchPointException();
-        userIdList.add(chiefId);
+        User user = userDAO.selectOne(chiefId);
+        UserInfo chiefInfo = new UserInfo(user.getRelationship(),user.getName(),user.getProfile(),user.getColor(),user.getUid());
+        userInfoArrayList.add(chiefInfo);
         List<Participants> participantsList = participantsDAO.selectParticipants(registeredId);
         for(Participants participants : participantsList)
             userIdList.add(participants.getParticipantFK());
         List<User> userList = userDAO.selectUserId(userIdList);
-        for(User user : userList){
-            UserInfo userInfo = new UserInfo(user.getRelationship(),user.getName(),user.getProfile(),user.getColor(),user.getUid());
-            userInfoArrayList.add(userInfo);
-        }
+        userInfoArrayList.addAll(userService.sortwithUserName(userList));
+
         return userInfoArrayList;
     }
 
