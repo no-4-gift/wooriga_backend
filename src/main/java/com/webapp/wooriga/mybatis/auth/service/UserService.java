@@ -18,4 +18,5 @@ public interface UserService {
 	public String getCode(long uid);
 	public void insertCodeUser(CodeUser codeuser);
 	ArrayList<UserInfo> sendUserInfo(String familyId) throws RuntimeException;
+	ArrayList<UserInfo> sortwithUserName(List<User> userInfoList) throws RuntimeException;
 }

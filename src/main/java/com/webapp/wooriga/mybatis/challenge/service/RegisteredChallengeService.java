@@ -10,4 +10,5 @@ import java.util.Map;
 
 public interface RegisteredChallengeService {
     void insertRegisteredChallenge(RegisteredChallenges registeredChallenges, Participants[] participants, Certifications[] certifications) throws RuntimeException;
+    void cancelChallengeCertification(Map<String,Object> infoMap) throws RuntimeException;
 }

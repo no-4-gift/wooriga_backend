@@ -39,4 +39,8 @@ public class CertificationsDAOImpl implements CertificationsDAO {
     public List<Certifications> selectChallengeDetailInfo(@Param("registeredId") long registeredId){
         return certificationsMapper.selectChallengeDetailInfo(registeredId);
     }
+    @Override
+    public void deleteCertification(HashMap<String,Object> infoHashMap){
+        certificationsMapper.deleteCertification(infoHashMap);
+    }
 }

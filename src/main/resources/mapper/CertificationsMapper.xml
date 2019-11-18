@@ -43,4 +43,7 @@
         select * from registeredchallenges r, certifications c where r.registered_id =
         c.registered_fk and r.registered_id = #{registeredId}
     </select>
+    <delete id = "deleteCertification" parameterType="java.util.HashMap">
+        delete from certifications where registered_fk = #{registeredId} and date = date_add(#{date}, interval +1 day)
+    </delete>
 </mapper>
