@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.webapp.wooriga.mybatis.calendar.mapper.EmptyDaysMapper">
+
+    <resultMap id="EmptyDaysResult" type="EmptyDays">
+        <result column="family_id" property="familyId"/>
+        <result column="user_fk" property="userIdFk"/>
+        <result column="emptydate" property="emptydate"  jdbcType="DATE" />
+    </resultMap>
+
+    <resultMap id = "UserIdResult" type = "EmptyDays">
+        <result column="user_fk" property="userIdFk"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="EmptyDays" >
+            insert into emptydays (family_id,user_fk,emptydate) values(#{familyId},#{userIdFk},date_add(#{emptydate}, interval +1 day))
+    </insert>
+    <select id="selectList" parameterType="String" resultMap="EmptyDaysResult">
+            select * from emptydays where family_id = #{familyId} and emptydate between #{firstDate} and #{finalDate}
+    </select>
+    <select id = "selectToId" parameterType="EmptyDays" resultType="int">
+            select count(*) from emptydays where user_fk = #{userIdFk} and family_id = #{familyId} and emptydate = date_add(#{emptydate}, interval +1 day)
+    </select>
+    <select id = "selectToDate" parameterType="java.util.HashMap" resultMap = "EmptyDaysResult">
+        select * from emptydays where family_id = #{familyId} and
+        <foreach collection="date" separator="or" item = "data">
+            emptydate = #{data}
+        </foreach>
+    </select>
+    <delete id = "deleteToId" parameterType="EmptyDays">
+        delete  from emptydays where emptydate = #{emptydate} and user_fk = #{userIdFk}
+    </delete>
+</mapper>

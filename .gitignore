@@ -1,6 +1,7 @@
 HELP.md
 settings.gradle
 woriga.iml
+.class
 .gradle
 .idea
 mysqlIdentify.yml
