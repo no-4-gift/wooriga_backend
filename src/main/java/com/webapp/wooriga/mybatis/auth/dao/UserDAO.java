@@ -15,11 +15,14 @@ public interface UserDAO {
 	public void insert(User user);
 	public void delete(User user);
 	public void update(User user);
+	public void updateFamilyId(User user);
+	public List<User> familyAll(String family_id);
+	public String checkFamilyId(long uid);
 	public int checkUser(long uid);
 	public String getCode(long uid);
 	public void insertCodeUser(CodeUser codeuser);
 	User selectUserForCalendar(EmptyDays emptyDays);
 	int selectUserToFamilyId(@Param("familyId")String familyId);
-	List<User> selectUserId(@Param("userIdList")List<Long> userIdList);
+	List<User> selectUserId(HashMap<String,Object> userMap);
 	List<User> selectfamilyId(@Param("familyId")String familyId);
 }
