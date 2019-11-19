@@ -74,16 +74,20 @@ public class UserServiceImpl implements UserService {
 		userInfoArrayList.sort((arg0,arg1)->{
 			String name0 = arg0.getName();
 			String name1 = arg1.getName();
-			if(name0.equals(name1)) return 0;
-			int i = 0;
-			for(char ch : name0.toCharArray()) {
-				if(ch == name1.charAt(i)) i++;
-				else if (ch > name1.charAt(i)) return 1;
-				else return -1;
-			}
-			return -1;
+			return this.sortName(name0,name1);
 		});
 		return userInfoArrayList;
+	}
+	@Override
+	public int sortName(String name0,String name1){
+		if(name0.equals(name1)) return 0;
+		int i = 0;
+		for(char ch : name0.toCharArray()) {
+			if(ch == name1.charAt(i)) i++;
+			else if (ch > name1.charAt(i)) return 1;
+			else return -1;
+		}
+		return -1;
 	}
 
 }

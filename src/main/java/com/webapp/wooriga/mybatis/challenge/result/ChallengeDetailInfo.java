@@ -11,7 +11,8 @@ import java.util.ArrayList;
 public class ChallengeDetailInfo {
     private ArrayList<CertificationInfo> certificationInfoArrayList;
     private String resolution;
-    private Challenges challenges;
+    private String summary;
+    private String content;
     private Boolean certificationAvailableTrue;
 
 }
