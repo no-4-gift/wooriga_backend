@@ -18,7 +18,7 @@ public class UserDAOImpl implements UserDAO {
 
 	@Autowired
 	private UserMapper mapper;
-	
+
 	@Override
 	public List<User> selectAll() {
 		return mapper.selectAll();
@@ -45,6 +45,19 @@ public class UserDAOImpl implements UserDAO {
 	}
 
 	@Override
+	public void updateFamilyId(User user) {
+		mapper.updateFamilyId(user);
+	}
+
+	@Override
+	public List<User> familyAll(String family_id) { return mapper.familyAll(family_id); }
+
+	@Override
+	public String checkFamilyId(long uid) {
+		return mapper.checkFamilyId(uid);
+	}
+
+	@Override
 	public int checkUser(long uid) {
 		return mapper.checkUser(uid);
 	}
@@ -66,7 +79,7 @@ public class UserDAOImpl implements UserDAO {
 	public int selectUserToFamilyId(@Param("familyId")String familyId){ return mapper.selectUserToFamilyId(familyId);}
 
 	@Override
-	public List<User> selectUserId(@Param("userIdList")List<Long> userIdList){ return mapper.selectUserId(userIdList);}
+	public List<User> selectUserId(HashMap<String,Object> userMap){ return mapper.selectUserId(userMap);}
 	@Override
 	public List<User> selectfamilyId(@Param("familyId")String familyId){ return mapper.selectfamilyId(familyId);}
 }

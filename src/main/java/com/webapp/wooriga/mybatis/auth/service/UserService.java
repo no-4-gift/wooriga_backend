@@ -1,3 +1,4 @@
+
 package com.webapp.wooriga.mybatis.auth.service;
 
 import java.util.ArrayList;
@@ -8,7 +9,7 @@ import com.webapp.wooriga.mybatis.vo.CodeUser;
 import com.webapp.wooriga.mybatis.vo.User;
 
 public interface UserService {
-	
+
 	public List<User> selectAll();
 	public User selectOne(long uid);
 	public void insert(User user);
@@ -21,3 +22,4 @@ public interface UserService {
 	ArrayList<UserInfo> sortwithUserName(List<User> userInfoList) throws RuntimeException;
 	int sortName(String name0,String name1);
 }
+

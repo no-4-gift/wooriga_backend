@@ -17,7 +17,7 @@ public class UserServiceImpl implements UserService {
 
 	@Autowired
 	UserDAO dao;
-	
+
 	@Override
 	public List<User> selectAll() {
 		return dao.selectAll();
