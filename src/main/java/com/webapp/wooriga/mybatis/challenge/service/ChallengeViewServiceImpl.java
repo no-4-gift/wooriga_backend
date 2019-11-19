@@ -1,16 +1,11 @@
 package com.webapp.wooriga.mybatis.challenge.service;
 
-import com.webapp.wooriga.mybatis.auth.dao.UserDAO;
-import com.webapp.wooriga.mybatis.auth.service.UserService;
 import com.webapp.wooriga.mybatis.calendar.service.CalendarModuleService;
 import com.webapp.wooriga.mybatis.challenge.dao.CertificationsDAO;
 import com.webapp.wooriga.mybatis.challenge.dao.ChallengesDAO;
-import com.webapp.wooriga.mybatis.challenge.dao.ParticipantsDAO;
-import com.webapp.wooriga.mybatis.challenge.dao.RegisteredChallengesDAO;
 import com.webapp.wooriga.mybatis.challenge.result.CertificationInfo;
 import com.webapp.wooriga.mybatis.challenge.result.ChallengeBarInfo;
 import com.webapp.wooriga.mybatis.challenge.result.ChallengeDetailInfo;
-import com.webapp.wooriga.mybatis.challenge.result.UserInfo;
 import com.webapp.wooriga.mybatis.exception.NoMatchPointException;
 import com.webapp.wooriga.mybatis.vo.*;
 import org.slf4j.LoggerFactory;
@@ -29,22 +24,16 @@ public class ChallengeViewServiceImpl implements ChallengeViewService {
     private CalendarModuleService calendarModuleService;
     private CertificationsDAO certificationsDAO;
     private ChallengesDAO challengesDAO;
-    private ParticipantsDAO participantsDAO;
-    private RegisteredChallengesDAO registeredChallengesDAO;
-    private UserDAO userDAO;
-    private UserService userService;
     public ChallengeViewServiceImpl() {
     }
 
     @Autowired
-    public ChallengeViewServiceImpl(UserService userService,UserDAO userDAO,ParticipantsDAO participantsDAO,ChallengesDAO challengesDAO,CertificationsDAO certificationsDAO, CalendarModuleService calendarModuleService,RegisteredChallengesDAO registeredChallengesDAO) {
+    public ChallengeViewServiceImpl(ChallengesDAO challengesDAO,CertificationsDAO certificationsDAO, CalendarModuleService calendarModuleService) {
         this.calendarModuleService = calendarModuleService;
-        this.userService = userService;
+
         this.certificationsDAO = certificationsDAO;
         this.challengesDAO = challengesDAO;
-        this.registeredChallengesDAO = registeredChallengesDAO;
-        this.participantsDAO = participantsDAO;
-        this.userDAO = userDAO;
+
     }
 
     @Override
@@ -59,7 +48,7 @@ public class ChallengeViewServiceImpl implements ChallengeViewService {
             certificationsList = certificationsDAO.selectOurChallengeViewInfo(infoHashMap);
         }
         if (certificationsList.size() > 0)
-            return setCertificationAndTotalNum(certificationsList, calendarModuleService.setChallengeBarInfoList(true, certificationsList));
+            return setCertificationAndTotalNum(certificationsList, calendarModuleService.setChallengeBarInfoList(certificationsList));
         else
             throw new NoMatchPointException();
     }
@@ -93,7 +82,7 @@ public class ChallengeViewServiceImpl implements ChallengeViewService {
     }
 
     @Override
-    public ChallengeDetailInfo sendChallengeDetailInfo(long uid, long registeredId){
+    public ChallengeDetailInfo sendChallengeDetailInfo(long uid, long registeredId) throws RuntimeException {
         ChallengeDetailInfo challengeDetailInfo = new ChallengeDetailInfo();
         List<Certifications> certificationsList = certificationsDAO.selectChallengeDetailInfo(registeredId);
         if(certificationsList == null) throw new NoMatchPointException();
@@ -107,8 +96,8 @@ public class ChallengeViewServiceImpl implements ChallengeViewService {
                 challengeDetailInfo.setCertificationAvailableTrue(true);
             long challengeId = registeredChallenges.getChallengeIdFK();
             Challenges challenges = challengesDAO.selectChallenge(challengeId);
-            challenges.setChallengeId(challengeId);
-            challengeDetailInfo.setChallenges(challenges);
+            challengeDetailInfo.setSummary(challenges.getSummary());
+            challengeDetailInfo.setContent(challenges.getContent());
             break;
         }
         for(Certifications certifications : certificationsList){
@@ -120,22 +109,6 @@ public class ChallengeViewServiceImpl implements ChallengeViewService {
         challengeDetailInfo.setCertificationInfoArrayList(certificationInfoArrayList);
         return challengeDetailInfo;
     }
-    @Override
-    public ArrayList<UserInfo> sendParticipantsInfo(long registeredId){
-        ArrayList<UserInfo> userInfoArrayList = new ArrayList<>();
-        List<Long> userIdList = new ArrayList<>();
-        Long chiefId = registeredChallengesDAO.selectRegisteredCertification(registeredId);
-        if(chiefId == null) throw new NoMatchPointException();
-        User user = userDAO.selectOne(chiefId);
-        UserInfo chiefInfo = new UserInfo(user.getRelationship(),user.getName(),user.getProfile(),user.getColor(),user.getUid());
-        userInfoArrayList.add(chiefInfo);
-        List<Participants> participantsList = participantsDAO.selectParticipants(registeredId);
-        for(Participants participants : participantsList)
-            userIdList.add(participants.getParticipantFK());
-        List<User> userList = userDAO.selectUserId(userIdList);
-        userInfoArrayList.addAll(userService.sortwithUserName(userList));
 
-        return userInfoArrayList;
-    }
 
 }

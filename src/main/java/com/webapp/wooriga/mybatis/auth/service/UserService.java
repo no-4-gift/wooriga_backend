@@ -20,4 +20,6 @@ public interface UserService {
 	public void insertCodeUser(CodeUser codeuser);
 	ArrayList<UserInfo> sendUserInfo(String familyId) throws RuntimeException;
 	ArrayList<UserInfo> sortwithUserName(List<User> userInfoList) throws RuntimeException;
+	int sortName(String name0,String name1);
 }
+

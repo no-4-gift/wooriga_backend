@@ -59,7 +59,7 @@ public class CalendarServiceImpl implements CalendarService {
             else throw new NoMatchPointException();
         List<Certifications> certificationsList = certificationsDAO.selectList(familyId,firstDate,finalDate);
         if(certificationsList.size() > 0)
-            calendarInfo.setChallengeBarInfo(calendarModuleService.setChallengeBarInfoList(false,certificationsList));
+            calendarInfo.setChallengeBarInfo(calendarModuleService.setChallengeBarInfoList(certificationsList));
         else
             calendarInfo.setChallengeBarInfo(null);
 
