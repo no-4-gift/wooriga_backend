@@ -3,6 +3,8 @@ package com.webapp.wooriga.mybatis.challenge.service;
 import com.webapp.wooriga.mybatis.calendar.service.CalendarModuleService;
 import com.webapp.wooriga.mybatis.challenge.dao.CertificationsDAO;
 import com.webapp.wooriga.mybatis.challenge.dao.ChallengesDAO;
+import com.webapp.wooriga.mybatis.challenge.dao.ParticipantsDAO;
+import com.webapp.wooriga.mybatis.challenge.dao.RegisteredChallengesDAO;
 import com.webapp.wooriga.mybatis.challenge.result.CertificationInfo;
 import com.webapp.wooriga.mybatis.challenge.result.ChallengeBarInfo;
 import com.webapp.wooriga.mybatis.challenge.result.ChallengeDetailInfo;
@@ -15,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
@@ -24,16 +27,18 @@ public class ChallengeViewServiceImpl implements ChallengeViewService {
     private CalendarModuleService calendarModuleService;
     private CertificationsDAO certificationsDAO;
     private ChallengesDAO challengesDAO;
+    private RegisteredChallengesDAO registeredChallengesDAO;
+    private ParticipantsDAO participantsDAO;
     public ChallengeViewServiceImpl() {
     }
 
     @Autowired
-    public ChallengeViewServiceImpl(ChallengesDAO challengesDAO,CertificationsDAO certificationsDAO, CalendarModuleService calendarModuleService) {
+    public ChallengeViewServiceImpl(RegisteredChallengesDAO registeredChallengesDAO,ParticipantsDAO participantsDAO,ChallengesDAO challengesDAO,CertificationsDAO certificationsDAO, CalendarModuleService calendarModuleService) {
         this.calendarModuleService = calendarModuleService;
-
+        this.registeredChallengesDAO = registeredChallengesDAO;
+        this.participantsDAO = participantsDAO;
         this.certificationsDAO = certificationsDAO;
         this.challengesDAO = challengesDAO;
-
     }
 
     @Override
@@ -42,68 +47,86 @@ public class ChallengeViewServiceImpl implements ChallengeViewService {
         infoHashMap.put("familyId", familyId);
         infoHashMap.put("uid", uid);
         List<Certifications> certificationsList;
-        if (!ourTrue) {
+        if (!ourTrue)
             certificationsList = certificationsDAO.selectMyChallengeViewInfo(infoHashMap);
-        } else {
+        else
             certificationsList = certificationsDAO.selectOurChallengeViewInfo(infoHashMap);
-        }
+
         if (certificationsList.size() > 0)
-            return setCertificationAndTotalNum(certificationsList, calendarModuleService.setChallengeBarInfoList(certificationsList));
+            return setCertificationAndTotalNum(calendarModuleService.setChallengeBarInfoList(certificationsList));
         else
             throw new NoMatchPointException();
     }
 
-    private ArrayList<ChallengeBarInfo> setCertificationAndTotalNum(List<Certifications> certificationsList, ArrayList<ChallengeBarInfo> challengeBarInfoArrayList) {
-        HashMap<Long,Integer> certificationNum = new HashMap<>();
-        HashMap<Long,Integer> totalNum = new HashMap<>();
-        for (Certifications certifications : certificationsList) {
-            long registeredId = certifications.getRegisteredIdFK();
-            if (!totalNum.containsKey(registeredId)) {
-                totalNum.put(registeredId, 1);
-                if (certifications.getCertificationTrue() == 1)
-                    certificationNum.put(registeredId, 1);
-            } else {
-                int num = totalNum.get(registeredId);
-                totalNum.replace(registeredId, num + 1);
-                if (certificationNum.containsKey(registeredId) && certifications.getCertificationTrue() == 1) {
-                    num = certificationNum.get(registeredId);
-                    certificationNum.replace(registeredId, num + 1);
-                } else if (certifications.getCertificationTrue() == 1)
-                    certificationNum.put(registeredId, 1);
-            }
-        }
-        for(ChallengeBarInfo challengeBarInfo : challengeBarInfoArrayList){
+    private ArrayList<ChallengeBarInfo> setCertificationAndTotalNum(ArrayList<ChallengeBarInfo> challengeBarInfoArrayList) throws RuntimeException{
+        for (ChallengeBarInfo challengeBarInfo : challengeBarInfoArrayList){
             long registeredId = challengeBarInfo.getRegisteredId();
-            if(certificationNum.containsKey(registeredId))
-                challengeBarInfo.setCertificationNum(certificationNum.get(registeredId));
-            challengeBarInfo.setTotalNum(totalNum.get(registeredId));
+            challengeBarInfo.setTotalNum(certificationsDAO.selectTotalDateNum(registeredId));
+            challengeBarInfo.setCertificationNum(certificationsDAO.selectCertificationDateNum(registeredId));
         }
-        return challengeBarInfoArrayList;
+        return setLatestViewDate(challengeBarInfoArrayList);
     }
 
+    private ArrayList<ChallengeBarInfo> setLatestViewDate(ArrayList<ChallengeBarInfo> challengeBarInfoArrayList) throws RuntimeException{
+
+        for(ChallengeBarInfo challengeBarInfo : challengeBarInfoArrayList){
+            long calDateMin = Long.MAX_VALUE;
+            HashMap<String,Object> challengeMap = new HashMap<>();
+            challengeMap.put("registeredId",challengeBarInfo.getRegisteredId());
+            challengeMap.put("dateList",challengeBarInfo.getDate());
+           List<Certifications> certificationsList = certificationsDAO.selectNonCertificateDate(challengeMap);
+           try {
+                   for (Certifications certification : certificationsList) {
+                       Date challengeDay = certification.getRegisteredDate();
+                       Date today = new Date();
+                       long calDate = challengeDay.getTime() - today.getTime();
+                       if(calDateMin > Math.abs(calDate/( 24*60*60*1000))){
+                           calDateMin = Math.abs(calDate/( 24*60*60*1000));
+                           challengeBarInfo.setViewDate(challengeDay.toString());
+                       }
+                   }
+           }catch(Exception e){
+               throw new NoMatchPointException();
+           }
+       }
+        return challengeBarInfoArrayList;
+    }
     @Override
     public ChallengeDetailInfo sendChallengeDetailInfo(long uid, long registeredId) throws RuntimeException {
         ChallengeDetailInfo challengeDetailInfo = new ChallengeDetailInfo();
+        challengeDetailInfo.setCertificationAvailableTrue(false);
+
         List<Certifications> certificationsList = certificationsDAO.selectChallengeDetailInfo(registeredId);
         if(certificationsList == null) throw new NoMatchPointException();
-        ArrayList<CertificationInfo> certificationInfoArrayList = new ArrayList<>();
-        for(Certifications certifications : certificationsList) {
-            RegisteredChallenges registeredChallenges = certifications.getRegisteredChallenges();
-            challengeDetailInfo.setResolution(registeredChallenges.getResolution());
-            if (uid != registeredChallenges.getChiefIdFK())
-                challengeDetailInfo.setCertificationAvailableTrue(false);
-            else
-                challengeDetailInfo.setCertificationAvailableTrue(true);
-            long challengeId = registeredChallenges.getChallengeIdFK();
-            Challenges challenges = challengesDAO.selectChallenge(challengeId);
-            challengeDetailInfo.setSummary(challenges.getSummary());
-            challengeDetailInfo.setContent(challenges.getContent());
-            break;
+
+        boolean participantTrue = false;
+
+        List<Participants> participantsList = participantsDAO.selectParticipants(registeredId);
+        RegisteredChallenges registeredChallenge = registeredChallengesDAO.selectRegisteredChallenge(registeredId);
+
+        challengeDetailInfo.setResolution(registeredChallenge.getResolution());
+        long challengeId = registeredChallenge.getChallengeIdFK();
+        Challenges challenges = challengesDAO.selectChallenge(challengeId);
+        challengeDetailInfo.setSummary(challenges.getSummary());
+        challengeDetailInfo.setContent(challenges.getContent());
+
+        if(registeredChallenge.getChiefIdFK() == uid) {
+            challengeDetailInfo.setCertificationAvailableTrue(true);
+            participantTrue = true;
         }
+
+        for(Participants participant : participantsList){
+            if(participant.getParticipantFK() == uid)
+                participantTrue = true;
+        }
+        if(!participantTrue) throw new NoMatchPointException();
+
+        ArrayList<CertificationInfo> certificationInfoArrayList = new ArrayList<>();
+
         for(Certifications certifications : certificationsList){
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-            CertificationInfo certificationInfo = new CertificationInfo(simpleDateFormat.format(certifications.getRegisteredDate()),certifications.getCertificationPhoto(),
-            certifications.getCertificationTrue());
+            CertificationInfo certificationInfo = new CertificationInfo(simpleDateFormat.format(certifications.getRegisteredDate()),
+                    certifications.getCertificationPhoto(), certifications.getCertificationTrue());
             certificationInfoArrayList.add(certificationInfo);
         }
         challengeDetailInfo.setCertificationInfoArrayList(certificationInfoArrayList);

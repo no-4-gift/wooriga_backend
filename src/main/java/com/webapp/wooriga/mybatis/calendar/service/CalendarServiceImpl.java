@@ -47,7 +47,7 @@ public class CalendarServiceImpl implements CalendarService {
     }
 
     @Override
-    public CalendarInfo selectCalendarInfo(String familyId, String year, String month) throws RuntimeException{
+    public CalendarInfo sendCalendarInfo(String familyId, String year, String month) throws RuntimeException{
         String firstDate = year + "-" + month + "-" + "01";
         String finalDate = year +"-" +  month + "-" + "31";
         CalendarInfo calendarInfo = new CalendarInfo();

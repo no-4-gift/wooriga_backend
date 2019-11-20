@@ -7,5 +7,5 @@ import org.apache.ibatis.annotations.Param;
 @Mapper
 public interface RegisteredChallengesMapper {
     void insertRegisteredChallenge(RegisteredChallenges registeredChallenges);
-    Long selectRegisteredCertification(@Param("registeredId") long registeredId);
+    RegisteredChallenges selectRegisteredChallenge(@Param("registeredId") long registeredId);
 }

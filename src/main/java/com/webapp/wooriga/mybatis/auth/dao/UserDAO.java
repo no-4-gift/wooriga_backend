@@ -22,7 +22,7 @@ public interface UserDAO {
 	public String getCode(long uid);
 	public void insertCodeUser(CodeUser codeuser);
 	User selectUserForCalendar(EmptyDays emptyDays);
-	int selectUserToFamilyId(@Param("familyId")String familyId);
+	int selectUserToFamilyId(HashMap<String,Object> familyMap);
 	List<User> selectUserId(HashMap<String,Object> userMap);
 	List<User> selectfamilyId(@Param("familyId")String familyId);
 }

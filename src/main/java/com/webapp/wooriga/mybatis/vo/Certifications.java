@@ -21,6 +21,11 @@ public class Certifications {
         this.certificationTrue = certificationTrue;
         this.certificationPhoto = certificationPhoto;
     }
+    public Certifications(long registeredIdFK, Date registeredDate,int certificationTrue){
+        this.registeredDate = registeredDate;
+        this.registeredIdFK = registeredIdFK;
+        this.certificationTrue = certificationTrue;
+    }
     public Certifications(){
 
     }

@@ -76,7 +76,7 @@ public class UserDAOImpl implements UserDAO {
 	public User selectUserForCalendar(EmptyDays emptyDays) { return mapper.selectUserForCalendar(emptyDays);}
 
 	@Override
-	public int selectUserToFamilyId(@Param("familyId")String familyId){ return mapper.selectUserToFamilyId(familyId);}
+	public int selectUserToFamilyId(HashMap<String,Object> familyMap){ return mapper.selectUserToFamilyId(familyMap);}
 
 	@Override
 	public List<User> selectUserId(HashMap<String,Object> userMap){ return mapper.selectUserId(userMap);}

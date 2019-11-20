@@ -1,6 +1,5 @@
 package com.webapp.wooriga.mybatis.challenge.service;
 
-import com.google.gson.JsonObject;
 import com.webapp.wooriga.mybatis.challenge.dao.CertificationsDAO;
 import com.webapp.wooriga.mybatis.challenge.dao.ParticipantsDAO;
 import com.webapp.wooriga.mybatis.challenge.dao.RegisteredChallengesDAO;
@@ -15,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Date;
 import java.text.SimpleDateFormat;
-import java.util.HashMap;
 import java.util.Map;
 
 
@@ -42,8 +40,10 @@ public class RegisteredChallengeServiceImpl implements RegisteredChallengeServic
     public void insertRegisteredChallenge(RegisteredChallenges registeredChallenges, Participants[] participants, Certifications[] certifications) throws RuntimeException {
         long registeredId;
         try {
-            if (challengeModuleService.ifCorrectUserIntheFamily(registeredChallenges))
+
+            if (challengeModuleService.ifCorrectUserIntheFamily(registeredChallenges.getChiefIdFK(),participants,registeredChallenges.getFamilyId()))
                 registeredChallengesDAO.insertRegisteredChallenge(registeredChallenges);
+
         } catch(Exception e) {
             throw new NoStoringException();
         }
@@ -51,13 +51,12 @@ public class RegisteredChallengeServiceImpl implements RegisteredChallengeServic
             registeredId = registeredChallenges.getRegisteredId();
             challengeModuleService.validateParticipantsNum(participants.length);
             challengeModuleService.ifCorrectParticipants(certifications, registeredChallenges, participants);
-            challengeModuleService.ifParticipantsAreCorrectUser(participants, registeredId);
             challengeModuleService.validateChallengeDateNum(certifications.length);
         }catch(NoMatchPointException e) {
             throw new NoMatchPointException();
         }
         try{
-                for (int i = 0; i < certifications.length; i++) {
+                for (int i = 0; i < certifications.length; i++){
                     certifications[i].setRegisteredIdFK(registeredId);
                     certifications[i].setCertificationPhoto("https://woorigabucket.s3.ap-northeast-2.amazonaws.com/challenge/default.jpg");
                     certifications[i].setCertificationTrue(0);

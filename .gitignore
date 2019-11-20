@@ -7,3 +7,4 @@ mysqlIdentify.yml
 mykey.pem
 mykey.ppk
 aws.yml
+out/artifacts/woriga_main_jar/woriga.main.jar

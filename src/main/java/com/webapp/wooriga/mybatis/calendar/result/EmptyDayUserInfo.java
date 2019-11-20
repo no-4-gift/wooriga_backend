@@ -1,5 +1,6 @@
 package com.webapp.wooriga.mybatis.calendar.result;
 
+import com.webapp.wooriga.mybatis.challenge.result.UserInfo;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -9,20 +10,12 @@ import java.util.HashMap;
 @Setter
 public class EmptyDayUserInfo {
     private String emptyDate;
-    private String color;
-    private String name;
-    private String relationship;
-    private String profile;
-    private long uid;
+    private UserInfo userInfo;
 
-
-    public EmptyDayUserInfo(long uid,String emptyDate, String color, String name, String relationship, String profile){
-        this.uid = uid;
+    public EmptyDayUserInfo(UserInfo userInfo,String emptyDate){
         this.emptyDate = emptyDate;
-        this.color = color;
-        this.name = name;
-        this.relationship = relationship;
-        this.profile = profile;
+        this.userInfo = userInfo;
+
     }
     public EmptyDayUserInfo(){
 

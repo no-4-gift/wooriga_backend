@@ -16,4 +16,7 @@ public interface CertificationsMapper {
     List<Certifications> selectOurChallengeViewInfo(HashMap<String,Object> infoHashMap);
     List<Certifications> selectChallengeDetailInfo(@Param("registeredId") long registeredId);
     void deleteCertification(HashMap<String,Object> infoHashMap);
+    int selectTotalDateNum(@Param("registeredId") long registeredId);
+    int selectCertificationDateNum(@Param("registeredId") long registeredId);
+    List<Certifications> selectNonCertificateDate(HashMap<String,Object> infoHashMap);
 }
