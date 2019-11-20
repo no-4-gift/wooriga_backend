@@ -19,4 +19,5 @@ public interface CertificationsMapper {
     int selectTotalDateNum(@Param("registeredId") long registeredId);
     int selectCertificationDateNum(@Param("registeredId") long registeredId);
     List<Certifications> selectNonCertificateDate(HashMap<String,Object> infoHashMap);
+    int selectCertificationRow(HashMap<String,Object> infoHashMap);
 }

@@ -44,10 +44,18 @@ public class CalendarModuleServiceImpl implements CalendarModuleService {
         return emptyDayUserInfoList;
     }
 
+    @Override
+    public ArrayList<ChallengeBarInfo> setChallengeBarInfoList(List<Certifications> certificationsList){
+        ArrayList<ChallengeBarInfo> challengeBarInfoList = new ArrayList<>();
+        HashMap<Long,ChallengeBarInfo> challengeBarInfoHashMap = this.setDateListWithHashMap(certificationsList);
+        for(Long key : challengeBarInfoHashMap.keySet())
+            challengeBarInfoList.add(challengeBarInfoHashMap.get(key));
+        return challengeBarInfoList;
+    }
+
     private HashMap<Long, ChallengeBarInfo> setDateListWithHashMap(List<Certifications> certificationsList) {
         HashMap<Long, ChallengeBarInfo> challengeBarInfoHashMap = new HashMap<>();
         for (Certifications certifications : certificationsList) {
-
             RegisteredChallenges registeredChallenges = certifications.getRegisteredChallenges();
             long registeredId = certifications.getRegisteredIdFK();
 
@@ -58,7 +66,7 @@ public class CalendarModuleServiceImpl implements CalendarModuleService {
                 challengeBarInfo.setDate(dateList);
                 challengeBarInfoHashMap.replace(registeredId,challengeBarInfo);
             }
-           else
+            else
                 challengeBarInfoHashMap.put(registeredId, this.setChallengeBar(certifications,
                         registeredId,registeredChallenges));
         }
@@ -80,16 +88,7 @@ public class CalendarModuleServiceImpl implements CalendarModuleService {
                 registeredId, challenges.getTitle(), dateList));
     }
 
-    @Override
-    public ArrayList<ChallengeBarInfo> setChallengeBarInfoList(List<Certifications> certificationsList){
-        ArrayList<ChallengeBarInfo> challengeBarInfoList = new ArrayList<>();
-        HashMap<Long,ChallengeBarInfo> challengeBarInfoHashMap = this.setDateListWithHashMap(certificationsList);
-        for(Long key : challengeBarInfoHashMap.keySet())
-            challengeBarInfoList.add(challengeBarInfoHashMap.get(key));
-        return challengeBarInfoList;
-    }
-    @Override
-    public ArrayList<UserInfo> setParticipantsInfo(long registeredId){
+    private ArrayList<UserInfo> setParticipantsInfo(long registeredId){
         List<Participants> participantsList = participantsDAO.selectParticipants(registeredId);
         ArrayList<UserInfo> userInfoArrayList = new ArrayList<>();
         for(Participants participant : participantsList){

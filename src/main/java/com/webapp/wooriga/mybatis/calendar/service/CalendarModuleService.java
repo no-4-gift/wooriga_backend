@@ -13,5 +13,4 @@ import java.util.List;
 public interface CalendarModuleService {
     ArrayList<EmptyDayUserInfo> setEmptyDayUserInfoList(List<EmptyDays> emptyDaysList);
     ArrayList<ChallengeBarInfo> setChallengeBarInfoList(List<Certifications> certificationsList);
-    ArrayList<UserInfo> setParticipantsInfo(long registeredId);
 }

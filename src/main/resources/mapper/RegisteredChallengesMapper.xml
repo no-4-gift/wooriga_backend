@@ -1,17 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.webapp.wooriga.mybatis.challenge.mapper.RegisteredChallengesMapper">
-
-    <resultMap id="RegisteredChallengesResult" type="RegisteredChallenges">
-
-    </resultMap>
 
     <insert id="insertRegisteredChallenge" parameterType="RegisteredChallenges" useGeneratedKeys="true" keyProperty="registeredId">
         insert into registeredchallenges (chief_fk,challenge_fk,familyid,resolution) values(#{chiefIdFK},#{challengeIdFK},#{familyId},#{resolution})
     </insert>
 
-    <select id = "selectRegisteredChallenge" parameterType="Long" resultType="RegisteredChallenges" >
+    <select id = "selectRegisteredChallenge" parameterType="long" resultType="RegisteredChallenges" >
         select * from registeredchallenges where registered_id  = #{registeredId}
     </select>
 </mapper>

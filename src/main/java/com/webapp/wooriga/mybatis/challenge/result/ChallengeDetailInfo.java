@@ -15,4 +15,10 @@ public class ChallengeDetailInfo {
     private String content;
     private Boolean certificationAvailableTrue;
 
+    public ChallengeDetailInfo(ArrayList<CertificationInfo> certificationInfoArrayList,String resolution,String summary,String content){
+        this.certificationInfoArrayList = certificationInfoArrayList;
+        this.summary = summary;
+        this.content = content;
+        this.resolution = resolution;
+    }
 }

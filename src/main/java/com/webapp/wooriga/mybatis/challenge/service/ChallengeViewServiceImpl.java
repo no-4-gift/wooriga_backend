@@ -93,43 +93,34 @@ public class ChallengeViewServiceImpl implements ChallengeViewService {
     }
     @Override
     public ChallengeDetailInfo sendChallengeDetailInfo(long uid, long registeredId) throws RuntimeException {
-        ChallengeDetailInfo challengeDetailInfo = new ChallengeDetailInfo();
-        challengeDetailInfo.setCertificationAvailableTrue(false);
-
         List<Certifications> certificationsList = certificationsDAO.selectChallengeDetailInfo(registeredId);
-        if(certificationsList == null) throw new NoMatchPointException();
-
-        boolean participantTrue = false;
-
-        List<Participants> participantsList = participantsDAO.selectParticipants(registeredId);
+        if(certificationsList.isEmpty()) throw new NoMatchPointException();
         RegisteredChallenges registeredChallenge = registeredChallengesDAO.selectRegisteredChallenge(registeredId);
-
-        challengeDetailInfo.setResolution(registeredChallenge.getResolution());
         long challengeId = registeredChallenge.getChallengeIdFK();
+        log.error(Long.toString(registeredChallenge.getChiefIdFK()));
         Challenges challenges = challengesDAO.selectChallenge(challengeId);
-        challengeDetailInfo.setSummary(challenges.getSummary());
-        challengeDetailInfo.setContent(challenges.getContent());
-
-        if(registeredChallenge.getChiefIdFK() == uid) {
-            challengeDetailInfo.setCertificationAvailableTrue(true);
-            participantTrue = true;
-        }
-
-        for(Participants participant : participantsList){
-            if(participant.getParticipantFK() == uid)
-                participantTrue = true;
-        }
-        if(!participantTrue) throw new NoMatchPointException();
 
         ArrayList<CertificationInfo> certificationInfoArrayList = new ArrayList<>();
 
-        for(Certifications certifications : certificationsList){
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-            CertificationInfo certificationInfo = new CertificationInfo(simpleDateFormat.format(certifications.getRegisteredDate()),
+        for(Certifications certifications : certificationsList) {
+            CertificationInfo certificationInfo = new CertificationInfo(new SimpleDateFormat("yyyy-MM-dd").format(certifications.getRegisteredDate()),
                     certifications.getCertificationPhoto(), certifications.getCertificationTrue());
             certificationInfoArrayList.add(certificationInfo);
         }
-        challengeDetailInfo.setCertificationInfoArrayList(certificationInfoArrayList);
+
+        ChallengeDetailInfo challengeDetailInfo = new ChallengeDetailInfo(certificationInfoArrayList,registeredChallenge.getResolution(),challenges.getSummary(),challenges.getContent());
+
+        return setUserIsCertificationAvailable(uid,registeredChallenge.getChiefIdFK(),challengeDetailInfo,registeredId);
+    }
+
+    private ChallengeDetailInfo setUserIsCertificationAvailable(long uid, long chiefId, ChallengeDetailInfo challengeDetailInfo,long registeredId){
+        if(chiefId == uid)
+            challengeDetailInfo.setCertificationAvailableTrue(true);
+        else {
+            int count = participantsDAO.selectUserIsCorrectParticipant(registeredId, uid);
+            challengeDetailInfo.setCertificationAvailableTrue(false);
+            if (count == 0) throw new NoMatchPointException();
+        }
         return challengeDetailInfo;
     }
 

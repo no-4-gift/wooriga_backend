@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.sql.Date;
 import java.text.SimpleDateFormat;
+import java.util.HashMap;
 import java.util.Map;
 
 
@@ -40,7 +41,6 @@ public class RegisteredChallengeServiceImpl implements RegisteredChallengeServic
     public void insertRegisteredChallenge(RegisteredChallenges registeredChallenges, Participants[] participants, Certifications[] certifications) throws RuntimeException {
         long registeredId;
         try {
-
             if (challengeModuleService.ifCorrectUserIntheFamily(registeredChallenges.getChiefIdFK(),participants,registeredChallenges.getFamilyId()))
                 registeredChallengesDAO.insertRegisteredChallenge(registeredChallenges);
 
@@ -75,6 +75,7 @@ public class RegisteredChallengeServiceImpl implements RegisteredChallengeServic
     @Override
     public void cancelChallengeCertification(Map<String,Object> infoMap) throws RuntimeException{
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        isThereAnyCertificationRow(infoMap);
         try {
             Certifications certifications = new Certifications();
             Date registeredDate = new Date( simpleDateFormat.parse((String)infoMap.get("date")).getTime());
@@ -88,6 +89,13 @@ public class RegisteredChallengeServiceImpl implements RegisteredChallengeServic
         }catch(Exception e){
             throw new NoMatchPointException();
         }
+    }
+
+    private void isThereAnyCertificationRow(Map<String,Object> infoMap) throws RuntimeException{
+        HashMap<String,Object> infoHashMap = new HashMap<>();
+        infoHashMap.put("date",infoMap.get("date"));
+        infoHashMap.put("registeredId",infoMap.get("registeredId"));
+        if(certificationsDAO.selectCertificationRow(infoHashMap) == 0) throw new NoMatchPointException();
     }
 
 
