@@ -2,7 +2,6 @@ package com.webapp.wooriga.mybatis.challenge.service;
 
 import com.webapp.wooriga.mybatis.auth.dao.UserDAO;
 import com.webapp.wooriga.mybatis.calendar.dao.EmptyDaysDAO;
-import com.webapp.wooriga.mybatis.calendar.dao.EmptyDaysDAOImpl;
 import com.webapp.wooriga.mybatis.challenge.dao.CertificationsDAO;
 import com.webapp.wooriga.mybatis.challenge.dao.ChallengesDAO;
 import com.webapp.wooriga.mybatis.challenge.result.ChallengeInfo;
@@ -11,7 +10,6 @@ import com.webapp.wooriga.mybatis.exception.NoMatchPointException;
 import com.webapp.wooriga.mybatis.exception.NoStoringException;
 import com.webapp.wooriga.mybatis.exception.WrongCodeException;
 import com.webapp.wooriga.mybatis.vo.Certifications;
-import com.webapp.wooriga.mybatis.vo.Challenges;
 import com.webapp.wooriga.mybatis.vo.EmptyDays;
 import com.webapp.wooriga.mybatis.vo.User;
 import org.slf4j.LoggerFactory;
@@ -36,32 +34,33 @@ public class ChallengeServiceImpl implements ChallengeService{
     private EmptyDaysDAO emptyDaysDAO;
     private CertificationsDAO certificationsDAO;
     private ImageS3UploadComponent imageS3UploadComponent;
+    private ChallengeModuleService challengeModuleService;
     private UserDAO userDAO;
     @Autowired
-    public ChallengeServiceImpl(UserDAO userDAO,EmptyDaysDAO emptyDaysDAO,ChallengesDAO challengesDAO, ImageS3UploadComponent imageS3UploadComponent
+    public ChallengeServiceImpl(ChallengeModuleService challengeModuleService,UserDAO userDAO,EmptyDaysDAO emptyDaysDAO,ChallengesDAO challengesDAO, ImageS3UploadComponent imageS3UploadComponent
     , CertificationsDAO certificationsDAO){
         this.userDAO = userDAO;
         this.emptyDaysDAO = emptyDaysDAO;
         this.challengesDAO = challengesDAO;
         this.certificationsDAO = certificationsDAO;
         this.imageS3UploadComponent = imageS3UploadComponent;
+        this.challengeModuleService = challengeModuleService;
     }
     public ChallengeServiceImpl(){}
 
+    @Override
     public void certificateChallenge(long registeredId, String date, MultipartFile file) throws RuntimeException{
-        Certifications certifications = new Certifications();
+        Certifications certifications;
         try {
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-            Date registeredDate = new Date( simpleDateFormat.parse(date).getTime());
-            certifications.setRegisteredDate(registeredDate);
-            certifications.setRegisteredIdFK(registeredId);
-            certifications.setCertificationTrue(1);
+            certifications = new Certifications(registeredId, new Date(simpleDateFormat.parse(date).getTime()),
+                    1);
         }
         catch(Exception e){
             throw new NoMatchPointException();
         }
-        try {
-            String url = imageS3UploadComponent.upload(file, "challenge"+Long.toString(registeredId) + date);
+        try{
+        String url = imageS3UploadComponent.upload(file, "challenge"+Long.toString(registeredId) + date);
             if(url == null) throw new NoStoringException();
             else certifications.setCertificationPhoto(url);
         }
@@ -85,29 +84,7 @@ public class ChallengeServiceImpl implements ChallengeService{
             HashMap<String,Object> emptyMap = new HashMap<>();
             emptyMap.put("familyId",familyId);
             emptyMap.put("date",date);
-            HashMap<Long,Integer> userMap = new HashMap<>();
-            List<EmptyDays> emptyDays = emptyDaysDAO.selectToDate(emptyMap);
-            for(EmptyDays emptyDay : emptyDays){
-                long id = emptyDay.getUserIdFk();
-                if(!userMap.isEmpty() && userMap.containsKey(id)){
-                   int num = userMap.get(id);
-                    userMap.replace(id,num+1);
-                }
-                else
-                    userMap.put(id,1);
-            }
-            int dateSize = date.size();
-            Iterator<Long> iterator = userMap.keySet().iterator();
-            ArrayList<UserInfo> userInfoList = new ArrayList<>();
-           while(iterator.hasNext()) {
-               Long key = iterator.next();
-               if (dateSize == userMap.get(key)) {
-                   User user = userDAO.selectOne(key);
-                   UserInfo userInfo = new UserInfo(user.getRelationship(),user.getName(),user.getProfile(),user.getColor(),user.getUid());
-                   userInfoList.add(userInfo);
-               }
-           }
-           challengeInfo.setUserInfo(userInfoList);
+           challengeInfo.setUserInfo(challengeModuleService.findUserSetToEmpty(date.size(),emptyMap));
         }catch(RuntimeException e){
             log.error(e.toString());
             throw new NoMatchPointException();
@@ -115,3 +92,4 @@ public class ChallengeServiceImpl implements ChallengeService{
         return challengeInfo;
     }
 }
+

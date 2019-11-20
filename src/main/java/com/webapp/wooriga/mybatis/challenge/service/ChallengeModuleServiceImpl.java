@@ -2,38 +2,53 @@ package com.webapp.wooriga.mybatis.challenge.service;
 
 import com.webapp.wooriga.mybatis.auth.dao.UserDAO;
 import com.webapp.wooriga.mybatis.calendar.dao.EmptyDaysDAO;
-import com.webapp.wooriga.mybatis.calendar.service.CalendarModuleService;
-import com.webapp.wooriga.mybatis.challenge.result.ChallengeBarInfo;
+
+import com.webapp.wooriga.mybatis.challenge.result.UserInfo;
 import com.webapp.wooriga.mybatis.exception.NoMatchPointException;
 import com.webapp.wooriga.mybatis.vo.*;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Date;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 @Service
 public class ChallengeModuleServiceImpl implements ChallengeModuleService{
+    Logger log = LoggerFactory.getLogger(this.getClass());
     private UserDAO userDAO;
     private EmptyDaysDAO emptyDaysDAO;
-    private CalendarModuleService calendarModuleService;
+
 
     public ChallengeModuleServiceImpl(){ }
     @Autowired
-    public ChallengeModuleServiceImpl(CalendarModuleService calendarModuleService,UserDAO userDAO, EmptyDaysDAO emptyDaysDAO){
+    public ChallengeModuleServiceImpl(UserDAO userDAO, EmptyDaysDAO emptyDaysDAO){
         this.userDAO = userDAO;
         this.emptyDaysDAO = emptyDaysDAO;
-        this.calendarModuleService = calendarModuleService;
+
     }
 
     @Override
-    public Boolean ifCorrectUserIntheFamily(RegisteredChallenges registeredChallenges){
-        int count = userDAO.selectUserToFamilyId(registeredChallenges.getFamilyId());
-        if(count != 0)
-            return true;
-        else
+    public Boolean ifCorrectUserIntheFamily(long chiefId, Participants[] participants,String familyId){
+        ArrayList<Long> participantsList = new ArrayList<>();
+        for(int i = 0; i < participants.length; i++)
+            participantsList.add(participants[i].getParticipantFK());
+        HashMap<String,Object> familyhashMap = new HashMap<>();
+        familyhashMap.put("chiefId",chiefId);
+        familyhashMap.put("participantsList",participantsList);
+        familyhashMap.put("familyId",familyId);
+
+        int count = userDAO.selectUserToFamilyId(familyhashMap);
+
+        if(count != participants.length + 1)
             throw new NoMatchPointException();
+        else
+            return true;
     }
     @Override
     public Boolean validateParticipantsNum(int participantsNum){
@@ -62,14 +77,27 @@ public class ChallengeModuleServiceImpl implements ChallengeModuleService{
         }
         return true;
     }
-    @Override
-    public Boolean ifParticipantsAreCorrectUser(Participants[] participants,long registeredId){
-        for (int i = 0; i < participants.length; i++) {
-            participants[i].setRegisteredIdFK(registeredId);
-            User user = userDAO.selectOne(participants[i].getParticipantFK());
-            if (user == null)
-                throw new NoMatchPointException();
+    public ArrayList<UserInfo> findUserSetToEmpty(int dateSize,HashMap<String,Object> emptyMap){
+        HashMap<Long,Integer> userMap = new HashMap<>();
+        List<EmptyDays> emptyDays = emptyDaysDAO.selectToDate(emptyMap);
+        for(EmptyDays emptyDay : emptyDays){
+            long id = emptyDay.getUserIdFk();
+            if(!userMap.isEmpty() && userMap.containsKey(id)){
+                int emptyDayNum = userMap.get(id);
+                userMap.replace(id,emptyDayNum+1);
+            }
+            else
+                userMap.put(id,1);
         }
-        return true;
+        ArrayList<UserInfo> userInfoList = new ArrayList<>();
+        Iterator<Long> iterator = userMap.keySet().iterator();
+        while(iterator.hasNext()) {
+            Long key = iterator.next();
+            if (dateSize == userMap.get(key)) {
+                User user = userDAO.selectOne(key);
+                userInfoList.add(new UserInfo(user.getRelationship(),user.getName(),user.getProfile(),user.getColor(),user.getUid()));
+            }
+        }
+        return userInfoList;
     }
 }

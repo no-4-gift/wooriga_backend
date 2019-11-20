@@ -36,7 +36,7 @@ public interface UserMapper {
 
 	User selectUserForCalendar(EmptyDays emptyDays);
 
-	int selectUserToFamilyId(@Param("familyId") String familyId);
+	int selectUserToFamilyId(HashMap<String, Object> familyMap);
 
 	List<User> selectUserId(HashMap<String, Object> userMap);
 

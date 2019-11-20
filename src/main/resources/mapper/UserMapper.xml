@@ -70,8 +70,12 @@
 	<insert id="insertCodeUser" parameterType="CodeUser">
 		insert into family(uid, code) values(#{uid}, #{code})
 	</insert>
-	<select id = "selectUserToFamilyId" parameterType="String" resultType="int">
-		select count(*) from user where family_id = #{familyId}
+	<select id = "selectUserToFamilyId" parameterType="java.util.HashMap" resultType="int">
+		select count(*) from user where family_id = #{familyId} and uid in
+		<foreach collection="participantsList" item ="data" open="(" separator=",">
+			#{data}
+		</foreach>
+		,#{chiefId})
 	</select>
 	<select id = "selectUserForCalendar" parameterType="EmptyDays" resultType = "User">
 		select * from user where family_id = #{familyId} and uid = #{userIdFk}

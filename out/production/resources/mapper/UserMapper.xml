@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper
-   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
-   "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-   
+		PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+		"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
 <!-- 이 xml 파일과 짝을 이뤄서 진행되는 자바mapper의 패키지명을 작성해야함 -->
 <mapper namespace="com.webapp.wooriga.mybatis.auth.mapper.UserMapper">
 
@@ -30,25 +30,37 @@
 	<select id="selectAll" resultMap="UserResult">
 		select * from user order by uid
 	</select>
-	
+
 	<select id="selectOne" resultType="User" parameterType="long">
 		select * from user where uid = #{uid}
 	</select>
-	
+
 	<insert id="insert" parameterType="User">
 		insert into user(uid, name) values(#{uid}, #{name})
 	</insert>
-	
+
 	<delete id="delete" parameterType="long">
 		delete from user where uid = #{uid}
 	</delete>
-	
+
 	<update id="update" parameterType="User">
 		update user set name = #{name} where uid = #{uid}
 	</update>
 
+	<update id="updateFamilyId" parameterType="User">
+		update user set family_id = #{family_id} where uid = #{uid}
+	</update>
+
 	<select id="getCode" resultType="String" parameterType="long">
 		select code from family where uid = #{uid}
+	</select>
+
+	<select id="familyAll" resultMap="UserResult" parameterType="String">
+		select * from user where family_id = #{family_id}
+	</select>
+
+	<select id="checkFamilyId" resultType="String" parameterType="long">
+		select family_id from user where uid = #{uid}
 	</select>
 
 	<select id="checkUser" resultType="int" parameterType="long">
@@ -58,17 +70,21 @@
 	<insert id="insertCodeUser" parameterType="CodeUser">
 		insert into family(uid, code) values(#{uid}, #{code})
 	</insert>
-	<select id = "selectUserToFamilyId" parameterType="String" resultType="int">
-		select count(*) from user where family_id = #{familyId}
+	<select id = "selectUserToFamilyId" parameterType="java.util.HashMap" resultType="int">
+		select count(*) from user where family_id = #{familyId} and uid in
+		<foreach collection="participantsList" item ="data" open="(" separator=",">
+			#{data}
+		</foreach>
+		,#{chiefId})
 	</select>
 	<select id = "selectUserForCalendar" parameterType="EmptyDays" resultType = "User">
-			select * from user where family_id = #{familyId} and uid = #{userIdFk}
+		select * from user where family_id = #{familyId} and uid = #{userIdFk}
 	</select>
 
-	<select id = "selectUserId" parameterType = "java.util.List" resultMap = "UserResult">
+	<select id = "selectUserId" parameterType = "hashmap" resultMap = "UserResult">
 		select * from user where uid in
-		<foreach collection="param1" item = "item" index="index" open="(" close=")" separator=",">
-			#{item}
+		<foreach collection="userIdList" open="(" close=")" separator=",">
+			#{userIdList}
 		</foreach>
 	</select>
 	<select id = "selectfamilyId" parameterType="String" resultMap = "UserResult">

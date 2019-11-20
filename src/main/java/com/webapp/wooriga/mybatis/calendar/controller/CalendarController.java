@@ -48,7 +48,7 @@ public class CalendarController {
             " 411 - 조건과 맞지않는 정보로 찾는데 실패함 )")
     @GetMapping(value = "/familyId/year/month")
     public CalendarInfo sendCalendarInfo(@RequestParam String familyId, @RequestParam String year, @RequestParam String month){
-        return calendarService.selectCalendarInfo(familyId,year,month);
+        return calendarService.sendCalendarInfo(familyId,year,month);
     }
 
     @ApiOperation(value = " 일정 삭제", notes ="response 200 - 성공 409 - 삭제 실패" )

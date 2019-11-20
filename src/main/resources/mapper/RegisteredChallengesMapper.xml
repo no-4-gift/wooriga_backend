@@ -11,7 +11,7 @@
         insert into registeredchallenges (chief_fk,challenge_fk,familyid,resolution) values(#{chiefIdFK},#{challengeIdFK},#{familyId},#{resolution})
     </insert>
 
-    <select id = "selectRegisteredCertification" parameterType="Long" resultType="Long" >
-        select chief_fk from registeredchallenges where registered_id  = #{registeredId}
+    <select id = "selectRegisteredChallenge" parameterType="Long" resultType="RegisteredChallenges" >
+        select * from registeredchallenges where registered_id  = #{registeredId}
     </select>
 </mapper>

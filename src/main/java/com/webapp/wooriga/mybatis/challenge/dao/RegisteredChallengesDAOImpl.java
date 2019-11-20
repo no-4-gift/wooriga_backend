@@ -20,7 +20,7 @@ public class RegisteredChallengesDAOImpl implements RegisteredChallengesDAO {
     }
 
     @Override
-    public Long selectRegisteredCertification(@Param("registeredId") long registeredId){
-        return registeredChallengesMapper.selectRegisteredCertification(registeredId);
+    public RegisteredChallenges selectRegisteredChallenge(@Param("registeredId") long registeredId){
+        return registeredChallengesMapper.selectRegisteredChallenge(registeredId);
     }
 }

@@ -43,4 +43,16 @@ public class CertificationsDAOImpl implements CertificationsDAO {
     public void deleteCertification(HashMap<String,Object> infoHashMap){
         certificationsMapper.deleteCertification(infoHashMap);
     }
+    @Override
+    public int selectTotalDateNum(@Param("registeredId") long registeredId){
+        return certificationsMapper.selectTotalDateNum(registeredId);
+    }
+    @Override
+    public int selectCertificationDateNum(@Param("registeredId") long registeredId){
+        return certificationsMapper.selectCertificationDateNum(registeredId);
+    }
+    @Override
+    public List<Certifications> selectNonCertificateDate(HashMap<String,Object> infoHashMap){
+        return certificationsMapper.selectNonCertificateDate(infoHashMap);
+    }
 }

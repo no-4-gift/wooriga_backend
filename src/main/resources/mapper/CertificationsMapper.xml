@@ -46,4 +46,16 @@
     <delete id = "deleteCertification" parameterType="java.util.HashMap">
         delete from certifications where registered_fk = #{registeredId} and date = date_add(#{date}, interval +1 day)
     </delete>
+    <select id = "selectTotalDateNum" parameterType="long" resultType="int">
+        select count(*) from certifications where registered_fk = #{registeredId}
+    </select>
+    <select id = "selectCertificationDateNum" parameterType="long" resultType="int">
+        select count(*) from certifications where registered_fk = #{registeredId} and certification_true = 1
+    </select>
+    <select id = "selectNonCertificateDate" parameterType="java.util.HashMap" resultMap="rcResult">
+        select date from certifications where registered_fk = #{registeredId} and certification_true = 0 and date in
+        <foreach collection="dateList" item = "date" open="(" close = ")" separator=",">
+            #{date}
+        </foreach>
+    </select>
 </mapper>
