@@ -96,10 +96,9 @@ public class ChallengeViewServiceImpl implements ChallengeViewService {
         List<Certifications> certificationsList = certificationsDAO.selectChallengeDetailInfo(registeredId);
         if(certificationsList.isEmpty()) throw new NoMatchPointException();
         RegisteredChallenges registeredChallenge = registeredChallengesDAO.selectRegisteredChallenge(registeredId);
+        log.error(Long.toString(registeredChallenge.getChallengeIdFK()));
         long challengeId = registeredChallenge.getChallengeIdFK();
-        log.error(Long.toString(registeredChallenge.getChiefIdFK()));
         Challenges challenges = challengesDAO.selectChallenge(challengeId);
-
         ArrayList<CertificationInfo> certificationInfoArrayList = new ArrayList<>();
 
         for(Certifications certifications : certificationsList) {

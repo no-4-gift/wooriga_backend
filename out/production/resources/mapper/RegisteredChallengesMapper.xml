@@ -1,14 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.webapp.wooriga.mybatis.challenge.mapper.RegisteredChallengesMapper">
 
-
+    <resultMap id="RegisteredChallengesResult" type="RegisteredChallenges">
+        <result column="familyid" property="familyId"/>
+        <result column="resolution" property="resolution"/>
+        <result column="registered_id" property="registeredId" />
+        <result column="chief_fk" property="chiefIdFK"/>
+        <result column="challenge_fk" property="challengeIdFK"/>
+    </resultMap>
     <insert id="insertRegisteredChallenge" parameterType="RegisteredChallenges" useGeneratedKeys="true" keyProperty="registeredId">
         insert into registeredchallenges (chief_fk,challenge_fk,familyid,resolution) values(#{chiefIdFK},#{challengeIdFK},#{familyId},#{resolution})
     </insert>
 
-    <select id = "selectRegisteredChallenge" parameterType="long" resultType="RegisteredChallenges" >
+    <select id = "selectRegisteredChallenge" parameterType="long" resultMap="RegisteredChallengesResult" >
         select * from registeredchallenges where registered_id  = #{registeredId}
     </select>
 </mapper>
