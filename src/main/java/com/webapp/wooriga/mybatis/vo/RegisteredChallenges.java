@@ -6,6 +6,7 @@ import lombok.Setter;
 @Getter
 @Setter
 public class RegisteredChallenges {
+
     private long registeredId;
     private long chiefIdFK;
     private String familyId;

@@ -50,7 +50,7 @@ public class ChallengeController {
     }
     @ApiOperation(value = "챌린지 디테일 정보 전달(프로필 사진 제외)", notes = "response : 200 - 성공 411 - 조건과 맞는 데이터가 없음")
     @GetMapping(value = "/uid/registeredId")
-    public ChallengeDetailInfo conveyChallengeDetailInfo(@RequestParam long uid, @RequestParam long registeredId){
+    public ChallengeDetailInfo conveyChallengeDetailInfo(@RequestParam int uid, @RequestParam int registeredId){
         return challengeViewService.sendChallengeDetailInfo(uid,registeredId);
     }
     @ApiOperation(value = "챌린지 인증 취소", notes = "response : 200 - 성공, 411- 조건에 맞는 데이터가 없어 실패")

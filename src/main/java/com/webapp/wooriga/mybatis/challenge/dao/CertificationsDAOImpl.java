@@ -55,4 +55,8 @@ public class CertificationsDAOImpl implements CertificationsDAO {
     public List<Certifications> selectNonCertificateDate(HashMap<String,Object> infoHashMap){
         return certificationsMapper.selectNonCertificateDate(infoHashMap);
     }
+    @Override
+    public int selectCertificationRow(HashMap<String,Object> infoHashMap){
+        return certificationsMapper.selectCertificationRow(infoHashMap);
+    }
 }

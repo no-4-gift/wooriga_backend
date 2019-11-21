@@ -58,4 +58,8 @@
             #{date}
         </foreach>
     </select>
+    <select id = "selectCertificationRow" parameterType="java.util.HashMap" resultType="int">
+        select count(*) from certifications where registered_fk = #{registeredId} and certification_true = 1
+        and date = #{date}
+    </select>
 </mapper>

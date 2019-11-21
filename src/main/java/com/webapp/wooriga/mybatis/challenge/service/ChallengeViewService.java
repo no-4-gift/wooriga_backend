@@ -7,5 +7,5 @@ import java.util.ArrayList;
 
 public interface ChallengeViewService {
     ArrayList<ChallengeBarInfo> sendChallengeViewInfo(Boolean ourTrue, String familyId, long uid);
-    ChallengeDetailInfo sendChallengeDetailInfo(long uid,long registeredId) throws RuntimeException;
+    ChallengeDetailInfo sendChallengeDetailInfo(long uid, long registeredId) throws RuntimeException;
 }

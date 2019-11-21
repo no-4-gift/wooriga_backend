@@ -26,19 +26,23 @@ import java.util.Map;
 public class CalendarServiceImpl implements CalendarService {
     private EmptyDaysDAO emptyDaysDAO;
     private CertificationsDAO certificationsDAO;
+    private UserDAO userDAO;
     private CalendarModuleService calendarModuleService;
 
     Logger log = LoggerFactory.getLogger(CalendarServiceImpl.class);
     @Autowired
-    public CalendarServiceImpl(CalendarModuleService calendarModuleService,CertificationsDAO certificationsDAO,EmptyDaysDAO emptyDaysDAO){
+    public CalendarServiceImpl(UserDAO userDAO,CalendarModuleService calendarModuleService,CertificationsDAO certificationsDAO,EmptyDaysDAO emptyDaysDAO){
         this.emptyDaysDAO = emptyDaysDAO;
+        this.userDAO = userDAO;
         this.certificationsDAO = certificationsDAO;
         this.calendarModuleService = calendarModuleService;
     }
 
     @Override
     public void insertDayOnCalendar(EmptyDays emptyDays) throws RuntimeException{
-        try {
+        List<User> userList= userDAO.selectfamilyId(emptyDays.getFamilyId());
+        if(userList.isEmpty()) throw new NoMatchPointException();
+        try{
             emptyDaysDAO.insertEmptyDay(emptyDays);
         }
         catch(Exception e) {
@@ -68,6 +72,7 @@ public class CalendarServiceImpl implements CalendarService {
 
     @Override
     public void deleteCalendarInfo(EmptyDays emptyDays) throws RuntimeException{
+        if(emptyDaysDAO.selectToId(emptyDays) == 0) throw new NoMatchPointException();
         emptyDaysDAO.deleteToId(emptyDays);
     }
 
