@@ -122,7 +122,7 @@ public class UserRestController {
     }
 
     @RequestMapping(value = "/mypage", method = RequestMethod.GET)
-    public List<User> mapage() {
+    public List<User> mypage() {
 
         return null;
     }
