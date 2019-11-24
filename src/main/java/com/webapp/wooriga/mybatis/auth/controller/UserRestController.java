@@ -45,7 +45,7 @@ public class UserRestController {
     }
 
     // 메인
-    /*@RequestMapping(value = "/main", method = RequestMethod.GET)
+    @RequestMapping(value = "/main", method = RequestMethod.GET)
     public List<User> main(@RequestBody User user, @RequestBody String accessToken) {
 
         List<User> userList = new ArrayList<>();
