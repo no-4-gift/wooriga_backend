@@ -36,8 +36,13 @@
 	</select>
 
 	<insert id="insert" parameterType="User">
+<<<<<<< HEAD
 		insert into user(uid, name, email, profile, color, birth) values(#{uid}, #{name}, #{email}, #{profile}, #{color}, #{birth})
 	</insert>
+=======
+      insert into user(uid, name, email, profile, color, birth) values(#{uid}, #{name}, #{email}, #{profile}, #{color}, #{birth})
+   </insert>
+>>>>>>> 56b3f8219349226f3fbf8ddf1066ad758adb9761
 
 	<delete id="delete" parameterType="long">
 		delete from user where uid = #{uid}

@@ -28,4 +28,3 @@ public interface UserService {
 	int sortName(String name0,String name1);
 	public Map admin(User user, String accessToken) throws RuntimeException;
 }
-

@@ -2,33 +2,44 @@ package com.webapp.wooriga.mybatis.auth.controller;
 
 import java.util.*;
 
+import com.webapp.wooriga.mybatis.auth.result.MyRecordInfo;
 import com.webapp.wooriga.mybatis.auth.service.KakaoService;
+import com.webapp.wooriga.mybatis.auth.service.MyPageService;
 import com.webapp.wooriga.mybatis.auth.service.UserService;
-import com.webapp.wooriga.mybatis.exception.NoInformationException;
-import com.webapp.wooriga.mybatis.vo.CodeUser;
 import com.webapp.wooriga.mybatis.vo.User;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+@Api(tags = {"0.회원가입,3. 마이페이지"})
+@RequestMapping(value = "/api")
+@CrossOrigin(origins = {"*"})
 @RestController
 public class UserRestController {
+    Logger log = LoggerFactory.getLogger(this.getClass());
+    private UserService userService;
+    private KakaoService kakaoService;
+    private MyPageService myPageService;
 
     @Autowired
-    UserService userService;
-
-    @Autowired
-    KakaoService kakaoService;
-
+    public UserRestController(UserService userService,KakaoService kakaoService,MyPageService myPageService){
+        this.userService = userService;
+        this.kakaoService =kakaoService;
+        this.myPageService = myPageService;
+    }
     static String access_token;
 
     // 카카오 로그인 후
     @RequestMapping(value = "/social/login/kakao", method = RequestMethod.GET)
     public ModelAndView login(ModelAndView mav, @RequestParam String code) {
-        //System.out.println("code : " + code);
+        log.error("code : " + code);
         access_token = kakaoService.getAccessToken(code);
-        //System.out.println("access : " + access_token);
+        log.error("access : " + access_token);
         HashMap<String, Object> userInfo = kakaoService.getUserInfo(access_token);
         //System.out.println("login Controller : " + userInfo);
         long id = (long)userInfo.get("id");
@@ -100,14 +111,22 @@ public class UserRestController {
         return null;
     }
 
-	/*
-	@RequestMapping(value = "/users", method = RequestMethod.POST)
-	public void insertUser(@RequestBody User user) {
-		try {
+
+
+    @ApiOperation(value = "마이페이지 내 나의 기록 전달" )
+    @GetMapping(value = "/mypage/familyId/uid")
+    public MyRecordInfo sendMyRecord(){
+        return myPageService.sendMyRecordInfo();
+    }
+
+   /*
+   @RequestMapping(value = "/users", method = RequestMethod.POST)
+   public void insertUser(@RequestBody User user) {
+      try {
             userService.insert(user);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-	*/
+      } catch (Exception e) {
+         e.printStackTrace();
+      }
+   }
+   */
 }
