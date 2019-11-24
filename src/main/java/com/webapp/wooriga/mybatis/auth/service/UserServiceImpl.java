@@ -44,6 +44,19 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
+	public void updateFamilyId(User user) {
+		dao.updateFamilyId(user);
+	}
+
+	@Override
+	public List<User> familyAll(String family_id) { return dao.familyAll(family_id); }
+
+	@Override
+	public String checkFamilyId(long uid) {
+		return dao.checkFamilyId(uid);
+	}
+
+	@Override
 	public int checkUser(long uid) {
 		return dao.checkUser(uid);
 	}
