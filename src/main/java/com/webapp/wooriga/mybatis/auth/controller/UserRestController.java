@@ -33,24 +33,14 @@ public class UserRestController {
         //System.out.println("login Controller : " + userInfo);
         long id = (long)userInfo.get("id");
         String nickname = (String)userInfo.get("nickname");
-        String image = "";
-        String email = "";
-        String birthday = "";
+        String image = (String)userInfo.get("profile");
+        String email = (String)userInfo.get("email");
+        String birthday = (String)userInfo.get("birth");
         String color = "black";
-        if(userInfo.equals("thumbnail_image")) {
-            image = (String)userInfo.get("thumbnail_image");
-        }
-        if(userInfo.equals("email")) {
-            email = (String)userInfo.get("email");
-        }
-        if(userInfo.equals("birthday")) {
-            birthday = (String)userInfo.get("birthday");
-        }
+
         //System.out.println("User info : " + id + ", " + nickname);
-        if(userService.selectOne(id) == null)
-            userService.insert(new User(id, nickname, email, image, color, birthday));
-        else
-            System.out.println("이미 DB에 존재");
+        //System.out.println(userService.selectOne(id));
+        userService.update(new User(id, nickname, email, image, color, birthday));
 
         mav.addObject("access_token", access_token);
         mav.addObject("user", userInfo);
