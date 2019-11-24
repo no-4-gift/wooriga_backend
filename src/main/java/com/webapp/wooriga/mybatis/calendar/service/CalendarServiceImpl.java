@@ -55,17 +55,17 @@ public class CalendarServiceImpl implements CalendarService {
         String firstDate = year + "-" + month + "-" + "01";
         String finalDate = year +"-" +  month + "-" + "31";
         CalendarInfo calendarInfo = new CalendarInfo();
-            List<EmptyDays> emptyDaysList = emptyDaysDAO.selectEmptyDay(familyId, firstDate, finalDate);
-            if(emptyDaysList.size() > 0) {
-                ArrayList<EmptyDayUserInfo> emptyDayUserInfoList = calendarModuleService.setEmptyDayUserInfoList(emptyDaysList);
-                calendarInfo.setEmptyDayUserInfoArrayList(emptyDayUserInfoList);
-            }
-            else throw new NoMatchPointException();
+        List<EmptyDays> emptyDaysList = emptyDaysDAO.selectEmptyDay(familyId, firstDate, finalDate);
+        ArrayList<EmptyDayUserInfo> emptyDayUserInfoList = new ArrayList<>();
+        ArrayList<ChallengeBarInfo> challengeBarInfoList = new ArrayList<>();
+        if(emptyDaysList.size() > 0)
+                emptyDayUserInfoList = calendarModuleService.setEmptyDayUserInfoList(emptyDaysList);
+        calendarInfo.setEmptyDayUserInfoArrayList(emptyDayUserInfoList);
+
         List<Certifications> certificationsList = certificationsDAO.selectList(familyId,firstDate,finalDate);
         if(certificationsList.size() > 0)
-            calendarInfo.setChallengeBarInfo(calendarModuleService.setChallengeBarInfoList(certificationsList));
-        else
-            calendarInfo.setChallengeBarInfo(null);
+            challengeBarInfoList = calendarModuleService.setChallengeBarInfoList(certificationsList);
+        calendarInfo.setChallengeBarInfo(challengeBarInfoList);
 
         return calendarInfo;
     }
