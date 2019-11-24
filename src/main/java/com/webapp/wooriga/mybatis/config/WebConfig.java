@@ -23,5 +23,7 @@ public class WebConfig implements WebMvcConfigurer {
             .addResourceLocations("classpath:/META-INF/resources/");
     registry.addResourceHandler("/webjars/**")
             .addResourceLocations("classpath:/META-INF/resources/webjars/");
+    registry.addResourceHandler("views/**")
+            .addResourceLocations("classpath:/WEB-INF/views/");
     }
 }
