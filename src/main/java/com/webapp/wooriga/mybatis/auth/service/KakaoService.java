@@ -105,29 +105,19 @@ public class KakaoService {
 
             JsonObject properties = element.getAsJsonObject().get("properties").getAsJsonObject();
             JsonObject kakao_account = element.getAsJsonObject().get("kakao_account").getAsJsonObject();
+            JsonObject profile = kakao_account.getAsJsonObject().get("profile").getAsJsonObject();
 
             long id = element.getAsJsonObject().get("id").getAsLong();
             String nickname = properties.getAsJsonObject().get("nickname").getAsString();
-            boolean has_email, has_gender;
-            has_email = kakao_account.getAsJsonObject().get("has_email").getAsBoolean();
-            has_gender = kakao_account.getAsJsonObject().get("has_gender").getAsBoolean();
-
-            String email, gender;
-            if(has_email) {
-                email = kakao_account.getAsJsonObject().get("email").getAsString();
-            }
-            else
-                email = "";
-//            if(has_gender) {
-//                gender = kakao_account.getAsJsonObject().get("gender").getAsString();
-//            }
-//            else
-//                gender = "";
+            String email = kakao_account.getAsJsonObject().get("email").getAsString();
+            String image = profile.getAsJsonObject().get("thumbnail_image_url").getAsString();
+            String birth = kakao_account.getAsJsonObject().get("birthday").getAsString();
 
             userInfo.put("id", id);
             userInfo.put("nickname", nickname);
             userInfo.put("email", email);
-//            userInfo.put("gender", gender);
+            userInfo.put("profile", image);
+            userInfo.put("birth", birth);
 
         } catch (IOException e) {
             // TODO Auto-generated catch block

@@ -36,8 +36,8 @@
 	</select>
 
 	<insert id="insert" parameterType="User">
-		insert into user(uid, name) values(#{uid}, #{name})
-	</insert>
+      insert into user(uid, name, email, profile, color, birth) values(#{uid}, #{name}, #{email}, #{profile}, #{color}, #{birth})
+   </insert>
 
 	<delete id="delete" parameterType="long">
 		delete from user where uid = #{uid}
