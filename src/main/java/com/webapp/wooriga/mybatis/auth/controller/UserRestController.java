@@ -24,14 +24,14 @@ public class UserRestController {
     // 카카오 로그인 후
     @RequestMapping(value = "/social/login/kakao", method = RequestMethod.GET)
     public ModelAndView login(ModelAndView mav, @RequestParam String code) {
-        //System.out.println("code : " + code);
+        System.out.println("code : " + code);
         access_token = kakaoService.getAccessToken(code);
-        //System.out.println("access : " + access_token);
+        System.out.println("access : " + access_token);
         HashMap<String, Object> userInfo = kakaoService.getUserInfo(access_token);
-        //System.out.println("login Controller : " + userInfo);
+        System.out.println("login Controller : " + userInfo);
         long id = (long)userInfo.get("id");
         String nickname = (String)userInfo.get("nickname");
-        //System.out.println("User info : " + id + ", " + nickname);
+        System.out.println("User info : " + id + ", " + nickname);
 
         if(userService.selectOne(id) == null)
             userService.insert(new User(id, nickname));
