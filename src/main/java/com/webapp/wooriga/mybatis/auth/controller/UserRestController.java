@@ -25,7 +25,7 @@ public class UserRestController {
     @RequestMapping(value = "/social/login/kakao", method = RequestMethod.GET)
     public ModelAndView login(ModelAndView mav, @RequestParam String code) {
         //System.out.println("code : " + code);
-        String access_token = kakaoService.getAccessToken(code);
+        access_token = kakaoService.getAccessToken(code);
         //System.out.println("access : " + access_token);
         HashMap<String, Object> userInfo = kakaoService.getUserInfo(access_token);
         //System.out.println("login Controller : " + userInfo);
@@ -119,6 +119,12 @@ public class UserRestController {
     @RequestMapping(value = "/users", method = RequestMethod.GET)
     public List<User> allUsers() {
         return userService.selectAll();
+    }
+
+    @RequestMapping(value = "/mypage", method = RequestMethod.GET)
+    public List<User> mapage() {
+
+        return null;
     }
 
 	/*
