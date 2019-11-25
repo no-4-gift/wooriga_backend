@@ -13,16 +13,31 @@ repositories {
 }
 
 dependencies {
+    apply plugin: 'io.spring.dependency-management'
     implementation 'org.springframework.boot:spring-boot-starter-jdbc'
-    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-web-services'
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
     implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:2.1.0'
     implementation 'org.springframework.session:spring-session-jdbc'
+    implementation 'io.jsonwebtoken:jjwt:0.9.1'
+    implementation 'io.springfox:springfox-swagger2:2.6.1'
+    implementation 'io.springfox:springfox-swagger-ui:2.6.1'
+    implementation 'net.rakugakibox.util:yaml-resource-bundle:1.1'
+    implementation 'com.google.code.gson:gson'
+    implementation 'org.projectlombok:lombok'
+    compile('org.apache.tomcat.embed:tomcat-embed-jasper')
+    compile('javax.servlet:jstl:1.2')
+    compileOnly 'org.projectlombok:lombok'
     runtimeOnly 'com.h2database:h2'
+    implementation 'io.springfox:springfox-swagger2:2.9.2'
+    implementation 'io.springfox:springfox-swagger-ui:2.9.2'
     runtimeOnly 'mysql:mysql-connector-java'
+    annotationProcessor 'org.projectlombok:lombok'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'io.projectreactor:reactor-test'
+    compile group: 'com.zaxxer', name: 'HikariCP', version: '3.3.1'
+    compile group: 'com.amazonaws', name: 'aws-java-sdk', version: '1.11.602'
+    compile group: 'commons-fileupload', name: 'commons-fileupload', version: '1.4'
 }

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.webapp.wooriga.mybatis.mapper.EmptyDaysMapper">
+
+    <resultMap id="EmptyDaysResult" type="com.webapp.wooriga.mybatis.vo.EmptyDays">
+        <result column="family_fk" property="familyIdFk"/>
+        <result column="user_fk" property="userIdFk"/>
+        <result column="emptydate" property="emptydate"  jdbcType="DATE" />
+    </resultMap>
+
+    <insert id="insert" parameterType="EmptyDays" >
+            insert into emptydays (family_fk,user_fk,emptydate) values(#{familyIdFk},#{userIdFk},date_add(#{emptydate}, interval +1 day) )
+    </insert>
+    <select id="selectList" parameterType="String" resultMap="EmptyDaysResult">
+            select * from emptydays where family_fk = #{familyId} and emptydate between #{firstDate} and #{finalDate}
+    </select>
+
+</mapper>

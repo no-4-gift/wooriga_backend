@@ -1,8 +1,11 @@
-gradlew.bat
-gradlew
 HELP.md
 settings.gradle
 woriga.iml
 .gradle
 .idea
-
+mysqlIdentify.yml
+mykey.pem
+mykey.ppk
+aws.yml
+out/artifacts/woriga_main_jar/woriga.main.jar
+config
