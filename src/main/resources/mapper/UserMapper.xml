@@ -36,15 +36,15 @@
 	</select>
 
 	<insert id="insert" parameterType="User">
-      insert into user(uid, name, email, profile, color, birth) values(#{uid}, #{name}, #{email}, #{profile}, #{color}, #{birth})
-   </insert>
+		insert into user(uid, name, email, profile, color, birth) values(#{uid}, #{name}, #{email}, #{profile}, #{color}, #{birth})
+	</insert>
 
 	<delete id="delete" parameterType="long">
 		delete from user where uid = #{uid}
 	</delete>
 
 	<update id="update" parameterType="User">
-		update user set name = #{name} where uid = #{uid}
+		update user set email = #{email}, profile = #{profile}, color = #{color}, birth = #{birth} where uid = #{uid}
 	</update>
 
 	<update id="updateFamilyId" parameterType="User">

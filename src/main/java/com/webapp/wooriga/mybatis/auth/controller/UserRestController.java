@@ -12,6 +12,7 @@ import io.swagger.annotations.ApiOperation;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -48,11 +49,9 @@ public class UserRestController {
         String birthday = (String)userInfo.get("birth");
         String color = "black";
 
-        System.out.println("User info : " + id + ", " + nickname + ", " + image + ", " + email);
-        if(userService.selectOne(id) == null)
-            userService.insert(new User(id, nickname, email, image, color, birthday));
-        else
-            System.out.println("이미 DB에 존재");
+        //System.out.println("User info : " + id + ", " + nickname);
+        //System.out.println(userService.selectOne(id));
+        userService.update(new User(id, nickname, email, image, color, birthday));
 
         mav.addObject("access_token", access_token);
         mav.addObject("user", userInfo);
