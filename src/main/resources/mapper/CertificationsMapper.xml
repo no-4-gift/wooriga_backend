@@ -18,11 +18,11 @@
         <collection property="registeredChallenges" resultMap="registeredResult"/>
     </resultMap>
     <insert id = "insertRegisteredDates" parameterType="Certifications">
-        insert into certifications values(#{registeredIdFK},date_add(#{registeredDate}, interval +1 day),#{certificationPhoto},#{certificationTrue})
+        insert into certifications values(#{registeredIdFK},#{registeredDate},#{certificationPhoto},#{certificationTrue})
     </insert>
     <update id = "updateCertification" parameterType="Certifications">
         update certifications set  certification_true = #{certificationTrue},certification_photo = #{certificationPhoto}
-        where registered_fk = #{registeredIdFK} and date = date_add(#{registeredDate}, interval +1 day)
+        where registered_fk = #{registeredIdFK} and date = #{registeredDate}
     </update>
     <select id="selectList" parameterType="String" resultMap="rcResult">
             select registered_fk,c.date,r.challenge_fk,r.chief_fk,r.resolution from registeredchallenges r,
@@ -44,7 +44,7 @@
         c.registered_fk and r.registered_id = #{registeredId}
     </select>
     <delete id = "deleteCertification" parameterType="java.util.HashMap">
-        delete from certifications where registered_fk = #{registeredId} and date = date_add(#{date}, interval +1 day)
+        delete from certifications where registered_fk = #{registeredId} and date = #{date}
     </delete>
     <select id = "selectTotalDateNum" parameterType="long" resultType="int">
         select count(*) from certifications where registered_fk = #{registeredId}

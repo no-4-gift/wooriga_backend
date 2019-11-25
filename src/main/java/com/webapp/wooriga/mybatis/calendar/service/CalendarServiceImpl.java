@@ -74,6 +74,7 @@ public class CalendarServiceImpl implements CalendarService {
     public void deleteCalendarInfo(EmptyDays emptyDays) throws RuntimeException{
         if(emptyDaysDAO.selectToId(emptyDays) == 0) throw new NoMatchPointException();
         emptyDaysDAO.deleteToId(emptyDays);
+
     }
 
 }
