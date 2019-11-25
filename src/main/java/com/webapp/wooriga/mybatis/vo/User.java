@@ -15,7 +15,6 @@ public class User {
 	private String familyId;
 	private String relationship;
 
-	public User(){}
 	public User(long uid, String name, String email, String profile, String color, String birth) {
 		this.uid = uid;
 		this.name = name;
@@ -25,5 +24,15 @@ public class User {
 		this.birth = birth;
 	}
 
+	public User(long uid, String name, String email, String profile, String color, String birth, String familyId, String relationship) {
+		this.uid = uid;
+		this.name = name;
+		this.email = email;
+		this.profile = profile;
+		this.color = color;
+		this.birth = birth;
+		this.familyId = familyId;
+		this.relationship = relationship;
+	}
 
 }
