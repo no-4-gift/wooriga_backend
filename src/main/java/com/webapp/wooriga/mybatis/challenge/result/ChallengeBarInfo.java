@@ -18,6 +18,7 @@ public class ChallengeBarInfo {
     private String challengeImage;
     private int totalNum;
     private int certificationNum;
+    private int percentage;
     private String viewDate;
     public ChallengeBarInfo(){}
     public ChallengeBarInfo(ArrayList<UserInfo> userInfo,String resolution,String challengeImage,long challengeId,long registeredId, String challengeTitle, ArrayList<String> date){
@@ -28,5 +29,6 @@ public class ChallengeBarInfo {
         this.registeredId = registeredId;
         this.challengeId = challengeId;
         this.challengeImage = challengeImage;
+
     }
 }

@@ -115,11 +115,11 @@ public class CalendarModuleServiceImpl implements CalendarModuleService {
            count++;
        }
        if(count <= 2) {
-           title += "과(와) ";
+           title += "과(와) \n";
            title += challengeTitle;
        }
        else if(count > 2)
-           title = title + "외 " + Integer.toString(count - 2) + "명과 " + challengeTitle;
+           title = title + "등 \n" + Integer.toString(count) + "명과 " + challengeTitle;
        challengeBarInfo.setChallengeTitle(title);
        return challengeBarInfo;
     }

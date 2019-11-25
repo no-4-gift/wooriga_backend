@@ -61,8 +61,11 @@ public class ChallengeViewServiceImpl implements ChallengeViewService {
     private ArrayList<ChallengeBarInfo> setCertificationAndTotalNum(ArrayList<ChallengeBarInfo> challengeBarInfoArrayList) throws RuntimeException{
         for (ChallengeBarInfo challengeBarInfo : challengeBarInfoArrayList){
             long registeredId = challengeBarInfo.getRegisteredId();
-            challengeBarInfo.setTotalNum(certificationsDAO.selectTotalDateNum(registeredId));
-            challengeBarInfo.setCertificationNum(certificationsDAO.selectCertificationDateNum(registeredId));
+            int totalNum = certificationsDAO.selectTotalDateNum(registeredId);
+            int certificationNum = certificationsDAO.selectCertificationDateNum(registeredId);
+            challengeBarInfo.setTotalNum(totalNum);
+            challengeBarInfo.setCertificationNum(certificationNum);
+            challengeBarInfo.setPercentage(certificationNum/totalNum*100);
         }
         return setLatestViewDate(challengeBarInfoArrayList);
     }
