@@ -49,9 +49,15 @@ public class ChallengeViewServiceImpl implements ChallengeViewService {
         List<Certifications> certificationsList;
         if (!ourTrue)
             certificationsList = certificationsDAO.selectMyChallengeViewInfo(infoHashMap);
-        else
+        else {
+            List<Participants> participantsList = participantsDAO.selectParticipantId(uid);
+            if(participantsList.isEmpty()) throw new NoMatchPointException();
+            ArrayList<Long> registeredList = new ArrayList<>();
+            for(Participants participant : participantsList)
+                registeredList.add(participant.getRegisteredIdFK());
+            infoHashMap.put("registeredList", registeredList);
             certificationsList = certificationsDAO.selectOurChallengeViewInfo(infoHashMap);
-
+        }
         if (certificationsList.size() > 0)
             return setCertificationAndTotalNum(calendarModuleService.setChallengeBarInfoList(certificationsList));
         else
