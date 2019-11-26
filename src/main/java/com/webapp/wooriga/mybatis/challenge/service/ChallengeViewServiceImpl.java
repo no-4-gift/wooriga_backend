@@ -49,9 +49,16 @@ public class ChallengeViewServiceImpl implements ChallengeViewService {
         List<Certifications> certificationsList;
         if (!ourTrue)
             certificationsList = certificationsDAO.selectMyChallengeViewInfo(infoHashMap);
-        else
+        else {
+            List<Participants> participantsList = participantsDAO.selectParticipantId(uid);
+            if(participantsList.isEmpty()) throw new NoMatchPointException();
+            ArrayList<Long> registeredList = new ArrayList<>();
+            for(Participants participant : participantsList){
+                registeredList.add(participant.getRegisteredIdFK());
+            }
+            infoHashMap.put("participantsList", participantsList);
             certificationsList = certificationsDAO.selectOurChallengeViewInfo(infoHashMap);
-
+        }
         if (certificationsList.size() > 0)
             return setCertificationAndTotalNum(calendarModuleService.setChallengeBarInfoList(certificationsList));
         else
@@ -105,7 +112,7 @@ public class ChallengeViewServiceImpl implements ChallengeViewService {
         ArrayList<CertificationInfo> certificationInfoArrayList = new ArrayList<>();
 
         for(Certifications certifications : certificationsList) {
-            CertificationInfo certificationInfo = new CertificationInfo(new SimpleDateFormat("yyyy-MM-dd").format(certifications.getRegisteredDate()),
+            CertificationInfo certificationInfo = new CertificationInfo(new SimpleDateFormat("MM.dd").format(certifications.getRegisteredDate()),
                     certifications.getCertificationPhoto(), certifications.getCertificationTrue());
             certificationInfoArrayList.add(certificationInfo);
         }

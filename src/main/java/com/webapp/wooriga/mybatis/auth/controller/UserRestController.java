@@ -111,8 +111,6 @@ public class UserRestController {
         return null;
     }
 
-
-
     @ApiOperation(value = "마이페이지 내 나의 기록 전달" )
     @GetMapping(value = "/mypage/familyId/uid")
     public MyRecordInfo sendMyRecord(){

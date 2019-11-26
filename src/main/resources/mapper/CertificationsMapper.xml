@@ -36,8 +36,10 @@
     </select>
     <select id = "selectOurChallengeViewInfo" parameterType="java.util.HashMap" resultMap="rcResult">
         select registered_fk,c.date,r.challenge_fk,r.chief_fk,r.resolution from registeredchallenges r,
-        certifications c where r.registered_id = c.registered_fk and familyid = #{familyId} and
-        date > now() and r.chief_fk != #{uid}
+        certifications c where r.registered_id = c.registered_fk and date > now() and registered_id in
+        <foreach collection="registeredList" separator="," open="(" close=")" item="registeredId">
+        #{registeredId}
+        </foreach>
     </select>
     <select id = "selectChallengeDetailInfo" parameterType="long" resultMap="rcResult">
         select * from registeredchallenges r, certifications c where r.registered_id =
