@@ -56,7 +56,7 @@ public class ChallengeViewServiceImpl implements ChallengeViewService {
             for(Participants participant : participantsList){
                 registeredList.add(participant.getRegisteredIdFK());
             }
-            infoHashMap.put("participantsList", participantsList);
+            infoHashMap.put("registeredList", registeredList);
             certificationsList = certificationsDAO.selectOurChallengeViewInfo(infoHashMap);
         }
         if (certificationsList.size() > 0)
