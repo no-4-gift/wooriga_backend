@@ -117,7 +117,7 @@ public class ChallengeViewServiceImpl implements ChallengeViewService {
             certificationInfoArrayList.add(certificationInfo);
         }
 
-        ChallengeDetailInfo challengeDetailInfo = new ChallengeDetailInfo(certificationInfoArrayList,registeredChallenge.getResolution(),challenges.getSummary(),challenges.getContent());
+        ChallengeDetailInfo challengeDetailInfo = new ChallengeDetailInfo(challenges.getTitle(),certificationInfoArrayList,registeredChallenge.getResolution(),challenges.getSummary(),challenges.getContent());
 
         return setUserIsCertificationAvailable(uid,registeredChallenge.getChiefIdFK(),challengeDetailInfo,registeredId);
     }
