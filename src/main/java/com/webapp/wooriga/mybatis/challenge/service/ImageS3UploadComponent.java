@@ -37,7 +37,6 @@ public class ImageS3UploadComponent extends SuperS3Uploader {
     private String upload(File uploadFile, String userName) {
         if(userName == null) return null;
         String fileName = "challenge/" + userName;
-        log.error(fileName);
         String uploadImageUrl = super.putS3(uploadFile, fileName);
         super.removeNewFile(uploadFile);
         return uploadImageUrl;
