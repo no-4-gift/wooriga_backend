@@ -13,9 +13,11 @@ public class ChallengeDetailInfo {
     private String resolution;
     private String summary;
     private String content;
+    private String title;
     private Boolean certificationAvailableTrue;
 
-    public ChallengeDetailInfo(ArrayList<CertificationInfo> certificationInfoArrayList,String resolution,String summary,String content){
+    public ChallengeDetailInfo(String title,ArrayList<CertificationInfo> certificationInfoArrayList,String resolution,String summary,String content){
+        this.title = title;
         this.certificationInfoArrayList = certificationInfoArrayList;
         this.summary = summary;
         this.content = content;
