@@ -83,8 +83,7 @@ public class CalendarModuleServiceImpl implements CalendarModuleService {
         ArrayList<String> dateList = new ArrayList<>();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
         dateList.add(simpleDateFormat.format(certifications.getRegisteredDate()));
-        return setChallengeTitlePlusName(new ChallengeBarInfo(userInfoArrayList,registeredChallenges.getResolution(),
-                challenges.getImage(),registeredChallenges.getChallengeIdFK(),
+        return setChallengeTitlePlusName(new ChallengeBarInfo(registeredChallenges.getChallengeIdFK(),userInfoArrayList,registeredChallenges.getResolution(),
                 registeredId, challenges.getTitle(), dateList));
     }
 

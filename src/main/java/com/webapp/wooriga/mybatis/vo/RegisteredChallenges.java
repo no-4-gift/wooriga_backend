@@ -10,10 +10,10 @@ public class RegisteredChallenges {
     private long registeredId;
     private long chiefIdFK;
     private String familyId;
-    private long challengeIdFK;
+    private int challengeIdFK;
     private String resolution;
 
-    public RegisteredChallenges(long registeredId,long chiefIdFK, long challengeIdFK,String resolution,String familyId){
+    public RegisteredChallenges(long registeredId,long chiefIdFK, int challengeIdFK,String resolution,String familyId){
         this.registeredId = registeredId;
         this.chiefIdFK = chiefIdFK;
         this.familyId = familyId;

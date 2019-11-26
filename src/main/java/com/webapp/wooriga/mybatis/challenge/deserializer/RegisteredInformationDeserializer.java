@@ -35,7 +35,7 @@ public class RegisteredInformationDeserializer extends StdDeserializer<Registere
         RegisteredChallenges registeredChallenges = new RegisteredChallenges();
 
         long chiefIdFK = node.get("chiefIdFK").asLong();
-        long challengeIdFK = node.get("challengeIdFK").asLong();
+        int challengeIdFK = node.get("challengeIdFK").asInt();
         String resolution = node.get("resolution").asText();
         String familyId = node.get("familyId").asText();
         registeredChallenges.setChallengeIdFK(challengeIdFK);
