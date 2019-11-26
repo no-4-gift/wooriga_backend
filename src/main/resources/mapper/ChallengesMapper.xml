@@ -4,13 +4,17 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.webapp.wooriga.mybatis.challenge.mapper.ChallengesMapper">
 
+    <resultMap id = "challengeImagesResult" type="ChallengeImages">
+        <result property="image" column="image"/>
+    </resultMap>
     <resultMap id = "ChallengesResult" type="Challenges">
         <result property="challengeId" column="challenge_id"/>
         <result property="summary" column="summary"/>
         <result property="title" column="title"/>
         <result property="content" column="content"/>
-        <result property="image" column="image"/>
+        <collection property="challengeImages" resultMap="challengeImagesResult"/>
     </resultMap>
+
     <select id = "selectChallenge" parameterType="long" resultType="Challenges">
         select * from challenges where challenge_id = #{challengeId}
     </select>
@@ -23,6 +27,7 @@
         insert into challenges (title,summary,content) values (#{title},#{summary},#{content})
     </insert>
     <select id = "selectChallengeList" resultMap="ChallengesResult">
-        select * from challenges
+        select c.challenge_id,summary,title,content,ci.image from challenges c, challengeImages ci where c.challenge_id = ci.challenge_id and
+        page_id = 1
     </select>
 </mapper>

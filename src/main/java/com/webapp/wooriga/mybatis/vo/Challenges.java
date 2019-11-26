@@ -6,18 +6,18 @@ import lombok.Setter;
 @Getter
 @Setter
 public class Challenges {
-    private long challengeId;
+    private int challengeId;
     private String title;
     private String summary;
     private String content;
-    private String image;
+    private ChallengeImages challengeImages;
 
-    public Challenges(String image,long challengeId, String title,String summary, String content){
+    public Challenges(ChallengeImages challengeImages,int challengeId, String title,String summary, String content){
         this.challengeId = challengeId;
+        this.challengeImages = challengeImages;
         this.title = title;
         this.summary = summary;
         this.content = content;
-        this.image = image;
     }
     public Challenges(){}
 }
