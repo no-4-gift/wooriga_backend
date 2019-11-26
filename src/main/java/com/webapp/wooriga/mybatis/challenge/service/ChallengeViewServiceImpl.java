@@ -112,7 +112,7 @@ public class ChallengeViewServiceImpl implements ChallengeViewService {
         ArrayList<CertificationInfo> certificationInfoArrayList = new ArrayList<>();
 
         for(Certifications certifications : certificationsList) {
-            CertificationInfo certificationInfo = new CertificationInfo(new SimpleDateFormat("MM.dd").format(certifications.getRegisteredDate()),
+            CertificationInfo certificationInfo = new CertificationInfo(new SimpleDateFormat("yyyy.MM.dd").format(certifications.getRegisteredDate()) ,new SimpleDateFormat("MM.dd").format(certifications.getRegisteredDate()),
                     certifications.getCertificationPhoto(), certifications.getCertificationTrue());
             certificationInfoArrayList.add(certificationInfo);
         }
