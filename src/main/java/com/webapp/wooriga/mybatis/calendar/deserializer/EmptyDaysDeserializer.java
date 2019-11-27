@@ -16,37 +16,36 @@ import java.io.IOException;
 import java.sql.Date;
 import java.text.SimpleDateFormat;
 
-public class EmptyDaysDeserializer extends StdDeserializer<EmptyDays> {
+    public class EmptyDaysDeserializer extends StdDeserializer<EmptyDays> {
 
-    Logger log = LoggerFactory.getLogger(this.getClass());
+        Logger log = LoggerFactory.getLogger(this.getClass());
 
-    @Autowired
-    UserDAO userDAO;
-    public EmptyDaysDeserializer() {
-        this(null);
-    }
-
-    public EmptyDaysDeserializer(Class<EmptyDays> t) {
-        super(t);
-    }
-
-    @Override
-    public EmptyDays deserialize(JsonParser parser, DeserializationContext context) throws IOException, JsonProcessingException{
-        log.debug("EmptyDaysDeserializer.deserialize ::::");
-        JsonNode node = parser.getCodec().readTree(parser);
-        String emptyDateStr = node.get("emptydate").asText();
-        long userIdFK = node.get("userIdFk").asLong();
-        User user = userDAO.selectOne(userIdFK);
-        String familyId = node.get("familyId").asText();
-        Date emptydate = null;
-        try {
-            java.util.Date utilDate = new SimpleDateFormat("yyyy-MM-dd").parse(emptyDateStr);
-            emptydate = new Date(utilDate.getTime());
+        public EmptyDaysDeserializer() {
+            this(null);
         }
-        catch (Exception e) {
-            throw new IOException(e);
+
+        public EmptyDaysDeserializer(Class<EmptyDays> t) {
+            super(t);
         }
-        EmptyDays emptyDays = new EmptyDays(familyId,userIdFK,emptydate);
-        return emptyDays;
+
+        @Override
+        public EmptyDays deserialize(JsonParser parser, DeserializationContext context) throws IOException, JsonProcessingException {
+            log.debug("EmptyDaysDeserializer.deserialize ::::");
+            JsonNode node = parser.getCodec().readTree(parser);
+            String emptyDateStr = node.get("emptydate").asText();
+            long userIdFK = node.get("userIdFk").asLong();
+            String familyId = node.get("familyId").asText();
+            Date emptydate = null;
+            try {
+                java.util.Date utilDate = new SimpleDateFormat("yyyy-MM-dd").parse(emptyDateStr);
+                emptydate = new Date(utilDate.getTime());
+            }
+            catch (Exception e) {
+                throw new IOException(e);
+            }
+            log.error(emptydate.toString());
+            EmptyDays emptyDays = new EmptyDays(familyId,userIdFK,emptydate);
+            return emptyDays;
+        }
     }
-}
+

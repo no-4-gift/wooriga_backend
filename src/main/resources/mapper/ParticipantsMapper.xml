@@ -15,4 +15,7 @@
     <select id = "selectUserIsCorrectParticipant" parameterType="long" resultType="int">
         select count(*) from participants where registered_fk = #{registeredId} and participants_fk = #{uid}
     </select>
+    <select id = "selectParticipantId" parameterType="long" resultMap="participantsResult">
+        select * from participants where participants_fk = #{uid}
+    </select>
 </mapper>

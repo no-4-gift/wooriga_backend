@@ -15,13 +15,13 @@
     </resultMap>
 
     <insert id="insert" parameterType="EmptyDays" >
-            insert into emptydays (family_id,user_fk,emptydate) values(#{familyId},#{userIdFk},date_add(#{emptydate}, interval +1 day))
+            insert into emptydays (family_id,user_fk,emptydate) values(#{familyId},#{userIdFk},#{emptydate})
     </insert>
     <select id="selectList" parameterType="String" resultMap="EmptyDaysResult">
             select * from emptydays where family_id = #{familyId} and emptydate between #{firstDate} and #{finalDate}
     </select>
     <select id = "selectToId" parameterType="EmptyDays" resultType="int">
-            select count(*) from emptydays where user_fk = #{userIdFk} and family_id = #{familyId} and emptydate = date_add(#{emptydate}, interval +1 day)
+            select count(*) from emptydays where user_fk = #{userIdFk} and family_id = #{familyId} and emptydate = #{emptydate}
     </select>
     <select id = "selectToDate" parameterType="java.util.HashMap" resultMap = "EmptyDaysResult">
         select * from emptydays where family_id = #{familyId} and
@@ -29,7 +29,7 @@
             emptydate = #{data}
         </foreach>
     </select>
-    <delete id = "deleteToId" parameterType="EmptyDays">
-        delete  from emptydays where emptydate = #{emptydate} and user_fk = #{userIdFk}
+    <delete id = "deleteToId" parameterType="EmptyDays" >
+        delete  from emptydays where emptydate = #{emptydate} and user_fk = #{userIdFk} and family_id = #{familyId}
     </delete>
 </mapper>

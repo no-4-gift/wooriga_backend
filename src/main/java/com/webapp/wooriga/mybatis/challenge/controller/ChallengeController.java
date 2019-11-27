@@ -40,12 +40,12 @@ public class ChallengeController {
 
     @ApiOperation(value = "도전중인 챌린지 정보 전달", notes = "response: 200 - 성공 411 - 조건과 맞는 데이터가 없음")
     @GetMapping(value = "/familyId/uid")
-    public ArrayList<ChallengeBarInfo> conveyMyChallengeInfo(@RequestParam String familyId, @RequestParam long uid) throws RuntimeException{
+    public ArrayList<ChallengeViewInfo> conveyMyChallengeInfo(@RequestParam String familyId, @RequestParam long uid) throws RuntimeException{
         return challengeViewService.sendChallengeViewInfo(false,familyId,uid);
     }
     @ApiOperation(value = "함께하는 챌린지 정보 전달", notes = "response: 200 - 성공 411 - 조건과 맞는 데이터가 없음")
     @GetMapping(value = "/familyId/uid/bool")
-    public ArrayList<ChallengeBarInfo> conveyOurChallengeInfo(@RequestParam String familyId, @RequestParam long uid) throws RuntimeException {
+    public ArrayList<ChallengeViewInfo> conveyOurChallengeInfo(@RequestParam String familyId, @RequestParam long uid) throws RuntimeException {
         return challengeViewService.sendChallengeViewInfo(true, familyId, uid);
     }
     @ApiOperation(value = "챌린지 디테일 정보 전달(프로필 사진 제외)", notes = "response : 200 - 성공 411 - 조건과 맞는 데이터가 없음")

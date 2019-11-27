@@ -28,4 +28,8 @@ public class ParticipantsDAOImpl implements ParticipantsDAO {
     public int selectUserIsCorrectParticipant(@Param("registeredId") long registeredId,@Param("uid")long uid){
         return participantsMapper.selectUserIsCorrectParticipant(registeredId,uid);
     }
+    @Override
+    public List<Participants> selectParticipantId(@Param("uid") long uid){
+        return participantsMapper.selectParticipantId(uid);
+    }
 }

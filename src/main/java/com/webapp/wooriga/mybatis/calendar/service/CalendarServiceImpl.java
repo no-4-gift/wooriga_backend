@@ -4,8 +4,10 @@ import com.webapp.wooriga.mybatis.auth.dao.UserDAO;
 import com.webapp.wooriga.mybatis.calendar.dao.EmptyDaysDAO;
 import com.webapp.wooriga.mybatis.calendar.result.CalendarInfo;
 import com.webapp.wooriga.mybatis.challenge.dao.CertificationsDAO;
+import com.webapp.wooriga.mybatis.challenge.dao.ChallengeImagesDAO;
 import com.webapp.wooriga.mybatis.challenge.dao.ChallengesDAO;
 import com.webapp.wooriga.mybatis.challenge.result.ChallengeBarInfo;
+import com.webapp.wooriga.mybatis.challenge.result.ChallengeViewInfo;
 import com.webapp.wooriga.mybatis.exception.NoMatchPointException;
 import com.webapp.wooriga.mybatis.exception.NoStoringException;
 import com.webapp.wooriga.mybatis.vo.*;
@@ -28,14 +30,16 @@ public class CalendarServiceImpl implements CalendarService {
     private CertificationsDAO certificationsDAO;
     private UserDAO userDAO;
     private CalendarModuleService calendarModuleService;
+    private ChallengeImagesDAO challengeImagesDAO;
 
     Logger log = LoggerFactory.getLogger(CalendarServiceImpl.class);
     @Autowired
-    public CalendarServiceImpl(UserDAO userDAO,CalendarModuleService calendarModuleService,CertificationsDAO certificationsDAO,EmptyDaysDAO emptyDaysDAO){
+    public CalendarServiceImpl(ChallengeImagesDAO challengeImagesDAO,UserDAO userDAO,CalendarModuleService calendarModuleService,CertificationsDAO certificationsDAO,EmptyDaysDAO emptyDaysDAO){
         this.emptyDaysDAO = emptyDaysDAO;
         this.userDAO = userDAO;
         this.certificationsDAO = certificationsDAO;
         this.calendarModuleService = calendarModuleService;
+        this.challengeImagesDAO = challengeImagesDAO;
     }
 
     @Override
@@ -58,22 +62,23 @@ public class CalendarServiceImpl implements CalendarService {
         List<EmptyDays> emptyDaysList = emptyDaysDAO.selectEmptyDay(familyId, firstDate, finalDate);
         ArrayList<EmptyDayUserInfo> emptyDayUserInfoList = new ArrayList<>();
         ArrayList<ChallengeBarInfo> challengeBarInfoList = new ArrayList<>();
-        if(emptyDaysList.size() > 0)
+
+        if(!emptyDaysList.isEmpty())
                 emptyDayUserInfoList = calendarModuleService.setEmptyDayUserInfoList(emptyDaysList);
         calendarInfo.setEmptyDayUserInfoArrayList(emptyDayUserInfoList);
 
         List<Certifications> certificationsList = certificationsDAO.selectList(familyId,firstDate,finalDate);
-        if(certificationsList.size() > 0)
+        if(!certificationsList.isEmpty())
             challengeBarInfoList = calendarModuleService.setChallengeBarInfoList(certificationsList);
         calendarInfo.setChallengeBarInfo(challengeBarInfoList);
 
         return calendarInfo;
     }
-
     @Override
     public void deleteCalendarInfo(EmptyDays emptyDays) throws RuntimeException{
         if(emptyDaysDAO.selectToId(emptyDays) == 0) throw new NoMatchPointException();
         emptyDaysDAO.deleteToId(emptyDays);
+
     }
 
 }

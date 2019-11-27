@@ -83,8 +83,7 @@ public class CalendarModuleServiceImpl implements CalendarModuleService {
         ArrayList<String> dateList = new ArrayList<>();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
         dateList.add(simpleDateFormat.format(certifications.getRegisteredDate()));
-        return setChallengeTitlePlusName(new ChallengeBarInfo(userInfoArrayList,registeredChallenges.getResolution(),
-                challenges.getImage(),registeredChallenges.getChallengeIdFK(),
+        return setChallengeTitlePlusName(new ChallengeBarInfo(registeredChallenges.getChallengeIdFK(),userInfoArrayList,registeredChallenges.getResolution(),
                 registeredId, challenges.getTitle(), dateList));
     }
 
@@ -115,11 +114,11 @@ public class CalendarModuleServiceImpl implements CalendarModuleService {
            count++;
        }
        if(count <= 2) {
-           title += "과(와) ";
+           title += "과(와) \n";
            title += challengeTitle;
        }
        else if(count > 2)
-           title = title + "외 " + Integer.toString(count - 2) + "명과 " + challengeTitle;
+           title = title + " 등 \n" + Integer.toString(count) + "명과 " + challengeTitle;
        challengeBarInfo.setChallengeTitle(title);
        return challengeBarInfo;
     }

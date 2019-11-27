@@ -13,20 +13,20 @@ public class ChallengeBarInfo {
     private ArrayList<String> date;
     private long registeredId;
     private String resolution;
+    private int challengeId;
     private String challengeTitle;
-    private long challengeId;
-    private String challengeImage;
     private int totalNum;
     private int certificationNum;
+    private int percentage;
     private String viewDate;
     public ChallengeBarInfo(){}
-    public ChallengeBarInfo(ArrayList<UserInfo> userInfo,String resolution,String challengeImage,long challengeId,long registeredId, String challengeTitle, ArrayList<String> date){
+    public ChallengeBarInfo(int challengeId,ArrayList<UserInfo> userInfo,String resolution,long registeredId, String challengeTitle, ArrayList<String> date){
         this.challengeTitle = challengeTitle;
+        this.challengeId = challengeId;
         this.userInfo = userInfo;
         this.resolution = resolution;
         this.date = date;
         this.registeredId = registeredId;
-        this.challengeId = challengeId;
-        this.challengeImage = challengeImage;
+
     }
 }
