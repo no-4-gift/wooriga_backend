@@ -12,10 +12,12 @@ public class MyRecordInfo {
     private ArrayList<ChallengeBarInfo> challengeBarInfoArrayList;
     private int successNum;
     private int failNum;
-    public MyRecordInfo(ArrayList<ChallengeBarInfo> challengeBarInfoArrayList,int successNum,int failNum){
+    private int percentage;
+    public MyRecordInfo(int percentage,ArrayList<ChallengeBarInfo> challengeBarInfoArrayList,int successNum,int failNum){
         this.challengeBarInfoArrayList = challengeBarInfoArrayList;
         this.successNum = successNum;
         this.failNum = failNum;
+        this.percentage = percentage;
     }
     public MyRecordInfo(){}
 }

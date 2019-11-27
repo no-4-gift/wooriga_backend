@@ -109,9 +109,32 @@ public class KakaoService {
 
             long id = element.getAsJsonObject().get("id").getAsLong();
             String nickname = properties.getAsJsonObject().get("nickname").getAsString();
-            String email = kakao_account.getAsJsonObject().get("email").getAsString();
-            String image = profile.getAsJsonObject().get("thumbnail_image_url").getAsString();
-            String birth = kakao_account.getAsJsonObject().get("birthday").getAsString();
+            String email = "";
+            try {
+                if (kakao_account.getAsJsonObject().get("email").isJsonNull()) {
+                } else {
+                    email = kakao_account.getAsJsonObject().get("email").getAsString();
+                }
+            }catch(Exception e) {
+
+            }
+            String image = "";
+            try{
+                if(profile.getAsJsonObject().get("thumbnail_image_url").isJsonNull()){
+                    System.out.println("null임");
+                }
+                else
+                    image = profile.getAsJsonObject().get("thumbnail_image_url").getAsString();
+            } catch(Exception e) {
+            }
+
+            String birth = "";
+            try {
+                if (kakao_account.getAsJsonObject().get("birthday").isJsonNull()) {
+                } else
+                    birth = kakao_account.getAsJsonObject().get("birthday").getAsString();
+            } catch(Exception e) {
+            }
             System.out.println(id + ", " + nickname + ", " + email + ", " + image + ", " + birth);
 
             userInfo.put("id", id);
@@ -213,4 +236,5 @@ public class KakaoService {
         }
         return access_Token;
     }
+
 }
