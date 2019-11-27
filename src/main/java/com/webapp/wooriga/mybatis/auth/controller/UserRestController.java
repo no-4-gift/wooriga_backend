@@ -37,6 +37,7 @@ public class UserRestController {
     // 카카오 로그인 후
     @RequestMapping(value = "/social/login/kakao", method = RequestMethod.GET)
     public ModelAndView login(ModelAndView mav, @RequestParam String code) {
+        System.out.println(code);
         log.error("code : " + code);
         access_token = kakaoService.getAccessToken(code);
         log.error("access : " + access_token);
@@ -49,13 +50,17 @@ public class UserRestController {
         String birthday = (String)userInfo.get("birth");
         String color = "black";
 
-        //System.out.println("User info : " + id + ", " + nickname);
-        //System.out.println(userService.selectOne(id));
-        userService.update(new User(id, nickname, email, image, color, birthday));
+        System.out.println("User info : " + id + ", " + nickname + ", " + email + ", " + birthday + ", " + color);
+        System.out.println(userService.selectOne(id));
+        if(userService.selectOne(id) == null) {
+            userService.insert(new User(id, nickname, email, image, color, birthday));
+        }
+        else
+            userService.update(new User(id, nickname, email, image, color, birthday));
 
         mav.addObject("access_token", access_token);
         mav.addObject("user", userInfo);
-        mav.setViewName("main");
+        mav.setViewName("redirectKakao");
         return mav;
     }
 
@@ -110,6 +115,8 @@ public class UserRestController {
 
         return null;
     }
+
+
 
     @ApiOperation(value = "마이페이지 내 나의 기록 전달" )
     @GetMapping(value = "/mypage/familyId/uid")
