@@ -17,6 +17,7 @@ public interface UserService {
 	public void insert(User user);
 	public void delete(User user);
 	public void update(User user);
+	public void updateMyInfo(User user);
 	public void updateFamilyId(User user);
 	public List<User> familyAll(String family_id);
 	public String checkFamilyId(long uid);

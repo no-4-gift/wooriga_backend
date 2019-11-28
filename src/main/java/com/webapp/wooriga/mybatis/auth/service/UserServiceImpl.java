@@ -43,6 +43,9 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
+	public void updateMyInfo(User user) { dao.updateMyInfo(user); }
+
+	@Override
 	public void updateFamilyId(User user) {
 		dao.updateFamilyId(user);
 	}

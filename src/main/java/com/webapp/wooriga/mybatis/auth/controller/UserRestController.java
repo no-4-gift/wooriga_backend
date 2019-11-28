@@ -12,9 +12,7 @@ import io.swagger.annotations.ApiOperation;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
 
 @Api(tags = {"0.회원가입,3. 마이페이지"})
 @RequestMapping(value = "/api")
@@ -206,27 +204,78 @@ public class UserRestController {
         return map;
     }
 
-    //내 정보 수정
-    @RequestMapping(value = "/mypage/modify", method = RequestMethod.PUT)
-    public Map modifyUserInfo() {
+    @RequestMapping(value = "/mypage/modify", method = RequestMethod.GET)
+    public Map modify(@RequestBody long uid, @RequestBody String code) {
         HashMap<String, Object> map = new HashMap<>();
-        // update user set nickname = #{nickname}, relationship = #{relationship}, color = #
-        //{color} where uid = #{uid}
+        User user = userService.selectOne(uid);
+        try{
+            List<User> userList = new ArrayList<>();
+            List<String> colorList = new ArrayList<>();
+            userList = userService.familyAll(code);
+            for (int i = 0; i < userList.size(); i++) {
+                if(userList.get(i).getUid() == uid) {
+                    continue;
+                }
+                else {
+                    colorList.add(userList.get(i).getColor());
+                }
+            }
+            map.put("userInfo", user);
+            map.put("colorList", colorList);
+        } catch (Exception e) {
+        }
+
+        return map;
+    }
+
+    //내 정보 수정
+    @RequestMapping(value = "/mypage/modify/{uid}", method = RequestMethod.PUT)
+    public Map modifyUserInfo(@PathVariable long uid, @RequestBody User user) {
+        HashMap<String, Object> map = new HashMap<>();
         try {
-            // modify 함수 만들기
-            map.put("success", "true");
+            if(user.getUid() == uid) {
+                userService.updateMyInfo(user);
+            }
+            map.put("familyId", user.getFamilyId());
+            map.put("success", true);
         }catch (Exception e) {
-            map.put("success", "false");
+            map.put("success", false);
         }
         return map;
     }
 
     //가족 추가
     @RequestMapping(value = "/mypage/add", method = RequestMethod.GET)
-    public String addFamily() {
+    public Map myFamily(@RequestBody long uid, @RequestBody String code) {
 
+        HashMap<String, Object> map = new HashMap<>();
+        User user = userService.selectOne(uid);
+        try{
+            List<User> userList = new ArrayList<>();
+            userList = userService.familyAll(code);
+            for (int i = 0; i < userList.size(); i++) {
+                if(userList.get(i).getUid() == uid) {
+                    userList.remove(i);
+                    break;
+                }
+            }
+            map.put("userInfo", user);
+            map.put("familyList", userList);
+        } catch (Exception e) {
+        }
 
-        return null;
+        return map;
+    }
+    @RequestMapping(value = "/mypage/add/{uid}", method = RequestMethod.PUT)
+    public Map addFamily(@PathVariable long uid) {
+        HashMap<String, Object> map = new HashMap<>();
+        try {
+            User user = userService.selectOne(uid);
+            map.put("code", user.getFamilyId());
+        }catch (Exception e) {
+            map.put("code", null);
+        }
+        return map;
     }
 
     //관리자 위임

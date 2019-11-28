@@ -47,8 +47,8 @@
 		update user set email = #{email}, profile = #{profile}, color = #{color}, birth = #{birth} where uid = #{uid}
 	</update>
 
-	<update id="updateColorAndRelationship" parameterType="User">
-		update user set color = #{color} where uid = #{uid}
+	<update id="updateMyInfo" parameterType="User">
+		update user set nickname = #{nickname}, profile = #{profile}, relationship = #{relationship}, color = #{color} where uid = #{uid}
 	</update>
 
 	<update id="updateFamilyId" parameterType="User">

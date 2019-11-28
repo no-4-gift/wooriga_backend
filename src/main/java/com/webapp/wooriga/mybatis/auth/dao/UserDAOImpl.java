@@ -45,6 +45,9 @@ public class UserDAOImpl implements UserDAO {
 	}
 
 	@Override
+	public void updateMyInfo(User user) { mapper.updateMyInfo(user); }
+
+	@Override
 	public void updateFamilyId(User user) {
 		mapper.updateFamilyId(user);
 	}
