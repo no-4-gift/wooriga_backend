@@ -23,9 +23,8 @@ public class MyPageServiceImpl implements MyPageService {
         this.challengeViewService = challengeViewService;
         this.certificationsDAO = certificationsDAO;
     }
-    public MyPageServiceImpl(){
+    public MyPageServiceImpl(){ }
 
-    }
     @Override
     public MyRecordInfo sendMyRecordInfo(String familyId,long uid) throws RuntimeException{
         HashMap<String,Object> userInfoMap = new HashMap<>();

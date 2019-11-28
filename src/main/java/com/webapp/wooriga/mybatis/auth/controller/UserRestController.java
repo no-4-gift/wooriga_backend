@@ -4,7 +4,7 @@ import java.util.*;
 
 import com.webapp.wooriga.mybatis.auth.result.MyRecordInfo;
 import com.webapp.wooriga.mybatis.auth.service.KakaoService;
-import com.webapp.wooriga.mybatis.auth.service.MyPageServiceImpl;
+import com.webapp.wooriga.mybatis.auth.service.MyPageService;
 import com.webapp.wooriga.mybatis.auth.service.UserService;
 import com.webapp.wooriga.mybatis.vo.User;
 import io.swagger.annotations.Api;
@@ -22,10 +22,10 @@ public class UserRestController {
     Logger log = LoggerFactory.getLogger(this.getClass());
     private UserService userService;
     private KakaoService kakaoService;
-    private MyPageServiceImpl myPageService;
+    private MyPageService myPageService;
 
     @Autowired
-    public UserRestController(UserService userService, KakaoService kakaoService, MyPageServiceImpl myPageService) {
+    public UserRestController(UserService userService, KakaoService kakaoService, MyPageService myPageService) {
         this.userService = userService;
         this.kakaoService = kakaoService;
         this.myPageService = myPageService;
@@ -126,11 +126,11 @@ public class UserRestController {
                 }
             }
             User userInfo = userService.selectOne(uid);
-            long managerUid = userService.getUid(code);
-            User manager = userService.selectOne(managerUid);
+            //long managerUid = userService.getUid(code);
+           // User manager = userService.selectOne(managerUid);
 
             map.put("userInfo", userInfo);
-            map.put("manager", manager);
+            //map.put("manager", manager);
             map.put("familyCount", userList.size());
             map.put("colorList", colorList);
         } catch (Exception e) {
@@ -240,9 +240,4 @@ public class UserRestController {
     }
 
 
-    @ApiOperation(value = "마이페이지 내부 나의 기록 전달,현재 진행 중인 챌린지 전달",notes = "response : 200 - 성공 , 411 -이에 맞는 정보가 없음")
-    @GetMapping(value = "/mypage/familyId/uid")
-    public MyRecordInfo sendMyRecord(@RequestParam("familyId") String familyId, @RequestParam("uid") long uid) throws RuntimeException {
-        return myPageService.sendMyRecordInfo(familyId, uid);
-    }
 }

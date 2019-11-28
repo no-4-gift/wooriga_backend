@@ -62,7 +62,6 @@ public class UserDAOImpl implements UserDAO {
 		return mapper.checkUser(uid);
 	}
 
-	@Override
 	public long getUid(String code) { return mapper.getUid(code); }
 
 	@Override
@@ -86,8 +85,8 @@ public class UserDAOImpl implements UserDAO {
 	@Override
 	public List<User> selectfamilyId(@Param("familyId")String familyId){ return mapper.selectfamilyId(familyId);}
 
-	@Override
-	public Long getUidFromCode(@Param("code")String code){
+
+	public Long getUidFromCode(String code){
 		return mapper.getUidFromCode(code);
 	}
 }
