@@ -55,10 +55,13 @@
 		select code from family where uid = #{uid}
 	</select>
 
+<<<<<<< HEAD
 	<select id="getUidFromCode" parameterType="String" resultType="Long">
 		select uid from family where code = #{code}
 	</select>
 
+=======
+>>>>>>> parent of 57753c7... UserRestController method Modify
 	<select id="familyAll" resultMap="UserResult" parameterType="String">
 		select * from user where family_id = #{family_id}
 	</select>
