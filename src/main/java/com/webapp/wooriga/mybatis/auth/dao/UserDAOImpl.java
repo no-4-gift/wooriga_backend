@@ -82,4 +82,9 @@ public class UserDAOImpl implements UserDAO {
 	public List<User> selectUserId(HashMap<String,Object> userMap){ return mapper.selectUserId(userMap);}
 	@Override
 	public List<User> selectfamilyId(@Param("familyId")String familyId){ return mapper.selectfamilyId(familyId);}
+
+	@Override
+	public Long getUidFromCode(@Param("code")String code){
+		return mapper.getUidFromCode(code);
+	}
 }

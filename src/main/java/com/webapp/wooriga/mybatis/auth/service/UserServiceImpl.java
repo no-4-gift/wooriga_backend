@@ -1,5 +1,6 @@
 package com.webapp.wooriga.mybatis.auth.service;
 
+import java.lang.reflect.Array;
 import java.util.*;
 
 import com.webapp.wooriga.mybatis.auth.dao.UserDAO;
@@ -72,17 +73,32 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public ArrayList<UserInfo> sendUserInfo(String familyId) throws RuntimeException {
+		Long chiefId = dao.getUidFromCode(familyId);
+		if(chiefId == null) throw new NoInformationException();
+		User chief = dao.selectOne(chiefId);
 		List<User> userInfoList = dao.selectfamilyId(familyId);
-		return this.sortwithUserName(userInfoList);
+		return addUserInfoToArrayList(chief,userInfoList);
 	}
 	@Override
-	public ArrayList<UserInfo> sortwithUserName(List<User> userInfoList) throws RuntimeException{
+	public ArrayList<UserInfo> addUserInfoToArrayList(User chief,List<User> userInfoList) throws RuntimeException{
+		if(userInfoList.size() == 0) throw new NoInformationException();
+
 		ArrayList<UserInfo> userInfoArrayList = new ArrayList<>();
-		for(User user : userInfoList){
-			UserInfo userInfo = new UserInfo(user.getRelationship(),user.getName(),user.getProfile(),user.getColor(),user.getUid());
-			userInfoArrayList.add(userInfo);
+		userInfoArrayList = convertUserToUserInfoAndAddArrayList(chief,userInfoArrayList);
+		ArrayList<UserInfo> participantInfoArrayList = new ArrayList<>();
+		for(User user : userInfoList) {
+			if(user.getUid() == chief.getUid()) continue;
+			participantInfoArrayList = convertUserToUserInfoAndAddArrayList(user,participantInfoArrayList);
 		}
-		if(userInfoArrayList.size() == 0) throw new NoInformationException();
+		userInfoArrayList.addAll(sortwithUserName(participantInfoArrayList));
+		return userInfoArrayList;
+	}
+	private ArrayList<UserInfo> convertUserToUserInfoAndAddArrayList(User user,ArrayList<UserInfo> userInfoArrayList){
+		UserInfo userInfo = new UserInfo(user.getRelationship(), user.getName(), user.getProfile(), user.getColor(), user.getUid());
+		userInfoArrayList.add(userInfo);
+		return userInfoArrayList;
+	}
+	private ArrayList<UserInfo> sortwithUserName(ArrayList<UserInfo> userInfoArrayList){
 		userInfoArrayList.sort((arg0,arg1)->{
 			String name0 = arg0.getName();
 			String name1 = arg1.getName();

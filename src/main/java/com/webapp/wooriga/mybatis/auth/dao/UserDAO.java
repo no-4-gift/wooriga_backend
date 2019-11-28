@@ -25,4 +25,5 @@ public interface UserDAO {
 	int selectUserToFamilyId(HashMap<String,Object> familyMap);
 	List<User> selectUserId(HashMap<String,Object> userMap);
 	List<User> selectfamilyId(@Param("familyId")String familyId);
+	Long getUidFromCode(@Param("code")String code);
 }
