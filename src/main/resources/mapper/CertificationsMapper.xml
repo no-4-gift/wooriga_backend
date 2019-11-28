@@ -74,4 +74,8 @@
         (select count(*) as num, registered_fk from certifications group by registered_fk) second where
         first.registered_fk = second.registered_fk and cnt = num)]]>
     </select>
+    <select id = "selectPresentNum" resultType="int" parameterType="java.util.HashMap">
+        select count(distinct registered_id) from registeredchallenges r, certifications c where
+registered_id = registered_fk and familyId = #{familyId} and chief_fk = #{uid} and date > now()
+    </select>
 </mapper>

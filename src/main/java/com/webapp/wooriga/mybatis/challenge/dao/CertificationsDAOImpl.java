@@ -65,4 +65,9 @@ public class CertificationsDAOImpl implements CertificationsDAO {
     public List<Certifications> selectMyInfo(HashMap<String,Object> infoHashMap){
         return certificationsMapper.selectMyInfo(infoHashMap);
     }
+
+    @Override
+    public int selectPresentNum(HashMap<String,Object> infoHashMap){
+        return certificationsMapper.selectPresentNum(infoHashMap);
+    }
 }

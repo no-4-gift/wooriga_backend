@@ -34,7 +34,7 @@ public class MyPageServiceImpl implements MyPageService {
         if(certificationsList.isEmpty()) throw new NoMatchPointException();
         ArrayList<ChallengeViewInfo> challengeViewInfoArrayList = challengeViewService.makeChallengeViewInfo(certificationsList,3);
         ArrayList<MyAchievement> myAchievementArrayList = this.setSuccessTrueOnMyAchievement(challengeViewInfoArrayList);
-        MyRecordInfo myRecordInfo = this.setAchievementOnMyRecord(myAchievementArrayList);
+        MyRecordInfo myRecordInfo = this.setAchievementOnMyRecord(myAchievementArrayList,userInfoMap);
         return myRecordInfo;
     }
     private ArrayList<MyAchievement> setSuccessTrueOnMyAchievement(ArrayList<ChallengeViewInfo> challengeViewInfoArrayList){
@@ -48,14 +48,15 @@ public class MyPageServiceImpl implements MyPageService {
         }
         return myAchievementArrayList;
     }
-    private MyRecordInfo setAchievementOnMyRecord(ArrayList<MyAchievement> myAchievementArrayList){
+    private MyRecordInfo setAchievementOnMyRecord(ArrayList<MyAchievement> myAchievementArrayList,HashMap<String,Object> userInfoMap){
        int successNum = 0,failNum = 0,totalNum = 0;
        for(MyAchievement myAchievement : myAchievementArrayList){
            totalNum++;
            if(myAchievement.getSuccessTrue()) successNum++;
            else failNum++;
        }
-        MyRecordInfo myRecordInfo = new MyRecordInfo(myAchievementArrayList,successNum,failNum,(int)(successNum/(double)totalNum*100),totalNum);
+       int presentNum = certificationsDAO.selectPresentNum(userInfoMap);
+        MyRecordInfo myRecordInfo = new MyRecordInfo(presentNum,myAchievementArrayList,successNum,failNum,(int)(successNum/(double)totalNum*100),totalNum);
        return myRecordInfo;
     }
 }
