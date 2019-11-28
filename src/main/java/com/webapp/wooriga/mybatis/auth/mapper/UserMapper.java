@@ -12,29 +12,21 @@ import org.apache.ibatis.annotations.Param;
 @Mapper
 public interface UserMapper {
 
-	public List<User> selectAll();
+ 	List<User> selectAll();
 
-	public User selectOne(long uid);
+ 	User selectOne(long uid);
 
-	public void insert(User user);
+ 	void insert(User user);
 
-	public void delete(User user);
+	void delete(User user);
 
-	public void update(User user);
+	void update(User user);
 
-	public void updateFamilyId(User user);
+	void updateFamilyId(User user);
 
-	public List<User> familyAll(String family_id);
+	List<User> familyAll(String family_id);
 
-	public String checkFamilyId(long uid);
-
-	public int checkUser(long uid);
-
-	public long getUid(String code);
-
-	public String getCode(long uid);
-
-	public void insertCodeUser(CodeUser codeuser);
+	String checkFamilyId(long uid);
 
 	User selectUserForCalendar(EmptyDays emptyDays);
 
@@ -44,5 +36,5 @@ public interface UserMapper {
 
 	List<User> selectfamilyId(@Param("familyId") String familyId);
 
-	Long getUidFromCode(@Param("code")String code);
+
 }

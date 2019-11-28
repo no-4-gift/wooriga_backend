@@ -20,4 +20,5 @@ public interface CertificationsDAO {
     List<Certifications> selectNonCertificateDate(HashMap<String,Object> infoHashMap);
     int selectCertificationRow(HashMap<String,Object> infoHashMap);
     List<Certifications> selectMyInfo(HashMap<String,Object> infoHashMap);
+    int selectPresentNum(HashMap<String,Object> infoHashMap);
 }

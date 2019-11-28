@@ -64,4 +64,18 @@
         select count(*) from certifications where registered_fk = #{registeredId} and certification_true = 1
         and date = #{date}
     </select>
+
+    <select id = "selectMyInfo" resultMap="rcResult" parameterType="java.util.HashMap">
+        <![CDATA[select registered_fk,c.date,r.challenge_fk,r.chief_fk,r.resolution from registeredchallenges r, certifications c where
+        registered_id = registered_fk and familyId = #{familyId} and chief_fk = #{uid} and registered_fk in
+        (select first.registered_fk from
+        (select count(*) as cnt, registered_fk from certifications
+        where date != date_format(now(), '%Y-%m-%d') and date < now() group by registered_fk) first,
+        (select count(*) as num, registered_fk from certifications group by registered_fk) second where
+        first.registered_fk = second.registered_fk and cnt = num)]]>
+    </select>
+    <select id = "selectPresentNum" resultType="int" parameterType="java.util.HashMap">
+        select count(distinct registered_id) from registeredchallenges r, certifications c where
+registered_id = registered_fk and familyId = #{familyId} and chief_fk = #{uid} and date > now()
+    </select>
 </mapper>

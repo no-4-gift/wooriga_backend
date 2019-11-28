@@ -3,6 +3,7 @@ package com.webapp.wooriga.mybatis.auth.service;
 import java.lang.reflect.Array;
 import java.util.*;
 
+import com.webapp.wooriga.mybatis.auth.dao.CodeUserDAO;
 import com.webapp.wooriga.mybatis.auth.dao.UserDAO;
 import com.webapp.wooriga.mybatis.challenge.result.UserInfo;
 import com.webapp.wooriga.mybatis.exception.NoInformationException;
@@ -15,71 +16,21 @@ import org.springframework.web.bind.annotation.RequestBody;
 @Component("service")
 public class UserServiceImpl implements UserService {
 
+	private UserDAO userDAO;
+	private CodeUserDAO codeUserDAO;
 	@Autowired
-	UserDAO dao;
-
-	@Override
-	public List<User> selectAll() {
-		return dao.selectAll();
+	public UserServiceImpl(UserDAO userDAO,CodeUserDAO codeUserDAO){
+		this.userDAO = userDAO;
+		this.codeUserDAO = codeUserDAO;
 	}
-
-	@Override
-	public User selectOne(long uid) {
-		return dao.selectOne(uid);
-	}
-
-	@Override
-	public void insert(User user) {
-		dao.insert(user);
-	}
-
-	@Override
-	public void delete(User user) {
-		dao.delete(user);
-	}
-
-	@Override
-	public void update(User user) {
-		dao.update(user);
-	}
-
-	@Override
-	public void updateFamilyId(User user) {
-		dao.updateFamilyId(user);
-	}
-
-	@Override
-	public List<User> familyAll(String family_id) { return dao.familyAll(family_id); }
-
-	@Override
-	public String checkFamilyId(long uid) {
-		return dao.checkFamilyId(uid);
-	}
-
-	@Override
-	public int checkUser(long uid) {
-		return dao.checkUser(uid);
-	}
-
-	@Override
-	public long getUid(String code) { return dao.getUid(code); }
-
-	@Override
-	public String getCode(long uid) {
-		return dao.getCode(uid);
-	}
-
-	@Override
-	public void insertCodeUser(CodeUser codeuser) {
-		dao.insertCodeUser(codeuser);
-	}
+	public UserServiceImpl(){}
 
 	@Override
 	public ArrayList<UserInfo> sendUserInfo(String familyId) throws RuntimeException {
-		Long chiefId = dao.getUidFromCode(familyId);
+		Long chiefId = codeUserDAO.getUidFromCode(familyId);
 		if(chiefId == null) throw new NoInformationException();
-		User chief = dao.selectOne(chiefId);
-		List<User> userInfoList = dao.selectfamilyId(familyId);
+		User chief = userDAO.selectOne(chiefId);
+		List<User> userInfoList = userDAO.selectfamilyId(familyId);
 		return addUserInfoToArrayList(chief,userInfoList);
 	}
 	@Override
@@ -128,7 +79,7 @@ public class UserServiceImpl implements UserService {
 
 		try {
 			// 랜덤코드 테이블에서 현재 관리자 코드 존재 여부 확인
-			int check = checkUser(user.getUid());
+			int check = codeUserDAO.checkUser(user.getUid());
 			String getCode = "";
 
 			System.out.println("check : " + check);
@@ -147,14 +98,14 @@ public class UserServiceImpl implements UserService {
 
 				String code = buf.toString();
 
-				insertCodeUser(new CodeUser(user.getUid(), code)); // codeUser에 저장
+				codeUserDAO.insertCodeUser(new CodeUser(user.getUid(), code)); // codeUser에 저장
 				user.setFamilyId(code);
-				updateFamilyId(user); // family_id 갱신
+				userDAO.updateFamilyId(user); // family_id 갱신
 				System.out.println(user.getUid() + "님의 생성 코드 : " + code);
 				getCode = code;
 				map.put("code", getCode);
 			} else {
-				getCode = getCode(user.getUid());
+				getCode = codeUserDAO.getCode(user.getUid());
 				map.put("code", getCode);
 			}
 		} catch (Exception e) {

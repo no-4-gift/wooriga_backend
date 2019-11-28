@@ -13,12 +13,14 @@ public class MyRecordInfo {
     private int failNum;
     private int totalNum;
     private int percentage;
-    public MyRecordInfo( ArrayList<MyAchievement> myAchievementArrayList, int successNum, int failNum, int percentage, int totalNum){
+    private int presentNum;
+    public MyRecordInfo( int presentNum,ArrayList<MyAchievement> myAchievementArrayList, int successNum, int failNum, int percentage, int totalNum){
         this.myAchievementArrayList = myAchievementArrayList;
         this.successNum = successNum;
         this.failNum = failNum;
         this.percentage = percentage;
         this.totalNum = totalNum;
+        this.presentNum = presentNum;
     }
     public MyRecordInfo(){}
 }

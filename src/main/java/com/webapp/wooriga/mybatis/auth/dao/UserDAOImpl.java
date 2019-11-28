@@ -58,24 +58,6 @@ public class UserDAOImpl implements UserDAO {
 	}
 
 	@Override
-	public int checkUser(long uid) {
-		return mapper.checkUser(uid);
-	}
-
-	@Override
-	public long getUid(String code) { return mapper.getUid(code); }
-
-	@Override
-	public String getCode(long uid) {
-		return mapper.getCode(uid);
-	}
-
-	@Override
-	public void insertCodeUser(CodeUser codeuser) {
-		mapper.insertCodeUser(codeuser);
-	}
-
-	@Override
 	public User selectUserForCalendar(EmptyDays emptyDays) { return mapper.selectUserForCalendar(emptyDays);}
 
 	@Override
@@ -86,8 +68,5 @@ public class UserDAOImpl implements UserDAO {
 	@Override
 	public List<User> selectfamilyId(@Param("familyId")String familyId){ return mapper.selectfamilyId(familyId);}
 
-	@Override
-	public Long getUidFromCode(@Param("code")String code){
-		return mapper.getUidFromCode(code);
-	}
+
 }
