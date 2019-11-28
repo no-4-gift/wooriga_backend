@@ -71,7 +71,8 @@ public class ChallengeViewServiceImpl implements ChallengeViewService {
         }
         return infoHashMap;
     }
-    private ArrayList<ChallengeViewInfo> makeChallengeViewInfo(List<Certifications> certificationsList,int pageId){
+    @Override
+    public ArrayList<ChallengeViewInfo> makeChallengeViewInfo(List<Certifications> certificationsList,int pageId){
         ArrayList<ChallengeViewInfo> challengeViewInfoArrayList = new ArrayList<>();
         if (certificationsList.isEmpty()) throw new NoMatchPointException();
         ArrayList<ChallengeBarInfo>  challengeBarInfoArrayList = setCertificationAndTotalNum(calendarModuleService.setChallengeBarInfoList(certificationsList));
@@ -90,7 +91,8 @@ public class ChallengeViewServiceImpl implements ChallengeViewService {
             int certificationNum = certificationsDAO.selectCertificationDateNum(registeredId);
             challengeBarInfo.setTotalNum(totalNum);
             challengeBarInfo.setCertificationNum(certificationNum);
-            challengeBarInfo.setPercentage(certificationNum/totalNum*100);
+            int percentage = (int)(certificationNum/(double)totalNum*100);
+            challengeBarInfo.setPercentage(percentage);
         }
         return setLatestViewDate(challengeBarInfoArrayList);
     }

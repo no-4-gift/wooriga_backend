@@ -4,7 +4,7 @@ import java.util.*;
 
 import com.webapp.wooriga.mybatis.auth.result.MyRecordInfo;
 import com.webapp.wooriga.mybatis.auth.service.KakaoService;
-import com.webapp.wooriga.mybatis.auth.service.MyPageService;
+import com.webapp.wooriga.mybatis.auth.service.MyPageServiceImpl;
 import com.webapp.wooriga.mybatis.auth.service.UserService;
 import com.webapp.wooriga.mybatis.vo.User;
 import io.swagger.annotations.Api;
@@ -12,9 +12,7 @@ import io.swagger.annotations.ApiOperation;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
 
 @Api(tags = {"0.회원가입,3. 마이페이지"})
 @RequestMapping(value = "/api")
@@ -24,14 +22,15 @@ public class UserRestController {
     Logger log = LoggerFactory.getLogger(this.getClass());
     private UserService userService;
     private KakaoService kakaoService;
-    private MyPageService myPageService;
+    private MyPageServiceImpl myPageService;
 
     @Autowired
-    public UserRestController(UserService userService,KakaoService kakaoService,MyPageService myPageService){
+    public UserRestController(UserService userService, KakaoService kakaoService, MyPageServiceImpl myPageService) {
         this.userService = userService;
-        this.kakaoService =kakaoService;
+        this.kakaoService = kakaoService;
         this.myPageService = myPageService;
     }
+
     static String access_token;
 
     // 카카오 로그인 후
@@ -45,20 +44,19 @@ public class UserRestController {
         HashMap<String, Object> map = new HashMap<>();
         HashMap<String, Object> userInfo = kakaoService.getUserInfo(access_token);
         //System.out.println("login Controller : " + userInfo);
-        long id = (long)userInfo.get("id");
-        String nickname = (String)userInfo.get("nickname");
-        String image = (String)userInfo.get("profile");
-        String email = (String)userInfo.get("email");
-        String birthday = (String)userInfo.get("birth");
+        long id = (long) userInfo.get("id");
+        String nickname = (String) userInfo.get("nickname");
+        String image = (String) userInfo.get("profile");
+        String email = (String) userInfo.get("email");
+        String birthday = (String) userInfo.get("birth");
         String color = "black";
 
         System.out.println("User info : " + id + ", " + nickname + ", " + email + ", " + birthday + ", " + color);
         System.out.println(userService.selectOne(id));
-        if(userService.selectOne(id) == null) {
+        if (userService.selectOne(id) == null) {
             userService.insert(new User(id, nickname, email, image, color, birthday));
             map.put("firstLogin", true);
-        }
-        else {
+        } else {
             userService.update(new User(id, nickname, email, image, color, birthday));
             map.put("firstLogin", false);
         }
@@ -97,11 +95,10 @@ public class UserRestController {
         //uid를 통해 family_id 저장 여부 확인
         String family_id = userService.checkFamilyId(uid);
 
-        if(family_id != null) { // 캘린더 화면 이동
+        if (family_id != null) { // 캘린더 화면 이동
             map.put("isFamily", 1);
             map.put("familyId", family_id);
-        }
-        else { // 최초 상태
+        } else { // 최초 상태
             map.put("isFamily", 0);
         }
 
@@ -114,7 +111,7 @@ public class UserRestController {
 
         User user = userService.selectOne(uid);
 
-        try{
+        try {
             //user.setFamilyId(code);
             //userService.updateFamilyId(user);
 
@@ -122,10 +119,9 @@ public class UserRestController {
             List<String> colorList = new ArrayList<>();
             userList = userService.familyAll(code);
             for (int i = 0; i < userList.size(); i++) {
-                if(userList.get(i).getUid() == uid) {
+                if (userList.get(i).getUid() == uid) {
                     continue;
-                }
-                else {
+                } else {
                     colorList.add(userList.get(i).getColor());
                 }
             }
@@ -149,7 +145,7 @@ public class UserRestController {
 
         User user = userService.selectOne(uid);
 
-        try{
+        try {
             user.setFamilyId(code);
             user.setColor(color);
             user.setRelationship(relationship);
@@ -199,7 +195,7 @@ public class UserRestController {
             map.put("userInfo", user);
             map.put("familyList", userList);
 
-        } catch(Exception e) {
+        } catch (Exception e) {
 
         }
 
@@ -215,7 +211,7 @@ public class UserRestController {
         try {
             // modify 함수 만들기
             map.put("success", "true");
-        }catch (Exception e) {
+        } catch (Exception e) {
             map.put("success", "false");
         }
         return map;
@@ -237,27 +233,16 @@ public class UserRestController {
         try {
             // 관리자 modify 함수 만들기
             map.put("success", "true");
-        }catch (Exception e) {
+        } catch (Exception e) {
             map.put("success", "false");
         }
         return map;
     }
 
 
-    @ApiOperation(value = "마이페이지 내 나의 기록 전달" )
+    @ApiOperation(value = "마이페이지 내부 나의 기록 전달,현재 진행 중인 챌린지 전달",notes = "response : 200 - 성공 , 411 -이에 맞는 정보가 없음")
     @GetMapping(value = "/mypage/familyId/uid")
-    public MyRecordInfo sendMyRecord(){
-        return myPageService.sendMyRecordInfo();
+    public MyRecordInfo sendMyRecord(@RequestParam("familyId") String familyId, @RequestParam("uid") long uid) throws RuntimeException {
+        return myPageService.sendMyRecordInfo(familyId, uid);
     }
-
-   /*
-   @RequestMapping(value = "/users", method = RequestMethod.POST)
-   public void insertUser(@RequestBody User user) {
-      try {
-            userService.insert(user);
-      } catch (Exception e) {
-         e.printStackTrace();
-      }
-   }
-   */
 }
