@@ -64,13 +64,4 @@
         select count(*) from certifications where registered_fk = #{registeredId} and certification_true = 1
         and date = #{date}
     </select>
-    <select id = "selectMyInfo" resultMap="rcResult" parameterType="java.util.HashMap">
-        select registered_fk,c.date,r.challenge_fk,r.chief_fk,r.resolution from registeredchallenges r, certifications c where
-        registered_id = registered_fk and familyid = #{familyId} and chief_fk = #{uid} and registered_fk in
-        (select first.registered_fk from
-        (select count(*) as cnt, registered_fk from certifications
-        where date < now() and date != date_format(now(), '%Y-%m-%d') group by registered_fk) first,
-        (select count(*) as num, registered_fk from certifications group by registered_fk) second where
-        first.registered_fk = second.registered_fk and cnt = num);
-    </select>
 </mapper>
