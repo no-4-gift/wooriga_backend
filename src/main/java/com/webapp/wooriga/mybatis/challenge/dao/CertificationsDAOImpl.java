@@ -6,6 +6,7 @@ import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -58,5 +59,10 @@ public class CertificationsDAOImpl implements CertificationsDAO {
     @Override
     public int selectCertificationRow(HashMap<String,Object> infoHashMap){
         return certificationsMapper.selectCertificationRow(infoHashMap);
+    }
+
+    @Override
+    public List<Certifications> selectMyInfo(HashMap<String,Object> infoHashMap){
+        return certificationsMapper.selectMyInfo(infoHashMap);
     }
 }
