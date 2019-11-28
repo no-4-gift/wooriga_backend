@@ -1,0 +1,9 @@
+diff a/out/production/resources/mapper/UserMapper.xml b/out/production/resources/mapper/UserMapper.xml	(rejected hunks)
+@@ -61,6 +61,7 @@
+ +	</select>
+ +
+ +=======
+++>>>>>>> parent of 57753c7... UserRestController method Modify
+  	<select id="familyAll" resultMap="UserResult" parameterType="String">
+  		select * from user where family_id = #{family_id}
+  	</select>
