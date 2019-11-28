@@ -1,12 +1,16 @@
 package com.webapp.wooriga.mybatis.auth.service;
 
+import com.webapp.wooriga.mybatis.auth.dao.CodeUserDAO;
+import com.webapp.wooriga.mybatis.auth.dao.UserDAO;
 import com.webapp.wooriga.mybatis.auth.result.MyAchievement;
 import com.webapp.wooriga.mybatis.auth.result.MyRecordInfo;
 import com.webapp.wooriga.mybatis.challenge.dao.CertificationsDAO;
 import com.webapp.wooriga.mybatis.challenge.result.ChallengeViewInfo;
 import com.webapp.wooriga.mybatis.challenge.service.ChallengeViewService;
+import com.webapp.wooriga.mybatis.exception.NoInformationException;
 import com.webapp.wooriga.mybatis.exception.NoMatchPointException;
 import com.webapp.wooriga.mybatis.vo.Certifications;
+import com.webapp.wooriga.mybatis.vo.CodeUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,10 +22,12 @@ import java.util.List;
 public class MyPageServiceImpl implements MyPageService {
     private ChallengeViewService challengeViewService;
     private CertificationsDAO certificationsDAO;
+    private CodeUserDAO codeUserDAO;
     @Autowired
-    public MyPageServiceImpl(CertificationsDAO certificationsDAO,ChallengeViewService challengeViewService){
+    public MyPageServiceImpl(CodeUserDAO codeUserDAO,CertificationsDAO certificationsDAO,ChallengeViewService challengeViewService){
         this.challengeViewService = challengeViewService;
         this.certificationsDAO = certificationsDAO;
+        this.codeUserDAO = codeUserDAO;
     }
     public MyPageServiceImpl(){ }
 
@@ -58,5 +64,17 @@ public class MyPageServiceImpl implements MyPageService {
        int presentNum = certificationsDAO.selectPresentNum(userInfoMap);
         MyRecordInfo myRecordInfo = new MyRecordInfo(presentNum,myAchievementArrayList,successNum,failNum,(int)(successNum/(double)totalNum*100),totalNum);
        return myRecordInfo;
+    }
+    @Override
+    public void delegateChief(String familyId, long uid, long chiefId) throws RuntimeException{
+        int trueUserNum = codeUserDAO.checkUser(uid);
+        Long trueFamily = codeUserDAO.getUidFromCode(familyId);
+        if(trueUserNum == 0 || trueFamily == null) throw new NoInformationException();
+        CodeUser codeUser = new CodeUser(chiefId,familyId);
+        try {
+            codeUserDAO.updateChief(codeUser);
+        }catch(Exception e){
+            throw new NoInformationException();
+        }
     }
 }

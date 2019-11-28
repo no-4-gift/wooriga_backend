@@ -4,4 +4,5 @@ import com.webapp.wooriga.mybatis.auth.result.MyRecordInfo;
 
 public interface MyPageService {
     MyRecordInfo sendMyRecordInfo(String familyId, long uid) throws RuntimeException;
+    void delegateChief(String familyId, long uid, long chiefId) throws RuntimeException;
 }

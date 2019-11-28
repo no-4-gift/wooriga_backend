@@ -1,14 +1,12 @@
 package com.webapp.wooriga.mybatis.auth.controller;
 
 import java.util.*;
-
-import com.webapp.wooriga.mybatis.auth.result.MyRecordInfo;
+import com.webapp.wooriga.mybatis.auth.dao.UserDAO;
 import com.webapp.wooriga.mybatis.auth.service.KakaoService;
 import com.webapp.wooriga.mybatis.auth.service.MyPageService;
 import com.webapp.wooriga.mybatis.auth.service.UserService;
 import com.webapp.wooriga.mybatis.vo.User;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,14 +19,14 @@ import org.springframework.web.bind.annotation.*;
 public class UserRestController {
     Logger log = LoggerFactory.getLogger(this.getClass());
     private UserService userService;
+    private UserDAO userDAO;
     private KakaoService kakaoService;
-    private MyPageService myPageService;
 
     @Autowired
-    public UserRestController(UserService userService, KakaoService kakaoService, MyPageService myPageService) {
+    public UserRestController(UserDAO userDAO,UserService userService, KakaoService kakaoService) {
         this.userService = userService;
+        this.userDAO = userDAO;
         this.kakaoService = kakaoService;
-        this.myPageService = myPageService;
     }
 
     static String access_token;
@@ -52,12 +50,12 @@ public class UserRestController {
         String color = "black";
 
         System.out.println("User info : " + id + ", " + nickname + ", " + email + ", " + birthday + ", " + color);
-        System.out.println(userService.selectOne(id));
-        if (userService.selectOne(id) == null) {
-            userService.insert(new User(id, nickname, email, image, color, birthday));
+        System.out.println(userDAO.selectOne(id));
+        if (userDAO.selectOne(id) == null) {
+            userDAO.insert(new User(id, nickname, email, image, color, birthday));
             map.put("firstLogin", true);
         } else {
-            userService.update(new User(id, nickname, email, image, color, birthday));
+            userDAO.update(new User(id, nickname, email, image, color, birthday));
             map.put("firstLogin", false);
         }
 
@@ -93,7 +91,7 @@ public class UserRestController {
         access_token = accessToken;
 
         //uid를 통해 family_id 저장 여부 확인
-        String family_id = userService.checkFamilyId(uid);
+        String family_id = userDAO.checkFamilyId(uid);
 
         if (family_id != null) { // 캘린더 화면 이동
             map.put("isFamily", 1);
@@ -109,7 +107,7 @@ public class UserRestController {
     public Map family(@RequestBody long uid, @RequestBody String code) {
         HashMap<String, Object> map = new HashMap<String, Object>();
 
-        User user = userService.selectOne(uid);
+        User user = userDAO.selectOne(uid);
 
         try {
             //user.setFamilyId(code);
@@ -117,7 +115,7 @@ public class UserRestController {
 
             List<User> userList = new ArrayList<>();
             List<String> colorList = new ArrayList<>();
-            userList = userService.familyAll(code);
+            userList = userDAO.familyAll(code);
             for (int i = 0; i < userList.size(); i++) {
                 if (userList.get(i).getUid() == uid) {
                     continue;
@@ -125,7 +123,7 @@ public class UserRestController {
                     colorList.add(userList.get(i).getColor());
                 }
             }
-            User userInfo = userService.selectOne(uid);
+            User userInfo = userDAO.selectOne(uid);
             //long managerUid = userService.getUid(code);
            // User manager = userService.selectOne(managerUid);
 
@@ -143,14 +141,14 @@ public class UserRestController {
     public Map changeColor(@PathVariable long uid, @RequestBody String color, @RequestBody String relationship, @RequestBody String code) {
         HashMap<String, Object> map = new HashMap<String, Object>();
 
-        User user = userService.selectOne(uid);
+        User user = userDAO.selectOne(uid);
 
         try {
             user.setFamilyId(code);
             user.setColor(color);
             user.setRelationship(relationship);
-            userService.updateFamilyId(user);
-            userService.update(user);
+            userDAO.updateFamilyId(user);
+            userDAO.update(user);
 
             map.put("familyId", code);
         } catch (Exception e) {
@@ -161,13 +159,13 @@ public class UserRestController {
 
     @RequestMapping(value = "/admin", method = RequestMethod.GET)
     public Map admin(@RequestBody long uid, @RequestBody String accessToken) throws RuntimeException {
-        User user = userService.selectOne(uid);
+        User user = userDAO.selectOne(uid);
         return userService.admin(user, accessToken);
     }
 
     @RequestMapping(value = "/users", method = RequestMethod.GET)
     public List<User> allUsers() {
-        return userService.selectAll();
+        return userDAO.selectAll();
     }
 
     // 마이페이지
@@ -177,11 +175,11 @@ public class UserRestController {
 
         try {
             // 로그인한 유저 정보
-            User user = userService.selectOne(uid);
+            User user = userDAO.selectOne(uid);
 
             // 가족 정보
             List<User> userList = new ArrayList<>();
-            userList = userService.familyAll(user.getFamilyId());
+            userList = userDAO.familyAll(user.getFamilyId());
             for (int i = 0; i < userList.size(); i++) {
                 if (userList.get(i).getUid() == uid) {
                     userList.remove(i);

@@ -24,4 +24,10 @@ public class MyPageController {
     public MyRecordInfo sendMyRecord(@RequestParam("familyId") String familyId, @RequestParam("uid") long uid) throws RuntimeException {
         return myPageService.sendMyRecordInfo(familyId, uid);
     }
+
+    @ApiOperation(value = "가장 위임하기 uid 는 원래 가족장 chiefId는 미래 가족장",notes = "response : 200 - 성공, 404 - 원래 가족장 혹은 가족 정보가 없는 정보임")
+    @PostMapping(value = "/mypage/familyId/uid/chiefId")
+    public void delegateChief(@RequestParam("familyId") String familyId, @RequestParam("uid")long uid, @RequestParam("chiefId") long chiefId) throws RuntimeException{
+        myPageService.delegateChief(familyId, uid, chiefId);
+    }
 }

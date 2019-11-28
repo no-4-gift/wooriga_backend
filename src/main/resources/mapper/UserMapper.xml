@@ -22,11 +22,6 @@
 		<result column = "relationship" property="relationship" />
 	</resultMap>
 
-	<resultMap id="CheckUserResult" type="CodeUser">
-		<result column="uid" property="uid"/>
-		<result column="code" property="code"/>
-	</resultMap>
-
 	<select id="selectAll" resultMap="UserResult">
 		select * from user order by uid
 	</select>
@@ -55,18 +50,6 @@
 		update user set family_id = #{family_id} where uid = #{uid}
 	</update>
 
-	<select id="getUid" resultType="String" parameterType="String">
-		select uid from family where code = #{code}
-	</select>
-
-	<select id="getCode" resultType="String" parameterType="long">
-		select code from family where uid = #{uid}
-	</select>
-
-	<select id="getUidFromCode" parameterType="String" resultType="Long">
-		select uid from family where code = #{code}
-	</select>
-
 	<select id="familyAll" resultMap="UserResult" parameterType="String">
 		select * from user where family_id = #{family_id}
 	</select>
@@ -75,13 +58,6 @@
 		select family_id from user where uid = #{uid}
 	</select>
 
-	<select id="checkUser" resultType="int" parameterType="long">
-		select count(*) from family where uid = #{uid}
-	</select>
-
-	<insert id="insertCodeUser" parameterType="CodeUser">
-		insert into family(uid, code) values(#{uid}, #{code})
-	</insert>
 	<select id = "selectUserToFamilyId" parameterType="java.util.HashMap" resultType="int">
 		select count(*) from user where family_id = #{familyId} and uid in
 		<foreach collection="participantsList" item ="data" open="(" separator=",">
@@ -101,5 +77,8 @@
 	</select>
 	<select id = "selectfamilyId" parameterType="String" resultMap = "UserResult">
 		select * from user where family_id = #{familyId}
+	</select>
+	<select id = "selectNumTofamilyId" parameterType="long" resultType="int">
+		select count(*) from user where uid = #{uid}
 	</select>
 </mapper>
