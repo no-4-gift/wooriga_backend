@@ -55,6 +55,10 @@
 		select code from family where uid = #{uid}
 	</select>
 
+	<select id="getUidFromCode" parameterType="String" resultType="Long">
+		select uid from family where code = #{code}
+	</select>
+
 	<select id="familyAll" resultMap="UserResult" parameterType="String">
 		select * from user where family_id = #{family_id}
 	</select>
