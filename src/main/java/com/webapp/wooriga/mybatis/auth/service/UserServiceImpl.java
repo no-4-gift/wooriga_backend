@@ -61,6 +61,9 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
+	public long getUid(String code) { return dao.getUid(code); }
+
+	@Override
 	public String getCode(long uid) {
 		return dao.getCode(uid);
 	}
