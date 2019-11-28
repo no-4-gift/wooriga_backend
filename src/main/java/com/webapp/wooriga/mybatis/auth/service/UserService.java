@@ -21,6 +21,7 @@ public interface UserService {
 	public List<User> familyAll(String family_id);
 	public String checkFamilyId(long uid);
 	public int checkUser(long uid);
+	public long getUid(String code);
 	public String getCode(long uid);
 	public void insertCodeUser(CodeUser codeuser);
 	ArrayList<UserInfo> sendUserInfo(String familyId) throws RuntimeException;

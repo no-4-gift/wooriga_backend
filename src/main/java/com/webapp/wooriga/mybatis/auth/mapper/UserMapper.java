@@ -30,6 +30,8 @@ public interface UserMapper {
 
 	public int checkUser(long uid);
 
+	public long getUid(String code);
+
 	public String getCode(long uid);
 
 	public void insertCodeUser(CodeUser codeuser);

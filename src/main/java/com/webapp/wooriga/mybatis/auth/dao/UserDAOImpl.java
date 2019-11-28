@@ -63,6 +63,9 @@ public class UserDAOImpl implements UserDAO {
 	}
 
 	@Override
+	public long getUid(String code) { return mapper.getUid(code); }
+
+	@Override
 	public String getCode(long uid) {
 		return mapper.getCode(uid);
 	}

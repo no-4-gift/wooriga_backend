@@ -47,9 +47,17 @@
 		update user set email = #{email}, profile = #{profile}, color = #{color}, birth = #{birth} where uid = #{uid}
 	</update>
 
+	<update id="updateColorAndRelationship" parameterType="User">
+		update user set color = #{color} where uid = #{uid}
+	</update>
+
 	<update id="updateFamilyId" parameterType="User">
 		update user set family_id = #{family_id} where uid = #{uid}
 	</update>
+
+	<select id="getUid" resultType="String" parameterType="String">
+		select uid from family where code = #{code}
+	</select>
 
 	<select id="getCode" resultType="String" parameterType="long">
 		select code from family where uid = #{uid}
