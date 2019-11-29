@@ -33,24 +33,29 @@ public class UserRestController {
     static String access_token;
 
     // 카카오 로그인 후
-    @RequestMapping(value = "/social/login/kakao", method = RequestMethod.GET)
-    public Map login(@RequestBody String accessToken) {
+    @RequestMapping(value = "/social/login/kakao", method = RequestMethod.POST)
+    public Map login(@RequestBody long id, @RequestBody String nickname, @RequestBody String profile) {
         //System.out.println(code);
         //log.error("code : " + code);
         //access_token = kakaoService.getAccessToken(code);
-        access_token = accessToken;
-        log.error("access : " + access_token);
+        //access_token = accessToken;
+        //log.error("access : " + access_token);
         HashMap<String, Object> map = new HashMap<>();
-        HashMap<String, Object> userInfo = kakaoService.getUserInfo(access_token);
+        //HashMap<String, Object> userInfo = kakaoService.getUserInfo(access_token);
         //System.out.println("login Controller : " + userInfo);
-        long id = (long)userInfo.get("id");
-        String nickname = (String)userInfo.get("nickname");
-        String image = (String)userInfo.get("profile");
-        String email = (String)userInfo.get("email");
-        String birthday = (String)userInfo.get("birth");
+        //long id = (long)userInfo.get("id");
+        //String nickname = (String)userInfo.get("nickname");
+        //String image = (String)userInfo.get("profile");
+        //String email = (String)userInfo.get("email");
+        //String birthday = (String)userInfo.get("birth");
+        //String color = "black";
+
+        String image = profile;
+        String email = "";
+        String birthday = "";
         String color = "black";
 
-        System.out.println("User info : " + id + ", " + nickname + ", " + email + ", " + birthday + ", " + color);
+        System.out.println("User info : " + id + ", " + nickname + ", " + image + ", " + email + ", " + birthday + ", " + color);
         System.out.println(userService.selectOne(id));
         if(userService.selectOne(id) == null) {
             userService.insert(new User(id, nickname, email, image, color, birthday));
@@ -105,7 +110,7 @@ public class UserRestController {
     }
 
     @RequestMapping(value = "/family", method = RequestMethod.GET)
-    public Map family(@RequestBody long uid, @RequestBody String code) {
+    public Map family(@RequestParam long uid, @RequestParam String code) {
         HashMap<String, Object> map = new HashMap<String, Object>();
 
         User user = userService.selectOne(uid);
@@ -160,7 +165,7 @@ public class UserRestController {
     }
 
     @RequestMapping(value = "/admin", method = RequestMethod.GET)
-    public Map admin(@RequestBody long uid, @RequestBody String accessToken) throws RuntimeException {
+    public Map admin(@RequestParam long uid, @RequestParam String accessToken) throws RuntimeException {
         User user = userService.selectOne(uid);
         return userService.admin(user, accessToken);
     }
@@ -172,7 +177,7 @@ public class UserRestController {
 
     // 마이페이지
     @RequestMapping(value = "/mypage", method = RequestMethod.GET)
-    public Map mypage(@RequestBody long uid) {
+    public Map mypage(@RequestParam long uid) {
         HashMap<String, Object> map = new HashMap<>();
 
         try {
@@ -203,7 +208,7 @@ public class UserRestController {
     }
 
     @RequestMapping(value = "/mypage/modify", method = RequestMethod.GET)
-    public Map modify(@RequestBody long uid, @RequestBody String code) {
+    public Map modify(@RequestParam long uid, @RequestParam String code) {
         HashMap<String, Object> map = new HashMap<>();
         User user = userService.selectOne(uid);
         try{
@@ -244,7 +249,7 @@ public class UserRestController {
 
     //가족 추가
     @RequestMapping(value = "/mypage/add", method = RequestMethod.GET)
-    public Map myFamily(@RequestBody long uid, @RequestBody String code) {
+    public Map myFamily(@RequestParam long uid, @RequestParam String code) {
 
         HashMap<String, Object> map = new HashMap<>();
         User user = userService.selectOne(uid);
