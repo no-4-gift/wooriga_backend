@@ -1,6 +1,8 @@
 package com.webapp.wooriga.mybatis.auth.controller;
 
 import java.util.*;
+
+import com.webapp.wooriga.mybatis.auth.dao.CodeUserDAO;
 import com.webapp.wooriga.mybatis.auth.dao.UserDAO;
 import com.webapp.wooriga.mybatis.auth.service.KakaoService;
 import com.webapp.wooriga.mybatis.auth.service.MyPageService;
@@ -21,37 +23,42 @@ public class UserRestController {
     private UserService userService;
     private UserDAO userDAO;
     private KakaoService kakaoService;
+    private CodeUserDAO codeUserDAO;
 
     @Autowired
-    public UserRestController(UserDAO userDAO,UserService userService, KakaoService kakaoService) {
+    public UserRestController(UserDAO userDAO,UserService userService, KakaoService kakaoService, CodeUserDAO codeUserDAO) {
         this.userService = userService;
         this.userDAO = userDAO;
         this.kakaoService = kakaoService;
+        this.codeUserDAO = codeUserDAO;
     }
 
-    static String access_token;
-
     // 카카오 로그인 후
-    @RequestMapping(value = "/social/login/kakao", method = RequestMethod.GET)
-    public Map login(@RequestBody String accessToken) {
+    @RequestMapping(value = "/social/login/kakao", method = RequestMethod.POST)
+    public Map login(@RequestBody long id, @RequestBody String nickname, @RequestBody String profile) {
         //System.out.println(code);
         //log.error("code : " + code);
         //access_token = kakaoService.getAccessToken(code);
-        access_token = accessToken;
-        log.error("access : " + access_token);
+        //access_token = accessToken;
+        //log.error("access : " + access_token);
         HashMap<String, Object> map = new HashMap<>();
-        HashMap<String, Object> userInfo = kakaoService.getUserInfo(access_token);
+        //HashMap<String, Object> userInfo = kakaoService.getUserInfo(access_token);
         //System.out.println("login Controller : " + userInfo);
-        long id = (long) userInfo.get("id");
-        String nickname = (String) userInfo.get("nickname");
-        String image = (String) userInfo.get("profile");
-        String email = (String) userInfo.get("email");
-        String birthday = (String) userInfo.get("birth");
+        //long id = (long)userInfo.get("id");
+        //String nickname = (String)userInfo.get("nickname");
+        //String image = (String)userInfo.get("profile");
+        //String email = (String)userInfo.get("email");
+        //String birthday = (String)userInfo.get("birth");
+        //String color = "black";
+
+        String image = profile;
+        String email = "";
+        String birthday = "";
         String color = "black";
 
-        System.out.println("User info : " + id + ", " + nickname + ", " + email + ", " + birthday + ", " + color);
+        System.out.println("User info : " + id + ", " + nickname + ", " + image + ", " + email + ", " + birthday + ", " + color);
         System.out.println(userDAO.selectOne(id));
-        if (userDAO.selectOne(id) == null) {
+        if(userDAO.selectOne(id) == null) {
             userDAO.insert(new User(id, nickname, email, image, color, birthday));
             map.put("firstLogin", true);
         } else {
@@ -102,7 +109,7 @@ public class UserRestController {
     }
 
     @RequestMapping(value = "/family", method = RequestMethod.GET)
-    public Map family(@RequestBody long uid, @RequestBody String code) {
+    public Map family(@RequestParam long uid, @RequestParam String code) {
         HashMap<String, Object> map = new HashMap<String, Object>();
 
         User user = userDAO.selectOne(uid);
@@ -156,7 +163,7 @@ public class UserRestController {
     }
 
     @RequestMapping(value = "/admin", method = RequestMethod.GET)
-    public Map admin(@RequestBody long uid, @RequestBody String accessToken) throws RuntimeException {
+    public Map admin(@RequestParam long uid, @RequestParam String accessToken) throws RuntimeException {
         User user = userDAO.selectOne(uid);
         return userService.admin(user, accessToken);
     }
@@ -168,7 +175,7 @@ public class UserRestController {
 
     // 마이페이지
     @RequestMapping(value = "/mypage", method = RequestMethod.GET)
-    public Map mypage(@RequestBody long uid) {
+    public Map mypage(@RequestParam long uid) {
         HashMap<String, Object> map = new HashMap<>();
 
         try {
@@ -199,13 +206,13 @@ public class UserRestController {
     }
 
     @RequestMapping(value = "/mypage/modify", method = RequestMethod.GET)
-    public Map modify(@RequestBody long uid, @RequestBody String code) {
+    public Map modify(@RequestParam long uid, @RequestParam String code) {
         HashMap<String, Object> map = new HashMap<>();
-        User user = userService.selectOne(uid);
+        User user = userDAO.selectOne(uid);
         try{
             List<User> userList = new ArrayList<>();
             List<String> colorList = new ArrayList<>();
-            userList = userService.familyAll(code);
+            userList = userDAO.familyAll(code);
             for (int i = 0; i < userList.size(); i++) {
                 if(userList.get(i).getUid() == uid) {
                     continue;
@@ -228,7 +235,7 @@ public class UserRestController {
         HashMap<String, Object> map = new HashMap<>();
         try {
             if(user.getUid() == uid) {
-                userService.updateMyInfo(user);
+                userDAO.updateMyInfo(user);
             }
             map.put("familyId", user.getFamilyId());
             map.put("success", true);
@@ -240,13 +247,13 @@ public class UserRestController {
 
     //가족 추가
     @RequestMapping(value = "/mypage/add", method = RequestMethod.GET)
-    public Map myFamily(@RequestBody long uid, @RequestBody String code) {
+    public Map myFamily(@RequestParam long uid, @RequestParam String code) {
 
         HashMap<String, Object> map = new HashMap<>();
-        User user = userService.selectOne(uid);
+        User user = userDAO.selectOne(uid);
         try{
             List<User> userList = new ArrayList<>();
-            userList = userService.familyAll(code);
+            userList = userDAO.familyAll(code);
             for (int i = 0; i < userList.size(); i++) {
                 if(userList.get(i).getUid() == uid) {
                     userList.remove(i);
@@ -265,7 +272,7 @@ public class UserRestController {
     public Map addFamily(@PathVariable long uid) {
         HashMap<String, Object> map = new HashMap<>();
         try {
-            User user = userService.selectOne(uid);
+            User user = userDAO.selectOne(uid);
             map.put("code", user.getFamilyId());
         }catch (Exception e) {
             map.put("code", null);
@@ -278,12 +285,12 @@ public class UserRestController {
     public Map deleteFamily(@PathVariable long uid, @RequestBody long deleteId) {
         HashMap<String, Object> map = new HashMap<>();
         try {
-            String code = userService.getCode(uid);
+            String code = codeUserDAO.getCode(uid);
             if(code != null) { // 관리자의 경우에만
-                User user = userService.selectOne(deleteId);
+                User user = userDAO.selectOne(deleteId);
                 String reset = "";
                 user.setFamilyId(reset);
-                userService.updateFamilyId(user);
+                userDAO.updateFamilyId(user);
                 map.put("code", code);
             }
         }catch (Exception e) {
