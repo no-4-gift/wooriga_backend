@@ -139,10 +139,10 @@ public class UserServiceImpl implements UserService {
 				updateFamilyId(user); // family_id 갱신
 				System.out.println(user.getUid() + "님의 생성 코드 : " + code);
 				getCode = code;
-				map.put("code", getCode);
+				map.put("familyId", getCode);
 			} else {
 				getCode = getCode(user.getUid());
-				map.put("code", getCode);
+				map.put("familyId", getCode);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();

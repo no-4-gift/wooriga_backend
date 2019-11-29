@@ -88,10 +88,8 @@ public class UserRestController {
 
     // 메인
     @RequestMapping(value = "/main/{uid}", method = RequestMethod.GET)
-    public Map main(@PathVariable long uid, @RequestBody String accessToken) {
+    public Map main(@PathVariable long uid) {
         HashMap<String, Object> map = new HashMap<>();
-        access_token = accessToken;
-
         //uid를 통해 family_id 저장 여부 확인
         String family_id = userService.checkFamilyId(uid);
 
@@ -174,7 +172,7 @@ public class UserRestController {
 
     // 마이페이지
     @RequestMapping(value = "/mypage", method = RequestMethod.GET)
-    public Map mypage(@RequestBody long uid, @RequestBody String accessToken) {
+    public Map mypage(@RequestBody long uid) {
         HashMap<String, Object> map = new HashMap<>();
 
         try {
@@ -266,12 +264,32 @@ public class UserRestController {
 
         return map;
     }
+
     @RequestMapping(value = "/mypage/add/{uid}", method = RequestMethod.PUT)
     public Map addFamily(@PathVariable long uid) {
         HashMap<String, Object> map = new HashMap<>();
         try {
             User user = userService.selectOne(uid);
             map.put("code", user.getFamilyId());
+        }catch (Exception e) {
+            map.put("code", null);
+        }
+        return map;
+    }
+
+    // 가족 삭제
+    @RequestMapping(value = "/mypage/delete/{uid}", method = RequestMethod.DELETE)
+    public Map deleteFamily(@PathVariable long uid, @RequestBody long deleteId) {
+        HashMap<String, Object> map = new HashMap<>();
+        try {
+            String code = userService.getCode(uid);
+            if(code != null) { // 관리자의 경우에만
+                User user = userService.selectOne(deleteId);
+                String reset = "";
+                user.setFamilyId(reset);
+                userService.updateFamilyId(user);
+                map.put("code", code);
+            }
         }catch (Exception e) {
             map.put("code", null);
         }
