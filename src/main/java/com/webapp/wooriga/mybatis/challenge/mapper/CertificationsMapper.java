@@ -4,6 +4,7 @@ import com.webapp.wooriga.mybatis.vo.Certifications;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -20,4 +21,6 @@ public interface CertificationsMapper {
     int selectCertificationDateNum(@Param("registeredId") long registeredId);
     List<Certifications> selectNonCertificateDate(HashMap<String,Object> infoHashMap);
     int selectCertificationRow(HashMap<String,Object> infoHashMap);
+    List<Certifications> selectMyInfo(HashMap<String,Object> infoHashMap);
+    int selectPresentNum(HashMap<String,Object> infoHashMap);
 }

@@ -2,13 +2,13 @@ package com.webapp.wooriga.mybatis.auth.controller;
 
 import java.util.*;
 
-import com.webapp.wooriga.mybatis.auth.result.MyRecordInfo;
+import com.webapp.wooriga.mybatis.auth.dao.CodeUserDAO;
+import com.webapp.wooriga.mybatis.auth.dao.UserDAO;
 import com.webapp.wooriga.mybatis.auth.service.KakaoService;
 import com.webapp.wooriga.mybatis.auth.service.MyPageService;
 import com.webapp.wooriga.mybatis.auth.service.UserService;
 import com.webapp.wooriga.mybatis.vo.User;
 import io.swagger.annotations.Api;
-import io.swagger.annotations.ApiOperation;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,16 +21,17 @@ import org.springframework.web.bind.annotation.*;
 public class UserRestController {
     Logger log = LoggerFactory.getLogger(this.getClass());
     private UserService userService;
+    private UserDAO userDAO;
     private KakaoService kakaoService;
-    private MyPageService myPageService;
+    private CodeUserDAO codeUserDAO;
 
     @Autowired
-    public UserRestController(UserService userService,KakaoService kakaoService,MyPageService myPageService){
+    public UserRestController(UserDAO userDAO,UserService userService, KakaoService kakaoService, CodeUserDAO codeUserDAO) {
         this.userService = userService;
-        this.kakaoService =kakaoService;
-        this.myPageService = myPageService;
+        this.userDAO = userDAO;
+        this.kakaoService = kakaoService;
+        this.codeUserDAO = codeUserDAO;
     }
-    static String access_token;
 
     // 카카오 로그인 후
     @RequestMapping(value = "/social/login/kakao", method = RequestMethod.POST)
@@ -56,13 +57,12 @@ public class UserRestController {
         String color = "black";
 
         System.out.println("User info : " + id + ", " + nickname + ", " + image + ", " + email + ", " + birthday + ", " + color);
-        System.out.println(userService.selectOne(id));
-        if(userService.selectOne(id) == null) {
-            userService.insert(new User(id, nickname, email, image, color, birthday));
+        System.out.println(userDAO.selectOne(id));
+        if(userDAO.selectOne(id) == null) {
+            userDAO.insert(new User(id, nickname, email, image, color, birthday));
             map.put("firstLogin", true);
-        }
-        else {
-            userService.update(new User(id, nickname, email, image, color, birthday));
+        } else {
+            userDAO.update(new User(id, nickname, email, image, color, birthday));
             map.put("firstLogin", false);
         }
 
@@ -96,13 +96,12 @@ public class UserRestController {
     public Map main(@PathVariable long uid) {
         HashMap<String, Object> map = new HashMap<>();
         //uid를 통해 family_id 저장 여부 확인
-        String family_id = userService.checkFamilyId(uid);
+        String family_id = userDAO.checkFamilyId(uid);
 
-        if(family_id != null) { // 캘린더 화면 이동
+        if (family_id != null) { // 캘린더 화면 이동
             map.put("isFamily", 1);
             map.put("familyId", family_id);
-        }
-        else { // 최초 상태
+        } else { // 최초 상태
             map.put("isFamily", 0);
         }
 
@@ -113,29 +112,28 @@ public class UserRestController {
     public Map family(@RequestParam long uid, @RequestParam String code) {
         HashMap<String, Object> map = new HashMap<String, Object>();
 
-        User user = userService.selectOne(uid);
+        User user = userDAO.selectOne(uid);
 
-        try{
+        try {
             //user.setFamilyId(code);
             //userService.updateFamilyId(user);
 
             List<User> userList = new ArrayList<>();
             List<String> colorList = new ArrayList<>();
-            userList = userService.familyAll(code);
+            userList = userDAO.familyAll(code);
             for (int i = 0; i < userList.size(); i++) {
-                if(userList.get(i).getUid() == uid) {
+                if (userList.get(i).getUid() == uid) {
                     continue;
-                }
-                else {
+                } else {
                     colorList.add(userList.get(i).getColor());
                 }
             }
-            User userInfo = userService.selectOne(uid);
-            long managerUid = userService.getUid(code);
-            User manager = userService.selectOne(managerUid);
+            User userInfo = userDAO.selectOne(uid);
+            //long managerUid = userService.getUid(code);
+           // User manager = userService.selectOne(managerUid);
 
             map.put("userInfo", userInfo);
-            map.put("manager", manager);
+            //map.put("manager", manager);
             map.put("familyCount", userList.size());
             map.put("colorList", colorList);
         } catch (Exception e) {
@@ -148,14 +146,14 @@ public class UserRestController {
     public Map changeColor(@PathVariable long uid, @RequestBody String color, @RequestBody String relationship, @RequestBody String code) {
         HashMap<String, Object> map = new HashMap<String, Object>();
 
-        User user = userService.selectOne(uid);
+        User user = userDAO.selectOne(uid);
 
-        try{
+        try {
             user.setFamilyId(code);
             user.setColor(color);
             user.setRelationship(relationship);
-            userService.updateFamilyId(user);
-            userService.update(user);
+            userDAO.updateFamilyId(user);
+            userDAO.update(user);
 
             map.put("familyId", code);
         } catch (Exception e) {
@@ -166,13 +164,13 @@ public class UserRestController {
 
     @RequestMapping(value = "/admin", method = RequestMethod.GET)
     public Map admin(@RequestParam long uid, @RequestParam String accessToken) throws RuntimeException {
-        User user = userService.selectOne(uid);
+        User user = userDAO.selectOne(uid);
         return userService.admin(user, accessToken);
     }
 
     @RequestMapping(value = "/users", method = RequestMethod.GET)
     public List<User> allUsers() {
-        return userService.selectAll();
+        return userDAO.selectAll();
     }
 
     // 마이페이지
@@ -182,11 +180,11 @@ public class UserRestController {
 
         try {
             // 로그인한 유저 정보
-            User user = userService.selectOne(uid);
+            User user = userDAO.selectOne(uid);
 
             // 가족 정보
             List<User> userList = new ArrayList<>();
-            userList = userService.familyAll(user.getFamilyId());
+            userList = userDAO.familyAll(user.getFamilyId());
             for (int i = 0; i < userList.size(); i++) {
                 if (userList.get(i).getUid() == uid) {
                     userList.remove(i);
@@ -200,7 +198,7 @@ public class UserRestController {
             map.put("userInfo", user);
             map.put("familyList", userList);
 
-        } catch(Exception e) {
+        } catch (Exception e) {
 
         }
 
@@ -210,11 +208,11 @@ public class UserRestController {
     @RequestMapping(value = "/mypage/modify", method = RequestMethod.GET)
     public Map modify(@RequestParam long uid, @RequestParam String code) {
         HashMap<String, Object> map = new HashMap<>();
-        User user = userService.selectOne(uid);
+        User user = userDAO.selectOne(uid);
         try{
             List<User> userList = new ArrayList<>();
             List<String> colorList = new ArrayList<>();
-            userList = userService.familyAll(code);
+            userList = userDAO.familyAll(code);
             for (int i = 0; i < userList.size(); i++) {
                 if(userList.get(i).getUid() == uid) {
                     continue;
@@ -237,7 +235,7 @@ public class UserRestController {
         HashMap<String, Object> map = new HashMap<>();
         try {
             if(user.getUid() == uid) {
-                userService.updateMyInfo(user);
+                userDAO.updateMyInfo(user);
             }
             map.put("familyId", user.getFamilyId());
             map.put("success", true);
@@ -252,10 +250,10 @@ public class UserRestController {
     public Map myFamily(@RequestParam long uid, @RequestParam String code) {
 
         HashMap<String, Object> map = new HashMap<>();
-        User user = userService.selectOne(uid);
+        User user = userDAO.selectOne(uid);
         try{
             List<User> userList = new ArrayList<>();
-            userList = userService.familyAll(code);
+            userList = userDAO.familyAll(code);
             for (int i = 0; i < userList.size(); i++) {
                 if(userList.get(i).getUid() == uid) {
                     userList.remove(i);
@@ -274,7 +272,7 @@ public class UserRestController {
     public Map addFamily(@PathVariable long uid) {
         HashMap<String, Object> map = new HashMap<>();
         try {
-            User user = userService.selectOne(uid);
+            User user = userDAO.selectOne(uid);
             map.put("code", user.getFamilyId());
         }catch (Exception e) {
             map.put("code", null);
@@ -287,12 +285,12 @@ public class UserRestController {
     public Map deleteFamily(@PathVariable long uid, @RequestBody long deleteId) {
         HashMap<String, Object> map = new HashMap<>();
         try {
-            String code = userService.getCode(uid);
+            String code = codeUserDAO.getCode(uid);
             if(code != null) { // 관리자의 경우에만
-                User user = userService.selectOne(deleteId);
+                User user = userDAO.selectOne(deleteId);
                 String reset = "";
                 user.setFamilyId(reset);
-                userService.updateFamilyId(user);
+                userDAO.updateFamilyId(user);
                 map.put("code", code);
             }
         }catch (Exception e) {
@@ -309,27 +307,11 @@ public class UserRestController {
         try {
             // 관리자 modify 함수 만들기
             map.put("success", "true");
-        }catch (Exception e) {
+        } catch (Exception e) {
             map.put("success", "false");
         }
         return map;
     }
 
 
-    @ApiOperation(value = "마이페이지 내 나의 기록 전달" )
-    @GetMapping(value = "/mypage/familyId/uid")
-    public MyRecordInfo sendMyRecord(){
-        return myPageService.sendMyRecordInfo();
-    }
-
-   /*
-   @RequestMapping(value = "/users", method = RequestMethod.POST)
-   public void insertUser(@RequestBody User user) {
-      try {
-            userService.insert(user);
-      } catch (Exception e) {
-         e.printStackTrace();
-      }
-   }
-   */
 }
