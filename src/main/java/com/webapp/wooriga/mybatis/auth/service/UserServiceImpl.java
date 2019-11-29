@@ -123,7 +123,7 @@ public class UserServiceImpl implements UserService {
 	public HashMap<String,String> changeColor(Map<String,Object> userInfo) throws RuntimeException{
 		HashMap<String,String> map = new HashMap<>();
 		String familyId = (String)userInfo.get("code");
-		User user = userDAO.selectOne((long)userInfo.get("uid"));
+		User user = userDAO.selectOne((Integer)userInfo.get("uid"));
 		if(user == null) throw new NoInformationException();
 		user.setFamilyId(familyId);
 		user.setColor((String)userInfo.get("color"));
