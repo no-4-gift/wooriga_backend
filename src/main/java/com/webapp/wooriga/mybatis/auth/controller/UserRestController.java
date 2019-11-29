@@ -7,8 +7,11 @@ import com.webapp.wooriga.mybatis.auth.dao.UserDAO;
 import com.webapp.wooriga.mybatis.auth.service.KakaoService;
 import com.webapp.wooriga.mybatis.auth.service.MyPageService;
 import com.webapp.wooriga.mybatis.auth.service.UserService;
+import com.webapp.wooriga.mybatis.exception.NoInformationException;
+import com.webapp.wooriga.mybatis.exception.NoMatchPointException;
 import com.webapp.wooriga.mybatis.vo.User;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -111,25 +114,10 @@ public class UserRestController {
 
         return map;
     }
-
+    @ApiOperation(value = "회원가입 다음 가족 추가, 컬러, 관계 추가(requestBody : uid,color,relationship,code)",notes = "value : 200 - 성공, 404 - 그런 유저 없음")
     @RequestMapping(value = "/family/{uid}", method = RequestMethod.PUT)
-    public Map changeColor(@PathVariable long uid, @RequestBody String color, @RequestBody String relationship, @RequestBody String code) {
-        HashMap<String, Object> map = new HashMap<String, Object>();
-
-        User user = userDAO.selectOne(uid);
-
-        try {
-            user.setFamilyId(code);
-            user.setColor(color);
-            user.setRelationship(relationship);
-            userDAO.updateFamilyId(user);
-            userDAO.update(user);
-
-            map.put("familyId", code);
-        } catch (Exception e) {
-        }
-
-        return map;
+    public HashMap<String,String> changeColor(@RequestBody Map<String,Object> userInfo) throws RuntimeException {
+        return userService.changeColor(userInfo);
     }
 
     @RequestMapping(value = "/admin", method = RequestMethod.GET)

@@ -2,6 +2,7 @@
 package com.webapp.wooriga.mybatis.auth.service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -15,4 +16,5 @@ public interface UserService {
 	int sortName(String name0,String name1);
 	ArrayList<UserInfo> addUserInfoToArrayList(User chief,List<User> userInfoList);
 	public Map admin(User user) throws RuntimeException;
+	HashMap<String,String> changeColor(Map<String,Object> userInfoMap) throws RuntimeException;
 }

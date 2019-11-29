@@ -7,10 +7,12 @@ import com.webapp.wooriga.mybatis.auth.dao.CodeUserDAO;
 import com.webapp.wooriga.mybatis.auth.dao.UserDAO;
 import com.webapp.wooriga.mybatis.challenge.result.UserInfo;
 import com.webapp.wooriga.mybatis.exception.NoInformationException;
+import com.webapp.wooriga.mybatis.exception.NoStoringException;
 import com.webapp.wooriga.mybatis.vo.CodeUser;
 import com.webapp.wooriga.mybatis.vo.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
 
 @Component("service")
@@ -72,6 +74,7 @@ public class UserServiceImpl implements UserService {
 		return -1;
 	}
 
+	@Transactional
 	@Override
 	public Map admin(User user) throws RuntimeException {
 
@@ -112,6 +115,25 @@ public class UserServiceImpl implements UserService {
 			e.printStackTrace();
 		}
 
+		return map;
+	}
+
+	@Transactional
+	@Override
+	public HashMap<String,String> changeColor(Map<String,Object> userInfo) throws RuntimeException{
+		HashMap<String,String> map = new HashMap<>();
+		String familyId = (String)userInfo.get("code");
+		User user = userDAO.selectOne((long)userInfo.get("uid"));
+		if(user == null) throw new NoInformationException();
+		user.setFamilyId(familyId);
+		user.setColor((String)userInfo.get("color"));
+		user.setRelationship((String)userInfo.get("relationship"));
+		try {
+			userDAO.update(user);
+		}catch(Exception e){
+			throw new NoStoringException();
+		}
+		map.put("familyId",familyId);
 		return map;
 	}
 
