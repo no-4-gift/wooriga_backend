@@ -35,7 +35,7 @@ public class UserRestController {
 
     // 카카오 로그인 후
     @RequestMapping(value = "/social/login/kakao", method = RequestMethod.POST)
-    public Map login(@RequestBody long id, @RequestBody String nickname, @RequestBody String profile) {
+    public Map login(@RequestBody User user) {
         //System.out.println(code);
         //log.error("code : " + code);
         //access_token = kakaoService.getAccessToken(code);
@@ -51,7 +51,9 @@ public class UserRestController {
         //String birthday = (String)userInfo.get("birth");
         //String color = "black";
 
-        String image = profile;
+        long id = user.getUid();
+        String nickname = user.getName();
+        String image = user.getProfile();
         String email = "";
         String birthday = "";
         String color = "black";
