@@ -73,7 +73,7 @@ public class UserServiceImpl implements UserService {
 	}
 
 	@Override
-	public Map admin(User user, String accessToken) throws RuntimeException {
+	public Map admin(User user) throws RuntimeException {
 
 		HashMap<String, String> map = new HashMap<String, String>();
 

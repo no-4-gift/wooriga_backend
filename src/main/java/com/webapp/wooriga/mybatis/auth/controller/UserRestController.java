@@ -36,20 +36,8 @@ public class UserRestController {
     // 카카오 로그인 후
     @RequestMapping(value = "/social/login/kakao", method = RequestMethod.POST)
     public Map login(@RequestBody User user) {
-        //System.out.println(code);
-        //log.error("code : " + code);
-        //access_token = kakaoService.getAccessToken(code);
-        //access_token = accessToken;
-        //log.error("access : " + access_token);
+
         HashMap<String, Object> map = new HashMap<>();
-        //HashMap<String, Object> userInfo = kakaoService.getUserInfo(access_token);
-        //System.out.println("login Controller : " + userInfo);
-        //long id = (long)userInfo.get("id");
-        //String nickname = (String)userInfo.get("nickname");
-        //String image = (String)userInfo.get("profile");
-        //String email = (String)userInfo.get("email");
-        //String birthday = (String)userInfo.get("birth");
-        //String color = "black";
 
         long id = user.getUid();
         String nickname = user.getName();
@@ -69,26 +57,6 @@ public class UserRestController {
         }
 
         map.put("uid", id);
-        /*
-        String family_id = userService.checkFamilyId(id);
-        if(family_id != null) { // 이미 존재하면
-            map.put("isFamily", 1);
-            map.put("code", family_id);
-
-            List<User> userList = new ArrayList<>();
-            userList = userService.familyAll(family_id);
-            for (int i = 0; i < userList.size(); i++) {
-                if(userList.get(i).getUid() == id) {
-                    userList.remove(i);
-                    break;
-                }
-            }
-            map.put("familyList", userList);
-        }
-        else {
-            map.put("isFamily", 0);
-        }
-        */
 
         return map;
     }
@@ -165,9 +133,9 @@ public class UserRestController {
     }
 
     @RequestMapping(value = "/admin", method = RequestMethod.GET)
-    public Map admin(@RequestParam long uid, @RequestParam String accessToken) throws RuntimeException {
+    public Map admin(@RequestParam long uid) throws RuntimeException {
         User user = userDAO.selectOne(uid);
-        return userService.admin(user, accessToken);
+        return userService.admin(user);
     }
 
     @RequestMapping(value = "/users", method = RequestMethod.GET)
