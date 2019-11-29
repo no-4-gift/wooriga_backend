@@ -47,7 +47,7 @@
 	</update>
 
 	<update id="updateFamilyId" parameterType="User">
-		update user set family_id = #{family_id} where uid = #{uid}
+		update user set family_id = #{familyId} where uid = #{uid}
 	</update>
 
 	<select id="familyAll" resultMap="UserResult" parameterType="String">
