@@ -21,8 +21,10 @@ public interface UserMapper {
 	void delete(User user);
 
 	void update(User user);
+  
+	public void updateMyInfo(User user);
 
-	void updateFamilyId(User user);
+	public void updateFamilyId(User user);
 
 	List<User> familyAll(String family_id);
 

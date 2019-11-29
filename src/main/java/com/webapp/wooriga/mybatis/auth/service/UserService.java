@@ -11,7 +11,6 @@ import com.webapp.wooriga.mybatis.vo.User;
 import org.springframework.web.bind.annotation.RequestBody;
 
 public interface UserService {
-
 	ArrayList<UserInfo> sendUserInfo(String familyId) throws RuntimeException;
 	int sortName(String name0,String name1);
 	ArrayList<UserInfo> addUserInfoToArrayList(User chief,List<User> userInfoList);

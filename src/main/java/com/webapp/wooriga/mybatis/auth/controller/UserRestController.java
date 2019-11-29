@@ -86,10 +86,8 @@ public class UserRestController {
 
     // 메인
     @RequestMapping(value = "/main/{uid}", method = RequestMethod.GET)
-    public Map main(@PathVariable long uid, @RequestBody String accessToken) {
+    public Map main(@PathVariable long uid) {
         HashMap<String, Object> map = new HashMap<>();
-        access_token = accessToken;
-
         //uid를 통해 family_id 저장 여부 확인
         String family_id = userDAO.checkFamilyId(uid);
 
@@ -170,7 +168,7 @@ public class UserRestController {
 
     // 마이페이지
     @RequestMapping(value = "/mypage", method = RequestMethod.GET)
-    public Map mypage(@RequestBody long uid, @RequestBody String accessToken) {
+    public Map mypage(@RequestBody long uid) {
         HashMap<String, Object> map = new HashMap<>();
 
         try {
@@ -200,27 +198,98 @@ public class UserRestController {
         return map;
     }
 
-    //내 정보 수정
-    @RequestMapping(value = "/mypage/modify", method = RequestMethod.PUT)
-    public Map modifyUserInfo() {
+    @RequestMapping(value = "/mypage/modify", method = RequestMethod.GET)
+    public Map modify(@RequestBody long uid, @RequestBody String code) {
         HashMap<String, Object> map = new HashMap<>();
-        // update user set nickname = #{nickname}, relationship = #{relationship}, color = #
-        //{color} where uid = #{uid}
-        try {
-            // modify 함수 만들기
-            map.put("success", "true");
+        User user = userService.selectOne(uid);
+        try{
+            List<User> userList = new ArrayList<>();
+            List<String> colorList = new ArrayList<>();
+            userList = userService.familyAll(code);
+            for (int i = 0; i < userList.size(); i++) {
+                if(userList.get(i).getUid() == uid) {
+                    continue;
+                }
+                else {
+                    colorList.add(userList.get(i).getColor());
+                }
+            }
+            map.put("userInfo", user);
+            map.put("colorList", colorList);
         } catch (Exception e) {
-            map.put("success", "false");
+        }
+
+        return map;
+    }
+
+    //내 정보 수정
+    @RequestMapping(value = "/mypage/modify/{uid}", method = RequestMethod.PUT)
+    public Map modifyUserInfo(@PathVariable long uid, @RequestBody User user) {
+        HashMap<String, Object> map = new HashMap<>();
+        try {
+            if(user.getUid() == uid) {
+                userService.updateMyInfo(user);
+            }
+            map.put("familyId", user.getFamilyId());
+            map.put("success", true);
+        }catch (Exception e) {
+            map.put("success", false);
         }
         return map;
     }
 
     //가족 추가
     @RequestMapping(value = "/mypage/add", method = RequestMethod.GET)
-    public String addFamily() {
+    public Map myFamily(@RequestBody long uid, @RequestBody String code) {
 
+        HashMap<String, Object> map = new HashMap<>();
+        User user = userService.selectOne(uid);
+        try{
+            List<User> userList = new ArrayList<>();
+            userList = userService.familyAll(code);
+            for (int i = 0; i < userList.size(); i++) {
+                if(userList.get(i).getUid() == uid) {
+                    userList.remove(i);
+                    break;
+                }
+            }
+            map.put("userInfo", user);
+            map.put("familyList", userList);
+        } catch (Exception e) {
+        }
 
-        return null;
+        return map;
+    }
+
+    @RequestMapping(value = "/mypage/add/{uid}", method = RequestMethod.PUT)
+    public Map addFamily(@PathVariable long uid) {
+        HashMap<String, Object> map = new HashMap<>();
+        try {
+            User user = userService.selectOne(uid);
+            map.put("code", user.getFamilyId());
+        }catch (Exception e) {
+            map.put("code", null);
+        }
+        return map;
+    }
+
+    // 가족 삭제
+    @RequestMapping(value = "/mypage/delete/{uid}", method = RequestMethod.DELETE)
+    public Map deleteFamily(@PathVariable long uid, @RequestBody long deleteId) {
+        HashMap<String, Object> map = new HashMap<>();
+        try {
+            String code = userService.getCode(uid);
+            if(code != null) { // 관리자의 경우에만
+                User user = userService.selectOne(deleteId);
+                String reset = "";
+                user.setFamilyId(reset);
+                userService.updateFamilyId(user);
+                map.put("code", code);
+            }
+        }catch (Exception e) {
+            map.put("code", null);
+        }
+        return map;
     }
 
     //관리자 위임
