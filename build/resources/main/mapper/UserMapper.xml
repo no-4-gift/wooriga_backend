@@ -39,7 +39,7 @@
 	</delete>
 
 	<update id="update" parameterType="User">
-		update user set email = #{email}, profile = #{profile}, color = #{color}, birth = #{birth} where uid = #{uid}
+		update user set email = #{email}, profile = #{profile}, color = #{color}, birth = #{birth}, family_id = #{familyId}, relationship = #{relationship} where uid = #{uid}
 	</update>
 
 	<update id="updateMyInfo" parameterType="User">

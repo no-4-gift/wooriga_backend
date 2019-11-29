@@ -115,7 +115,7 @@ public class UserRestController {
         return map;
     }
     @ApiOperation(value = "회원가입 다음 가족 추가, 컬러, 관계 추가(requestBody : uid,color,relationship,code)",notes = "value : 200 - 성공, 404 - 그런 유저 없음")
-    @RequestMapping(value = "/family/{uid}", method = RequestMethod.PUT)
+    @RequestMapping(value = "/family/uid/color/relationship/code", method = RequestMethod.PUT)
     public HashMap<String,String> changeColor(@RequestBody Map<String,Object> userInfo) throws RuntimeException {
         return userService.changeColor(userInfo);
     }
