@@ -14,5 +14,5 @@ public interface UserService {
 	ArrayList<UserInfo> sendUserInfo(String familyId) throws RuntimeException;
 	int sortName(String name0,String name1);
 	ArrayList<UserInfo> addUserInfoToArrayList(User chief,List<User> userInfoList);
-	public Map admin(User user, String accessToken) throws RuntimeException;
+	public Map admin(User user) throws RuntimeException;
 }
