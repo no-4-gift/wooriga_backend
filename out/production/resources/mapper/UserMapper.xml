@@ -55,7 +55,7 @@
 	</select>
 
 	<select id="checkFamilyId" resultType="String" parameterType="long">
-		select family_id from user where ruid = #{uid}
+		select family_id from user where uid = #{uid}
 	</select>
 
 	<select id = "selectUserToFamilyId" parameterType="java.util.HashMap" resultType="int">
