@@ -85,6 +85,25 @@ public class UserRestController {
     }
 
     @RequestMapping(value = "/family", method = RequestMethod.GET)
+    public Map family(@RequestParam long uid) throws RuntimeException {
+        HashMap<String, Object> map = new HashMap<String, Object>();
+
+        User userInfo = userDAO.selectOne(uid);
+        map.put("userInfo", userInfo);
+
+        try {
+            List<User> userList = new ArrayList<>();
+            List<String> colorList = new ArrayList<>();
+
+            map.put("familyCount", userList.size());
+            map.put("colorList", colorList);
+        } catch (Exception e) {
+        }
+
+        return map;
+    }
+
+    @RequestMapping(value = "/family", method = RequestMethod.GET)
     public Map family(@RequestParam long uid, @RequestParam String code) throws RuntimeException {
         HashMap<String, Object> map = new HashMap<String, Object>();
 
@@ -114,10 +133,10 @@ public class UserRestController {
                     colorList.add(userList.get(i).getColor());
                 }
             }
-            //long managerUid = userService.getUid(code);
-           // User manager = userService.selectOne(managerUid);
+            long managerUid = codeUserDAO.getUid(code);
+            User manager = userDAO.selectOne(managerUid);
 
-            //map.put("manager", manager);
+            map.put("manager", manager);
             map.put("familyCount", userList.size());
             map.put("colorList", colorList);
         } catch (Exception e) {
