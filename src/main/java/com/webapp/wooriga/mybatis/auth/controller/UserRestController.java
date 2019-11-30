@@ -5,10 +5,8 @@ import java.util.*;
 import com.webapp.wooriga.mybatis.auth.dao.CodeUserDAO;
 import com.webapp.wooriga.mybatis.auth.dao.UserDAO;
 import com.webapp.wooriga.mybatis.auth.service.KakaoService;
-import com.webapp.wooriga.mybatis.auth.service.MyPageService;
 import com.webapp.wooriga.mybatis.auth.service.UserService;
 import com.webapp.wooriga.mybatis.exception.NoInformationException;
-import com.webapp.wooriga.mybatis.exception.NoMatchPointException;
 import com.webapp.wooriga.mybatis.vo.User;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -104,7 +102,7 @@ public class UserRestController {
         return map;
     }
 
-    @RequestMapping(value = "/family", method = RequestMethod.GET)
+    @RequestMapping(value = "/family/uid/code", method = RequestMethod.GET)
     public Map family(@RequestParam long uid, @RequestParam String code) throws RuntimeException {
         HashMap<String, Object> map = new HashMap<String, Object>();
 
