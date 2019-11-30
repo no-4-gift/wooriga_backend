@@ -9,7 +9,7 @@
         <result column="code" property="code"/>
     </resultMap>
 
-    <select id="getUid" resultType="String" parameterType="String">
+    <select id="getUid" resultType="long" parameterType="String">
 		select uid from family where code = #{code}
 	</select>
 
