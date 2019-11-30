@@ -86,6 +86,25 @@ public class UserRestController {
     }
 
     @RequestMapping(value = "/family", method = RequestMethod.GET)
+    public Map family(@RequestParam long uid) throws RuntimeException {
+        HashMap<String, Object> map = new HashMap<String, Object>();
+
+        User userInfo = userDAO.selectOne(uid);
+        map.put("userInfo", userInfo);
+
+        try {
+            List<User> userList = new ArrayList<>();
+            List<String> colorList = new ArrayList<>();
+
+            map.put("familyCount", userList.size());
+            map.put("colorList", colorList);
+        } catch (Exception e) {
+        }
+
+        return map;
+    }
+
+    @RequestMapping(value = "/family", method = RequestMethod.GET)
     public Map family(@RequestParam long uid, @RequestParam String code) throws RuntimeException {
         HashMap<String, Object> map = new HashMap<String, Object>();
 
@@ -97,6 +116,9 @@ public class UserRestController {
         else {
             throw new NoInformationException();
         }
+
+        User userInfo = userDAO.selectOne(uid);
+        map.put("userInfo", userInfo);
 
         try {
             //user.setFamilyId(code);
@@ -112,12 +134,10 @@ public class UserRestController {
                     colorList.add(userList.get(i).getColor());
                 }
             }
-            User userInfo = userDAO.selectOne(uid);
-            //long managerUid = userService.getUid(code);
-           // User manager = userService.selectOne(managerUid);
+            long managerUid = codeUserDAO.getUid(code);
+            User manager = userDAO.selectOne(managerUid);
 
-            map.put("userInfo", userInfo);
-            //map.put("manager", manager);
+            map.put("manager", manager);
             map.put("familyCount", userList.size());
             map.put("colorList", colorList);
         } catch (Exception e) {
@@ -199,13 +219,24 @@ public class UserRestController {
     }
 
     //내 정보 수정
-    @RequestMapping(value = "/mypage/modify/{uid}", method = RequestMethod.PUT)
-    public Map modifyUserInfo(@PathVariable long uid, @RequestBody User user) {
+    @RequestMapping(value = "/mypage/modify", method = RequestMethod.PUT)
+    public Map modifyUserInfo(@RequestBody Map<String,Object> userInfo) {
         HashMap<String, Object> map = new HashMap<>();
         try {
-            if(user.getUid() == uid) {
-                userDAO.updateMyInfo(user);
-            }
+            long id = (Long)userInfo.get("uid");
+            String nickname = (String)userInfo.get("name");
+            String profile = (String)userInfo.get("profile");
+            String relationship = (String)userInfo.get("relationship");
+            String color = (String)userInfo.get("color");
+
+            User user = userDAO.selectOne(id);
+            user.setName(nickname);
+            user.setProfile(profile);
+            user.setRelationship(relationship);
+            user.setColor(color);
+
+            userDAO.updateMyInfo(user);
+
             map.put("familyId", user.getFamilyId());
             map.put("success", true);
         }catch (Exception e) {
