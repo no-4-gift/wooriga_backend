@@ -70,10 +70,11 @@ public class UserRestController {
         HashMap<String, Object> map = new HashMap<>();
         //uid를 통해 family_id 저장 여부 확인
         String family_id = userDAO.checkFamilyId(uid);
-
+        log.error(family_id);
         if (family_id != null) { // 캘린더 화면 이동
             map.put("isFamily", 1);
             map.put("familyId", family_id);
+            log.error("dgdsgdg");
         } else { // 최초 상태
             map.put("isFamily", 0);
         }
