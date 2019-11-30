@@ -43,7 +43,7 @@
 	</update>
 
 	<update id="updateMyInfo" parameterType="User">
-		update user set nickname = #{nickname}, profile = #{profile}, relationship = #{relationship}, color = #{color} where uid = #{uid}
+		update user set name = #{name}, profile = #{profile}, relationship = #{relationship}, color = #{color} where uid = #{uid}
 	</update>
 
 	<update id="updateFamilyId" parameterType="User">
