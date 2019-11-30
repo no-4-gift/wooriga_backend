@@ -45,6 +45,9 @@ public class UserRestController {
         long id = user.getUid();
         String nickname = user.getName();
         String image = user.getProfile();
+
+        User now = userDAO.selectOne(id);
+
         String email = "";
         String birthday = "";
         String color = "black";
@@ -55,7 +58,7 @@ public class UserRestController {
             userDAO.insert(new User(id, nickname, email, image, color, birthday));
             map.put("firstLogin", true);
         } else {
-            userDAO.update(new User(id, nickname, email, image, color, birthday));
+            userDAO.update(new User(id, nickname, now.getEmail(), image, now.getColor(), now.getBirth()));
             map.put("firstLogin", false);
         }
 
@@ -83,10 +86,17 @@ public class UserRestController {
     }
 
     @RequestMapping(value = "/family", method = RequestMethod.GET)
-    public Map family(@RequestParam long uid, @RequestParam String code) {
+    public Map family(@RequestParam long uid, @RequestParam String code) throws RuntimeException {
         HashMap<String, Object> map = new HashMap<String, Object>();
 
         User user = userDAO.selectOne(uid);
+
+        long temp = codeUserDAO.getUid(code);
+        if(temp > 0) {
+        }
+        else {
+            throw new NoInformationException();
+        }
 
         try {
             //user.setFamilyId(code);
