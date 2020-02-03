@@ -11,6 +11,8 @@ import com.webapp.wooriga.mybatis.challenge.service.MakeArrayListService;
 import com.webapp.wooriga.mybatis.challenge.service.MakeResultService;
 import com.webapp.wooriga.mybatis.exception.NoInformationException;
 import com.webapp.wooriga.mybatis.vo.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +21,7 @@ import java.util.*;
 
 @Service
 public class CalendarModuleServiceImpl implements CalendarModuleService {
+    Logger log = LoggerFactory.getLogger(this.getClass());
     private UserDAO userDAO;
     private ChallengesDAO challengesDAO;
     private ParticipantsDAO participantsDAO;
@@ -100,7 +103,7 @@ public class CalendarModuleServiceImpl implements CalendarModuleService {
     }
 
     @Override
-    public ArrayList<UserInfo> setParticipantsInfo(long registeredId){
+    public ArrayList<UserInfo> setParticipantsInfo(long registeredId) throws RuntimeException{
         List<Participants> participantsList = participantsDAO.selectParticipants(registeredId);
         ArrayList<UserInfo> userInfoArrayList = new ArrayList<>();
         for(Participants participant : participantsList)
@@ -121,8 +124,8 @@ public class CalendarModuleServiceImpl implements CalendarModuleService {
     }
     @Override
     public ArrayList<UserInfo> makeUserInfoArrayListAndMerge(User chief,long registeredId)  {
-        ArrayList<UserInfo> userInfoArrayList= new ArrayList<>();
-        makeArrayListService.convertUserToUserInfoAndAddArrayList(chief,userInfoArrayList);
+        ArrayList<UserInfo> userInfoArrayList = new ArrayList<>();
+        userInfoArrayList = makeArrayListService.convertUserToUserInfoAndAddArrayList(chief,userInfoArrayList);
         userInfoArrayList.addAll(this.setParticipantsInfo(registeredId));
         return userInfoArrayList;
     }

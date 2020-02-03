@@ -2,17 +2,16 @@ package com.webapp.wooriga.mybatis.vo;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.webapp.wooriga.mybatis.auth.deserializer.UserDeserializer;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.regex.Pattern;
 
-@Getter
-@Setter
+@Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @JsonDeserialize(using = UserDeserializer.class)
 public class User {
 	private long uid;

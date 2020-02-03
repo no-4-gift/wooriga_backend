@@ -1,12 +1,11 @@
 package com.webapp.wooriga.mybatis.vo;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
-@Getter
-@Setter
+@Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class CodeUser {
     private long uid;
     private String code;

@@ -1,14 +1,13 @@
 package com.webapp.wooriga.mybatis.vo;
 
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import lombok.*;
 
-@Getter
-@Setter
+@Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class RegisteredChallenges {
-
     private long registeredId;
     private long chiefIdFK;
     private String familyId;
