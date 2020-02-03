@@ -64,6 +64,7 @@ public class UserServiceImpl implements UserService {
 		userInfoArrayList.sort((arg0,arg1)->{
 			String name0 = arg0.getName();
 			String name1 = arg1.getName();
+			log.info(name0 + name1);
 			return this.sortName(name0,name1);
 		});
 		return userInfoArrayList;
