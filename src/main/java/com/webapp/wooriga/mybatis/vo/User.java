@@ -2,46 +2,58 @@ package com.webapp.wooriga.mybatis.vo;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.webapp.wooriga.mybatis.auth.deserializer.UserDeserializer;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.regex.Pattern;
+
 @Getter
 @Setter
+@Builder
 @JsonDeserialize(using = UserDeserializer.class)
 public class User {
 	private long uid;
-	private String name;
+	private String username;
 	private String email;
 	private String profile;
 	private String color;
 	private String birth;
 	private String familyId;
 	private String relationship;
+	private String authority;
 
-	public User(long uid, String name, String profile) {
-		this.uid = uid;
-		this.name = name;
-		this.profile = profile;
+	/*@Override
+	public Collection<? extends GrantedAuthority> getAuthorities() {
+		ArrayList<GrantedAuthority> auth = new ArrayList<GrantedAuthority>();
+		auth.add(new SimpleGrantedAuthority(authority));
+		return auth;
+	}
+	public void setAuthority(){
+			this.authority = "ROLE_USER";
+	}
+	@Override
+	public boolean isAccountNonExpired() {
+		return true;
 	}
 
-	public User(long uid, String name, String email, String profile, String color, String birth) {
-		this.uid = uid;
-		this.name = name;
-		this.email = email;
-		this.profile = profile;
-		this.color = color;
-		this.birth = birth;
+	@Override
+	public boolean isAccountNonLocked() {
+		return true;
 	}
 
-	public User(long uid, String name, String email, String profile, String color, String birth, String familyId, String relationship) {
-		this.uid = uid;
-		this.name = name;
-		this.email = email;
-		this.profile = profile;
-		this.color = color;
-		this.birth = birth;
-		this.familyId = familyId;
-		this.relationship = relationship;
+	@Override
+	public boolean isCredentialsNonExpired() {
+		return true;
 	}
 
+	@Override
+	public boolean isEnabled() {
+		return true;
+	}
+	@Override
+	public String getPassword(){return null;}
+*/
 }

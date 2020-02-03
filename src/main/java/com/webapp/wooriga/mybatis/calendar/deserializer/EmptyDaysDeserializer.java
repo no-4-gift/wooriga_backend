@@ -43,9 +43,12 @@ import java.text.SimpleDateFormat;
             catch (Exception e) {
                 throw new IOException(e);
             }
-            log.error(emptydate.toString());
-            EmptyDays emptyDays = new EmptyDays(familyId,userIdFK,emptydate);
-            return emptyDays;
+            return EmptyDays
+                    .builder()
+                    .userIdFk(userIdFK)
+                    .emptydate(emptydate)
+                    .familyId(familyId)
+                    .build();
         }
     }
 

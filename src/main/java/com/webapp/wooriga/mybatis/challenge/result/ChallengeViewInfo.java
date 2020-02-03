@@ -1,17 +1,13 @@
 package com.webapp.wooriga.mybatis.challenge.result;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
+@Builder
 public class ChallengeViewInfo {
     private ChallengeBarInfo challengeBarInfo;
     private String challengeImage;
-
-    public ChallengeViewInfo(){}
-    public ChallengeViewInfo(ChallengeBarInfo challengeBarInfo,String challengeImage){
-        this.challengeImage = challengeImage;
-        this.challengeBarInfo = challengeBarInfo;
-    }
 }

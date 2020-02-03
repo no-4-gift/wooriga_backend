@@ -1,5 +1,6 @@
 package com.webapp.wooriga.mybatis.vo;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 

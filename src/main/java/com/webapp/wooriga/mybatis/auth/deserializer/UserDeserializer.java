@@ -27,12 +27,15 @@ public class UserDeserializer extends StdDeserializer<User> {
     public User deserialize(JsonParser parser, DeserializationContext context) throws IOException, JsonProcessingException {
         log.debug("UserDeserializer.deserialize ::::");
         JsonNode node = parser.getCodec().readTree(parser);
-        long id = node.get("id").asLong();
+        Long id = node.get("id").asLong();
         String nickname = node.get("nickname").asText();
         String profile = node.get("profile").asText();
 
-        User user = new User(id,nickname,profile);
-        return user;
+        return User.builder()
+                .uid(id)
+                .username(nickname)
+                .profile(profile)
+                .build();
     }
 }
 

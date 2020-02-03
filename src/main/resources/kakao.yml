@@ -1,0 +1,8 @@
+social:
+  kakao:
+    client_id: 793a50456fae367578041fcdd25a46cc
+    grant_type: refresh_token
+  url:
+    isExpiredToken: https://kapi.kakao.com/v1/user/access_token_info
+    refreshExpiredToken: https://kauth.kakao.com/oauth/token
+    getUserInfo : https://kapi.kakao.com/v2/user/me

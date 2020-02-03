@@ -17,7 +17,7 @@ public class CodeUserDAOImpl implements CodeUserDAO {
         return codeUserMapper.getUidFromCode(code);
     }
     @Override
-    public int checkUser(long uid) {
+    public int checkTrueUserNum(long uid) {
         return codeUserMapper.checkUser(uid);
     }
 

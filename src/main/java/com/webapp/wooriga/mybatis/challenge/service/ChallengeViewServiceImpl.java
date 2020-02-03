@@ -13,11 +13,9 @@ import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.lang.reflect.Array;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class ChallengeViewServiceImpl implements ChallengeViewService {
@@ -28,62 +26,67 @@ public class ChallengeViewServiceImpl implements ChallengeViewService {
     private RegisteredChallengesDAO registeredChallengesDAO;
     private ParticipantsDAO participantsDAO;
     private ChallengeImagesDAO challengeImagesDAO;
+    private MakeResultService makeResultService;
+    private MakeHashMapService makeHashMapService;
+    private MakeArrayListService makeArrayListService;
     public ChallengeViewServiceImpl() {
     }
 
     @Autowired
-    public ChallengeViewServiceImpl(ChallengeImagesDAO challengeImagesDAO,RegisteredChallengesDAO registeredChallengesDAO,ParticipantsDAO participantsDAO,ChallengesDAO challengesDAO,CertificationsDAO certificationsDAO, CalendarModuleService calendarModuleService) {
+    public ChallengeViewServiceImpl(MakeArrayListService makeArrayListService,MakeHashMapService makeHashMapService,MakeResultService makeResultService,ChallengeImagesDAO challengeImagesDAO,RegisteredChallengesDAO registeredChallengesDAO,ParticipantsDAO participantsDAO,ChallengesDAO challengesDAO,CertificationsDAO certificationsDAO, CalendarModuleService calendarModuleService) {
+        this.makeArrayListService = makeArrayListService;
         this.calendarModuleService = calendarModuleService;
         this.registeredChallengesDAO = registeredChallengesDAO;
         this.participantsDAO = participantsDAO;
         this.certificationsDAO = certificationsDAO;
         this.challengesDAO = challengesDAO;
         this.challengeImagesDAO = challengeImagesDAO;
+        this.makeResultService = makeResultService;
+        this.makeHashMapService = makeHashMapService;
     }
 
     @Override
     public ArrayList<ChallengeViewInfo> sendChallengeViewInfo(Boolean ourTrue, String familyId, long uid) throws RuntimeException {
-        ArrayList<ChallengeViewInfo> challengeViewInfoArrayList;
-        List<Certifications> certificationsList;
         HashMap<String,Object> infoHashMap = makeInfoHashMap(ourTrue,familyId,uid);
-        if (!ourTrue) {
-            certificationsList = certificationsDAO.selectMyChallengeViewInfo(infoHashMap);
-            challengeViewInfoArrayList = makeChallengeViewInfo(certificationsList,2);
-        }
-        else {
-            certificationsList = certificationsDAO.selectOurChallengeViewInfo(infoHashMap);
-            challengeViewInfoArrayList = makeChallengeViewInfo(certificationsList,1);
-        }
-        return challengeViewInfoArrayList;
+        List<Certifications> certificationsList = ourTrue ? certificationsDAO.selectOurChallengeViewInfo(infoHashMap)
+                : certificationsDAO.selectMyChallengeViewInfo(infoHashMap);
+        return ourTrue ? makeChallengeViewInfo(certificationsList,1)
+                :makeChallengeViewInfo(certificationsList,2);
+    }
+    @Override
+    public List<Participants> returnParticipantsList(long uid) throws RuntimeException{
+        List<Participants> participantsList = participantsDAO.selectParticipantId(uid);
+        if(participantsList.isEmpty()) throw new NoMatchPointException();
+        return participantsList;
+    }
+    @Override
+    public ArrayList<Long> returnParticipantsIdList(List<Participants> participantsList){
+        ArrayList<Long> registeredList = new ArrayList<>();
+        for(Participants participant : participantsList)
+            registeredList.add(participant.getRegisteredIdFK());
+        return registeredList;
     }
     private HashMap<String, Object> makeInfoHashMap(Boolean ourTrue,String familyId, long uid){
         HashMap<String, Object> infoHashMap = new HashMap<>();
         infoHashMap.put("familyId", familyId);
         infoHashMap.put("uid", uid);
-        if(ourTrue){
-            List<Participants> participantsList = participantsDAO.selectParticipantId(uid);
-            if(participantsList.isEmpty()) throw new NoMatchPointException();
-            ArrayList<Long> registeredList = new ArrayList<>();
-            for(Participants participant : participantsList){
-                registeredList.add(participant.getRegisteredIdFK());
-            }
-            infoHashMap.put("registeredList", registeredList);
-        }
+        if(!ourTrue) return infoHashMap;
+        infoHashMap.put("registeredList", returnParticipantsIdList(returnParticipantsList(uid)));
         return infoHashMap;
     }
     @Override
     public ArrayList<ChallengeViewInfo> makeChallengeViewInfo(List<Certifications> certificationsList,int pageId){
-        ArrayList<ChallengeViewInfo> challengeViewInfoArrayList = new ArrayList<>();
         if (certificationsList.isEmpty()) throw new NoMatchPointException();
-        ArrayList<ChallengeBarInfo>  challengeBarInfoArrayList = setCertificationAndTotalNum(calendarModuleService.setChallengeBarInfoList(certificationsList));
-        for(ChallengeBarInfo challengeBarInfo : challengeBarInfoArrayList){
-            ChallengeImages challengeImages = challengeImagesDAO.selectChallengeId(challengeBarInfo.getChallengeId(),pageId);
-            ChallengeViewInfo challengeViewInfo = new ChallengeViewInfo(challengeBarInfo,challengeImages.getImage());
-            challengeViewInfoArrayList.add(challengeViewInfo);
-        }
-        return challengeViewInfoArrayList;
+        return this.makeChallengeViewInfoArrayList(
+                this.makeChallengeBarInfoArrayList(certificationsList)
+                ,pageId);
     }
-
+    public ArrayList<ChallengeBarInfo>  makeChallengeBarInfoArrayList(List<Certifications> certificationsList) throws RuntimeException{
+        ArrayList<ChallengeBarInfo>  challengeBarInfoArrayList = setCertificationAndTotalNum(
+                calendarModuleService.setChallengeBarInfoList(certificationsList));
+        if(challengeBarInfoArrayList.isEmpty()) throw new NoMatchPointException();
+        return challengeBarInfoArrayList;
+    }
     private ArrayList<ChallengeBarInfo> setCertificationAndTotalNum(ArrayList<ChallengeBarInfo> challengeBarInfoArrayList) throws RuntimeException{
         for (ChallengeBarInfo challengeBarInfo : challengeBarInfoArrayList){
             long registeredId = challengeBarInfo.getRegisteredId();
@@ -96,50 +99,48 @@ public class ChallengeViewServiceImpl implements ChallengeViewService {
         }
         return setLatestViewDate(challengeBarInfoArrayList);
     }
-
     private ArrayList<ChallengeBarInfo> setLatestViewDate(ArrayList<ChallengeBarInfo> challengeBarInfoArrayList) throws RuntimeException{
-
         for(ChallengeBarInfo challengeBarInfo : challengeBarInfoArrayList){
-            long calDateMin = Long.MAX_VALUE;
-            HashMap<String,Object> challengeMap = new HashMap<>();
-            challengeMap.put("registeredId",challengeBarInfo.getRegisteredId());
-            challengeMap.put("dateList",challengeBarInfo.getDate());
-           List<Certifications> certificationsList = certificationsDAO.selectNonCertificateDate(challengeMap);
-           try {
-                   for (Certifications certification : certificationsList) {
-                       Date challengeDay = certification.getRegisteredDate();
-                       Date today = new Date();
-                       long calDate = challengeDay.getTime() - today.getTime();
-                       if(calDateMin > Math.abs(calDate/( 24*60*60*1000))){
-                           calDateMin = Math.abs(calDate/( 24*60*60*1000));
-                           challengeBarInfo.setViewDate(challengeDay.toString());
-                       }
-                   }
-           }catch(Exception e){
-               throw new NoMatchPointException();
-           }
-       }
+            List<Certifications> certificationsList = certificationsDAO.selectNonCertificateDate(
+                    makeHashMapService.makeChallengeHashMap(challengeBarInfo));
+            try {
+                long calDateMin = Long.MAX_VALUE;
+                for (Certifications certification : certificationsList) {
+                    Date challengeDay = certification.getRegisteredDate();
+                    Date today = new Date();
+                    long calDate = challengeDay.getTime() - today.getTime();
+                    if(calDateMin > Math.abs(calDate/( 24*60*60*1000))){
+                        calDateMin = Math.abs(calDate/( 24*60*60*1000));
+                        challengeBarInfo.setViewDate(challengeDay.toString());
+                    }
+                }
+            }catch(Exception e){
+                throw new NoMatchPointException();
+            }
+        }
         return challengeBarInfoArrayList;
     }
     @Override
-    public ChallengeDetailInfo sendChallengeDetailInfo(long uid, long registeredId) throws RuntimeException {
-        List<Certifications> certificationsList = certificationsDAO.selectChallengeDetailInfo(registeredId);
-        if(certificationsList.isEmpty()) throw new NoMatchPointException();
-        RegisteredChallenges registeredChallenge = registeredChallengesDAO.selectRegisteredChallenge(registeredId);
-        log.error(Long.toString(registeredChallenge.getChallengeIdFK()));
-        long challengeId = registeredChallenge.getChallengeIdFK();
-        Challenges challenges = challengesDAO.selectChallenge(challengeId);
-        ArrayList<CertificationInfo> certificationInfoArrayList = new ArrayList<>();
-
-        for(Certifications certifications : certificationsList) {
-            CertificationInfo certificationInfo = new CertificationInfo(new SimpleDateFormat("yyyy.MM.dd").format(certifications.getRegisteredDate()) ,new SimpleDateFormat("MM.dd").format(certifications.getRegisteredDate()),
-                    certifications.getCertificationPhoto(), certifications.getCertificationTrue());
-            certificationInfoArrayList.add(certificationInfo);
+    public ArrayList<ChallengeViewInfo> makeChallengeViewInfoArrayList(ArrayList<ChallengeBarInfo>  challengeBarInfoArrayList,int pageId) throws RuntimeException{
+        ArrayList<ChallengeViewInfo> challengeViewInfoArrayList = new ArrayList<>();
+        for(ChallengeBarInfo challengeBarInfo : challengeBarInfoArrayList){
+            ChallengeImages challengeImages = Optional.of(challengeImagesDAO.selectChallengeId(challengeBarInfo.getChallengeId(),pageId))
+                    .orElseThrow(NoMatchPointException::new);
+            challengeViewInfoArrayList.add(makeResultService.makeChallengeViewInfo(challengeBarInfo,challengeImages.getImage()));
         }
+        return challengeViewInfoArrayList;
+    }
 
-        ChallengeDetailInfo challengeDetailInfo = new ChallengeDetailInfo(challenges.getTitle(),certificationInfoArrayList,registeredChallenge.getResolution(),challenges.getSummary(),challenges.getContent());
-
-        return setUserIsCertificationAvailable(uid,registeredChallenge.getChiefIdFK(),challengeDetailInfo,registeredId);
+    @Override
+    public ChallengeDetailInfo sendChallengeDetailInfo(long uid, long registeredId) throws RuntimeException {
+        List<Certifications> certificationsList = makeArrayListService.makeCertificationsList(registeredId);
+        RegisteredChallenges registeredChallenge = registeredChallengesDAO.selectRegisteredChallenge(registeredId);
+        return setUserIsCertificationAvailable(uid,registeredChallenge.getChiefIdFK(),makeResultService
+                .makeChallengeDetailInfo(
+                        challengesDAO.selectChallenge(
+                        registeredChallenge.getChallengeIdFK())
+                        ,makeArrayListService.makeCertificationInfoArrayList(certificationsList)
+                        ,registeredChallenge),registeredId);
     }
 
     private ChallengeDetailInfo setUserIsCertificationAvailable(long uid, long chiefId, ChallengeDetailInfo challengeDetailInfo,long registeredId){

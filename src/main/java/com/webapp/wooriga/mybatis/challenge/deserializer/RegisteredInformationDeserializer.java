@@ -32,36 +32,29 @@ public class RegisteredInformationDeserializer extends StdDeserializer<Registere
     public RegisteredInformation deserialize(JsonParser parser, DeserializationContext context) throws IOException, JsonProcessingException {
         log.debug("RegisteredInformationDeserializer.deserialize ::::");
         JsonNode node = parser.getCodec().readTree(parser);
-        RegisteredChallenges registeredChallenges = new RegisteredChallenges();
 
         long chiefIdFK = node.get("chiefIdFK").asLong();
         int challengeIdFK = node.get("challengeIdFK").asInt();
         String resolution = node.get("resolution").asText();
         String familyId = node.get("familyId").asText();
-        registeredChallenges.setChallengeIdFK(challengeIdFK);
-        registeredChallenges.setChiefIdFK(chiefIdFK);
-        registeredChallenges.setFamilyId(familyId);
-        int count = 0;
-        for(char ch : resolution.toCharArray()){
-
-        }
-        registeredChallenges.setResolution(resolution);
-
+        RegisteredChallenges registeredChallenges = RegisteredChallenges.builder()
+                .challengeIdFK(challengeIdFK)
+                .chiefIdFK(chiefIdFK)
+                .familyId(familyId)
+                .resolution(resolution)
+                .build();
         JsonNode participant = node.get("participantFK");
         Participants[] participants = new Participants[participant.size()];
-        for(int i = 0; i < participants.length; i++)
-            participants[i] = new Participants();
         int i = 0;
         for(JsonNode objNode : participant){
-            participants[i].setParticipantFK(objNode.asLong());
+            participants[i]= Participants.builder()
+                    .participantFK(objNode.asLong())
+                    .build();
             i++;
         }
 
         JsonNode registeredDate = node.get("registeredDate");
         Certifications[] certifications = new Certifications[registeredDate.size()];
-        for(i = 0; i < registeredDate.size(); i++){
-            certifications[i] = new Certifications();
-        }
         i = 0;
         for(JsonNode objNode : registeredDate){
             SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
@@ -73,14 +66,16 @@ public class RegisteredInformationDeserializer extends StdDeserializer<Registere
                 log.error(e.toString());
                 throw new IOException(e);
             }
-            certifications[i].setRegisteredDate(date);
+            certifications[i] = Certifications.builder()
+                    .registeredDate(date)
+                    .build();
             i++;
         }
-        RegisteredInformation registeredInformation = new RegisteredInformation();
-        registeredInformation.setParticipants(participants);
-        registeredInformation.setRegisteredChallenges(registeredChallenges);
-        registeredInformation.setCertifications(certifications);
-        return registeredInformation;
+        return RegisteredInformation.builder()
+                .certifications(certifications)
+                .participants(participants)
+                .registeredChallenges(registeredChallenges)
+                .build();
     }
 
 }

@@ -13,7 +13,7 @@
 	<!-- 리절트 맵 정의. primary key 컬럼은 id 태그로 표시해줌 -->
 	<resultMap id="UserResult" type="User">
 		<result column="uid" property="uid"/>
-		<result column="name" property="name"/>
+		<result column="name" property="username"/>
 		<result column="email" property="email"/>
 		<result column="profile" property="profile"/>
 		<result column="color" property="color"/>
@@ -26,12 +26,12 @@
 		select * from user order by uid
 	</select>
 
-	<select id="selectOne" resultType="User" parameterType="long">
+	<select id="selectOne" resultType="User" parameterType="Long">
 		select * from user where uid = #{uid}
 	</select>
 
 	<insert id="insert" parameterType="User">
-		insert into user(uid, name, email, profile, color, birth) values(#{uid}, #{name}, #{email}, #{profile}, #{color}, #{birth})
+		insert into user(uid, name, email, profile, color, birth) values(#{uid}, #{username}, #{email}, #{profile}, #{color}, #{birth})
 	</insert>
 
 	<delete id="delete" parameterType="long">
@@ -43,7 +43,7 @@
 	</update>
 
 	<update id="updateMyInfo" parameterType="User">
-		update user set name = #{name}, profile = #{profile}, relationship = #{relationship}, color = #{color} where uid = #{uid}
+		update user set name = #{username}, profile = #{profile}, relationship = #{relationship}, color = #{color} where uid = #{uid}
 	</update>
 
 	<update id="updateFamilyId" parameterType="User">

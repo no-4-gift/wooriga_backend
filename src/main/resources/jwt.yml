@@ -1,0 +1,3 @@
+spring:
+  jwt:
+    secret: yaizasikashfwk!@#$0106

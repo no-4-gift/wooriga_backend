@@ -12,7 +12,7 @@ public interface CodeUserDAO {
 
     Long getUidFromCode(@Param("code")String code);
 
-    int checkUser(long uid);
+    int checkTrueUserNum(long uid);
 
     void updateChief(CodeUser codeUser);
 }

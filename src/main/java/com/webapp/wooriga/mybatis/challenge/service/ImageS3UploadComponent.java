@@ -20,6 +20,7 @@ public class ImageS3UploadComponent extends SuperS3Uploader {
 
     @Value("${cloud.aws.bucket}")
     private String bucket;
+    private static String DEFAULT_URL = "https://woorigabucket.s3.ap-northeast-2.amazonaws.com/challenge/default.jpg";
 
     public ImageS3UploadComponent(AmazonS3Client amazonS3Client) {
         super(amazonS3Client);
@@ -31,7 +32,7 @@ public class ImageS3UploadComponent extends SuperS3Uploader {
                     .orElseThrow(() -> new IllegalArgumentException("MultipartFile -> File로 전환이 실패했습니다."));
             return upload(uploadFile, userName);
         }
-        else return "https://woorigabucket.s3.ap-northeast-2.amazonaws.com/challenge/default.jpg";
+        else return DEFAULT_URL;
     }
 
     private String upload(File uploadFile, String userName) {

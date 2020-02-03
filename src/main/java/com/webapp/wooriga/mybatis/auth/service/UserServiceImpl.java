@@ -5,56 +5,62 @@ import java.util.*;
 
 import com.webapp.wooriga.mybatis.auth.dao.CodeUserDAO;
 import com.webapp.wooriga.mybatis.auth.dao.UserDAO;
+import com.webapp.wooriga.mybatis.auth.result.FamilyInfo;
 import com.webapp.wooriga.mybatis.challenge.result.UserInfo;
+import com.webapp.wooriga.mybatis.challenge.service.MakeArrayListService;
 import com.webapp.wooriga.mybatis.exception.NoInformationException;
 import com.webapp.wooriga.mybatis.exception.NoStoringException;
 import com.webapp.wooriga.mybatis.vo.CodeUser;
 import com.webapp.wooriga.mybatis.vo.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.RequestBody;
 
-@Component("service")
+@Service
 public class UserServiceImpl implements UserService {
-
+	Logger log = LoggerFactory.getLogger(this.getClass());
 	private UserDAO userDAO;
 	private CodeUserDAO codeUserDAO;
+	private MakeArrayListService makeArrayListService;
 	@Autowired
-	public UserServiceImpl(UserDAO userDAO,CodeUserDAO codeUserDAO){
+	public UserServiceImpl(UserDAO userDAO,CodeUserDAO codeUserDAO,MakeArrayListService makeArrayListService){
 		this.userDAO = userDAO;
 		this.codeUserDAO = codeUserDAO;
+		this.makeArrayListService = makeArrayListService;
 	}
 	public UserServiceImpl(){}
+	public User loadUserByUsername(Long uid) throws RuntimeException {
+		log.info("UserService.loadUserByUsername:::");
+		try {
+			return Optional.of(userDAO.selectOne(uid)).orElseThrow(NoInformationException::new);
+		}
+		catch(Exception e){
+			log.info(e.toString());
+			throw new NoInformationException();
+		}
 
+	}
+	@Override
+	public ArrayList<UserInfo> mergeUserInfoArraylist(ArrayList<UserInfo> userInfoArrayList,List<User> userInfoList,User chief){
+		userInfoArrayList.addAll(sortwithUserName(makeArrayListService.addParticipantsToArrayList(userInfoList,chief)));
+		return userInfoArrayList;
+	}
 	@Override
 	public ArrayList<UserInfo> sendUserInfo(String familyId) throws RuntimeException {
-		Long chiefId = codeUserDAO.getUidFromCode(familyId);
-		if(chiefId == null) throw new NoInformationException();
-		User chief = userDAO.selectOne(chiefId);
+		Long chiefId = Optional.of(codeUserDAO.getUidFromCode(familyId)).orElseThrow(NoInformationException::new);
+		User chief = this.loadUserByUsername(chiefId);
 		List<User> userInfoList = userDAO.selectfamilyId(familyId);
-		return addUserInfoToArrayList(chief,userInfoList);
+		ArrayList<UserInfo> userInfoArrayList= makeArrayListService.userInfoToArrayList(chief,userInfoList);
+		return mergeUserInfoArraylist(userInfoArrayList,userInfoList,chief);
 	}
-	@Override
-	public ArrayList<UserInfo> addUserInfoToArrayList(User chief,List<User> userInfoList) throws RuntimeException{
-		if(userInfoList.size() == 0) throw new NoInformationException();
 
-		ArrayList<UserInfo> userInfoArrayList = new ArrayList<>();
-		userInfoArrayList = convertUserToUserInfoAndAddArrayList(chief,userInfoArrayList);
-		ArrayList<UserInfo> participantInfoArrayList = new ArrayList<>();
-		for(User user : userInfoList) {
-			if(user.getUid() == chief.getUid()) continue;
-			participantInfoArrayList = convertUserToUserInfoAndAddArrayList(user,participantInfoArrayList);
-		}
-		userInfoArrayList.addAll(sortwithUserName(participantInfoArrayList));
-		return userInfoArrayList;
-	}
-	private ArrayList<UserInfo> convertUserToUserInfoAndAddArrayList(User user,ArrayList<UserInfo> userInfoArrayList){
-		UserInfo userInfo = new UserInfo(user.getRelationship(), user.getName(), user.getProfile(), user.getColor(), user.getUid());
-		userInfoArrayList.add(userInfo);
-		return userInfoArrayList;
-	}
-	private ArrayList<UserInfo> sortwithUserName(ArrayList<UserInfo> userInfoArrayList){
+	@Override
+	public ArrayList<UserInfo> sortwithUserName(ArrayList<UserInfo> userInfoArrayList){
 		userInfoArrayList.sort((arg0,arg1)->{
 			String name0 = arg0.getName();
 			String name1 = arg1.getName();
@@ -76,65 +82,29 @@ public class UserServiceImpl implements UserService {
 
 	@Transactional
 	@Override
-	public Map admin(User user) throws RuntimeException {
-
-		HashMap<String, String> map = new HashMap<String, String>();
-
-		try {
-			// 랜덤코드 테이블에서 현재 관리자 코드 존재 여부 확인
-			int check = codeUserDAO.checkUser(user.getUid());
-			String getCode = "";
-
-			System.out.println("check : " + check);
-			// 없으면 8자리 생성
-			if (check != 1) {
-				Random rnd = new Random();
-				StringBuffer buf = new StringBuffer();
-
-				for (int i = 0; i < 8; i++) {
-					if (rnd.nextBoolean()) {
-						buf.append((char) ((int) (rnd.nextInt(26)) + 65));
-					} else {
-						buf.append((rnd.nextInt(10)));
-					}
-				}
-
-				String code = buf.toString();
-
-				codeUserDAO.insertCodeUser(new CodeUser(user.getUid(), code)); // codeUser에 저장
-				user.setFamilyId(code);
-				userDAO.updateFamilyId(user); // family_id 갱신
-				System.out.println(user.getUid() + "님의 생성 코드 : " + code);
-				getCode = code;
-				map.put("familyId", getCode);
-			} else {
-				getCode = codeUserDAO.getCode(user.getUid());
-				map.put("familyId", getCode);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-
+	public HashMap<String,String> changeColorAndEtc(FamilyInfo familyInfo) throws RuntimeException{
+		HashMap<String,String> map = new HashMap<>();
+		String familyId = familyInfo.getCode();
+		this.updateUser(this.setUserColorAndEtc(familyInfo.getUid(),familyId,familyInfo.getColor(),familyInfo.getRelationship()));
+		map.put("familyId",familyId);
 		return map;
 	}
-
-	@Transactional
 	@Override
-	public HashMap<String,String> changeColor(Map<String,Object> userInfo) throws RuntimeException{
-		HashMap<String,String> map = new HashMap<>();
-		String familyId = (String)userInfo.get("code");
-		User user = userDAO.selectOne((Integer)userInfo.get("uid"));
-		if(user == null) throw new NoInformationException();
-		user.setFamilyId(familyId);
-		user.setColor((String)userInfo.get("color"));
-		user.setRelationship((String)userInfo.get("relationship"));
+	public void updateUser(User user) throws RuntimeException{
 		try {
 			userDAO.update(user);
 		}catch(Exception e){
 			throw new NoStoringException();
 		}
-		map.put("familyId",familyId);
-		return map;
+	}
+
+	@Override
+	public User setUserColorAndEtc(long uid,String familyId,String color,String relationship){
+		User user = Optional.of(this.loadUserByUsername(uid)).orElseThrow(NoInformationException::new);
+		user.setFamilyId(familyId);
+		user.setColor(color);
+		user.setRelationship(relationship);
+		return user;
 	}
 
 }

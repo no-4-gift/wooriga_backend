@@ -4,8 +4,9 @@ woriga.iml
 .gradle
 .idea
 mysqlIdentify.yml
+jwt.yml
 mykey.pem
 mykey.ppk
 aws.yml
+kakao.yml
 out/artifacts/woriga_main_jar/woriga.main.jar
-config

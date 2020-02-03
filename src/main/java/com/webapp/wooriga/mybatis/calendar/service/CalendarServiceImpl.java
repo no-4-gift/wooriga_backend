@@ -18,10 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Transactional
 @Service
@@ -30,22 +27,20 @@ public class CalendarServiceImpl implements CalendarService {
     private CertificationsDAO certificationsDAO;
     private UserDAO userDAO;
     private CalendarModuleService calendarModuleService;
-    private ChallengeImagesDAO challengeImagesDAO;
 
     Logger log = LoggerFactory.getLogger(CalendarServiceImpl.class);
     @Autowired
-    public CalendarServiceImpl(ChallengeImagesDAO challengeImagesDAO,UserDAO userDAO,CalendarModuleService calendarModuleService,CertificationsDAO certificationsDAO,EmptyDaysDAO emptyDaysDAO){
+    public CalendarServiceImpl(UserDAO userDAO,CalendarModuleService calendarModuleService,CertificationsDAO certificationsDAO,EmptyDaysDAO emptyDaysDAO){
         this.emptyDaysDAO = emptyDaysDAO;
         this.userDAO = userDAO;
         this.certificationsDAO = certificationsDAO;
         this.calendarModuleService = calendarModuleService;
-        this.challengeImagesDAO = challengeImagesDAO;
     }
 
     @Override
+    @Transactional
     public void insertDayOnCalendar(EmptyDays emptyDays) throws RuntimeException{
-        List<User> userList= userDAO.selectfamilyId(emptyDays.getFamilyId());
-        if(userList.isEmpty()) throw new NoMatchPointException();
+        List<User> userList = Optional.of(userDAO.selectfamilyId(emptyDays.getFamilyId())).orElseThrow(NoMatchPointException::new);
         try{
             emptyDaysDAO.insertEmptyDay(emptyDays);
         }
@@ -58,27 +53,26 @@ public class CalendarServiceImpl implements CalendarService {
     public CalendarInfo sendCalendarInfo(String familyId, String year, String month) throws RuntimeException{
         String firstDate = year + "-" + month + "-" + "01";
         String finalDate = year +"-" +  month + "-" + "31";
-        CalendarInfo calendarInfo = new CalendarInfo();
-        List<EmptyDays> emptyDaysList = emptyDaysDAO.selectEmptyDay(familyId, firstDate, finalDate);
-        ArrayList<EmptyDayUserInfo> emptyDayUserInfoList = new ArrayList<>();
-        ArrayList<ChallengeBarInfo> challengeBarInfoList = new ArrayList<>();
-
-        if(!emptyDaysList.isEmpty())
-                emptyDayUserInfoList = calendarModuleService.setEmptyDayUserInfoList(emptyDaysList);
-        calendarInfo.setEmptyDayUserInfoArrayList(emptyDayUserInfoList);
-
-        List<Certifications> certificationsList = certificationsDAO.selectList(familyId,firstDate,finalDate);
-        if(!certificationsList.isEmpty())
-            challengeBarInfoList = calendarModuleService.setChallengeBarInfoList(certificationsList);
-        calendarInfo.setChallengeBarInfo(challengeBarInfoList);
-
-        return calendarInfo;
+        return CalendarInfo.builder()
+                .challengeBarInfo(makeChallengeBarInfoList(familyId,firstDate,finalDate))
+                .emptyDayUserInfoArrayList(makeEmptyDayUserInfoList(familyId,firstDate,finalDate))
+                .build();
     }
     @Override
     public void deleteCalendarInfo(EmptyDays emptyDays) throws RuntimeException{
         if(emptyDaysDAO.selectToId(emptyDays) == 0) throw new NoMatchPointException();
         emptyDaysDAO.deleteToId(emptyDays);
-
     }
-
+    @Override
+    public ArrayList<EmptyDayUserInfo> makeEmptyDayUserInfoList(String familyId,String firstDate, String finalDate){
+        List<EmptyDays> emptyDaysList = emptyDaysDAO.selectEmptyDay(familyId, firstDate, finalDate);
+        return !emptyDaysList.isEmpty() ? calendarModuleService.setEmptyDayUserInfoList(emptyDaysList)
+                : new ArrayList<>();
+    }
+    @Override
+    public ArrayList<ChallengeBarInfo> makeChallengeBarInfoList(String familyId,String firstDate,String finalDate){
+        List<Certifications> certificationsList = certificationsDAO.selectList(familyId,firstDate,finalDate);
+        return !certificationsList.isEmpty() ? calendarModuleService.setChallengeBarInfoList(certificationsList)
+                : new ArrayList<>();
+    }
 }
