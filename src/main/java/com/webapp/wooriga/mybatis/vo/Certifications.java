@@ -1,6 +1,7 @@
 package com.webapp.wooriga.mybatis.vo;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -8,6 +9,7 @@ import java.sql.Date;
 
 @Getter
 @Setter
+@Builder
 public class Certifications {
     private long registeredIdFK;
     private Date registeredDate;
@@ -15,18 +17,4 @@ public class Certifications {
     private int certificationTrue;
     private RegisteredChallenges registeredChallenges;
 
-    public Certifications(long registeredIdFK, Date registeredDate,int certificationTrue,String certificationPhoto){
-        this.registeredDate = registeredDate;
-        this.registeredIdFK = registeredIdFK;
-        this.certificationTrue = certificationTrue;
-        this.certificationPhoto = certificationPhoto;
-    }
-    public Certifications(long registeredIdFK, Date registeredDate,int certificationTrue){
-        this.registeredDate = registeredDate;
-        this.registeredIdFK = registeredIdFK;
-        this.certificationTrue = certificationTrue;
-    }
-    public Certifications(){
-
-    }
 }

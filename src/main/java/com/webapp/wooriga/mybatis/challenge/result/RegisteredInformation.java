@@ -5,16 +5,16 @@ import com.webapp.wooriga.mybatis.challenge.deserializer.RegisteredInformationDe
 import com.webapp.wooriga.mybatis.vo.Certifications;
 import com.webapp.wooriga.mybatis.vo.Participants;
 import com.webapp.wooriga.mybatis.vo.RegisteredChallenges;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
 @JsonDeserialize(using= RegisteredInformationDeserializer.class)
 @Getter
 @Setter
+@Builder
 public class RegisteredInformation {
     public Participants[] participants;
     public Certifications[] certifications;
     public RegisteredChallenges registeredChallenges;
-    public RegisteredInformation(){}
-
 }

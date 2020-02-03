@@ -19,14 +19,6 @@ spring:
   devtools:
     restart:
       additional-paths: .
-  jwt:
-    secret: govlepel@$;
-social:
-  kakao:
-    client_id: 623e83defbdfd4eb7c688561568d2a0d
-    redirect: /api/social/login/kakao
-    url:
-      login: https://kauth.kakao.com/oauth/authorize
-      logout: https://kapi.kakao.com/v1/user/logout
-      token: https://kauth.kakao.com/oauth/token
-      profile: https://kapi.kakao.com/v2/user/me
+
+
+

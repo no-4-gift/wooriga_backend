@@ -9,6 +9,8 @@ import com.webapp.wooriga.mybatis.exception.NoStoringException;
 import com.webapp.wooriga.mybatis.exception.WrongCodeException;
 import com.webapp.wooriga.mybatis.vo.Certifications;
 
+import com.webapp.wooriga.mybatis.vo.Challenges;
+import com.webapp.wooriga.mybatis.vo.RegisteredChallenges;
 import org.slf4j.LoggerFactory;
 import org.slf4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +23,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Optional;
 
 
 @Transactional
@@ -31,73 +34,57 @@ public class ChallengeServiceImpl implements ChallengeService{
     private CertificationsDAO certificationsDAO;
     private ImageS3UploadComponent imageS3UploadComponent;
     private ChallengeModuleService challengeModuleService;
-
+    private MakeResultService makeResultService;
     @Autowired
     public ChallengeServiceImpl(ChallengeModuleService challengeModuleService,ChallengesDAO challengesDAO, ImageS3UploadComponent imageS3UploadComponent
-    , CertificationsDAO certificationsDAO){
+    , CertificationsDAO certificationsDAO,MakeResultService makeResultService){
 
         this.challengesDAO = challengesDAO;
         this.certificationsDAO = certificationsDAO;
         this.imageS3UploadComponent = imageS3UploadComponent;
         this.challengeModuleService = challengeModuleService;
+        this.makeResultService = makeResultService;
     }
     public ChallengeServiceImpl(){}
 
     @Override
     public void certificateChallenge(long registeredId, String date, MultipartFile file) throws RuntimeException{
-        Certifications certifications;
-        String url;
-        try {
-            isThereAnyCertificationTrue(registeredId,date);
-            SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-            certifications = new Certifications(registeredId, new Date(simpleDateFormat.parse(date).getTime()),
-                    1);
-        }
-        catch(Exception e){
-            throw new NoMatchPointException();
-        }
+        this.updateCertification(
+                makeResultService.makeCertifications(date,1,registeredId,
+                        uploadImgForCertification(date,registeredId,file)));
+    }
+    @Override
+    public ChallengeInfo sendChallengeInfo(ArrayList<String> date, String familyId) throws RuntimeException{
+        if(date.size() > 10) throw new NoMatchPointException();
+        ArrayList<UserInfo> userInfoList= challengeModuleService.findUserSetToEmpty(date.size(),makeEmptyMap(familyId,date));
+        if(userInfoList.isEmpty()) throw new NoMatchPointException();
+        return makeResultService.makeChallengeInfo(challengesDAO.selectChallengeList(),userInfoList);
+    }
+
+    private HashMap<String,Object> makeEmptyMap(String familyId,ArrayList<String> date){
+        HashMap<String,Object> emptyMap = new HashMap<>();
+        emptyMap.put("familyId",familyId);
+        emptyMap.put("date",date);
+        return emptyMap;
+    }
+    @Override
+    public String uploadImgForCertification(String date,long registeredId,MultipartFile file) throws RuntimeException{
         try{
-            url = imageS3UploadComponent.upload(file, "challenge"+Long.toString(registeredId) + date);
+            return Optional.of(imageS3UploadComponent.upload(file, "challenge"+Long.toString(registeredId) + date)).orElseThrow(NoStoringException::new);
         }
         catch(Exception e){
             throw new WrongCodeException();
         }
-
+    }
+    @Override
+    @Transactional
+    public void updateCertification(Certifications certifications) throws RuntimeException{
         try {
-            if(url == null) throw new NoStoringException();
-            else certifications.setCertificationPhoto(url);
             certificationsDAO.updateCertification(certifications);
         }
         catch(Exception e){
             throw new NoStoringException();
         }
-    }
-    @Override
-    public ChallengeInfo sendChallengeInfo(ArrayList<String> date, String familyId) throws RuntimeException{
-        ChallengeInfo challengeInfo = new ChallengeInfo();
-        try {
-            challengeInfo.setChallenges(challengesDAO.selectChallengeList());
-            if(date.size() > 10) throw new NoMatchPointException();
-            HashMap<String,Object> emptyMap = new HashMap<>();
-            emptyMap.put("familyId",familyId);
-            emptyMap.put("date",date);
-            ArrayList<UserInfo> userInfoList= challengeModuleService.findUserSetToEmpty(date.size(),emptyMap);
-            if(userInfoList.isEmpty()) throw new NoMatchPointException();
-            challengeInfo.setUserInfo(userInfoList);
-        }catch(RuntimeException e){
-            log.error(e.toString());
-            throw new NoMatchPointException();
-        }
-        return challengeInfo;
-    }
-    private void isThereAnyCertificationTrue(long registeredId,String date){
-        HashMap<String,Object> infoHashMap = new HashMap<>();
-        ArrayList<String> dateList = new ArrayList<>();
-        dateList.add(date);
-        infoHashMap.put("registeredId",registeredId);
-        infoHashMap.put("dateList",dateList);
-        List<Certifications> certificationsList= certificationsDAO.selectNonCertificateDate(infoHashMap);
-        if(certificationsList.isEmpty()) throw new NoMatchPointException();
     }
 
 }

@@ -11,7 +11,7 @@ import org.apache.ibatis.annotations.Param;
 
 public interface UserDAO {
 	public List<User> selectAll();
-	public User selectOne(long uid);
+	public User selectOne(Long uid);
 	public void insert(User user);
 	public void delete(User user);
 	public void update(User user);

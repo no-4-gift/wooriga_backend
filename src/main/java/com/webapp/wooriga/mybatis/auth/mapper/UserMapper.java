@@ -14,7 +14,7 @@ public interface UserMapper {
 
  	List<User> selectAll();
 
- 	User selectOne(long uid);
+ 	User selectOne(Long uid);
 
  	void insert(User user);
 
@@ -22,9 +22,9 @@ public interface UserMapper {
 
 	void update(User user);
   
-	public void updateMyInfo(User user);
+	void updateMyInfo(User user);
 
-	public void updateFamilyId(User user);
+	void updateFamilyId(User user);
 
 	List<User> familyAll(String family_id);
 

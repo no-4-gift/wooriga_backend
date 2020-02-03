@@ -3,6 +3,7 @@ package com.webapp.wooriga.mybatis.challenge.service;
 import com.webapp.wooriga.mybatis.challenge.dao.CertificationsDAO;
 import com.webapp.wooriga.mybatis.challenge.dao.ParticipantsDAO;
 import com.webapp.wooriga.mybatis.challenge.dao.RegisteredChallengesDAO;
+import com.webapp.wooriga.mybatis.exception.NoInformationException;
 import com.webapp.wooriga.mybatis.exception.NoStoringException;
 import com.webapp.wooriga.mybatis.exception.NoMatchPointException;
 import com.webapp.wooriga.mybatis.vo.*;
@@ -16,6 +17,7 @@ import java.sql.Date;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 
 @Service
@@ -26,46 +28,62 @@ public class RegisteredChallengeServiceImpl implements RegisteredChallengeServic
     private ParticipantsDAO participantsDAO;
     private ChallengeModuleService challengeModuleService;
     private ImageS3UploadComponent imageS3UploadComponent;
+    private ChallengeService challengeService;
+    private MakeResultService makeResultService;
+    private static String DEFAULT_IMAGE = "https://woorigabucket.s3.ap-northeast-2.amazonaws.com/challenge/default.jpg";
 
     @Autowired
-    public RegisteredChallengeServiceImpl(ImageS3UploadComponent imageS3UploadComponent,ChallengeModuleService challengeModuleService, CertificationsDAO certificationsDAO, RegisteredChallengesDAO registeredChallengesDAO, ParticipantsDAO participantsDAO){
+    public RegisteredChallengeServiceImpl(MakeResultService makeResultService,ChallengeService challengeService,ImageS3UploadComponent imageS3UploadComponent,ChallengeModuleService challengeModuleService, CertificationsDAO certificationsDAO, RegisteredChallengesDAO registeredChallengesDAO, ParticipantsDAO participantsDAO){
         this.participantsDAO = participantsDAO;
+        this.challengeService = challengeService;
         this.imageS3UploadComponent = imageS3UploadComponent;
         this.registeredChallengesDAO = registeredChallengesDAO;
         this.certificationsDAO = certificationsDAO;
         this.challengeModuleService = challengeModuleService;
+        this.makeResultService = makeResultService;
     }
-
     @Override
-    @Transactional(rollbackFor = Exception.class)
-    public void insertRegisteredChallenge(RegisteredChallenges registeredChallenges, Participants[] participants, Certifications[] certifications) throws RuntimeException {
-        long registeredId;
+    public void validateRegisteredChallenge(RegisteredChallenges registeredChallenges, Participants[] participants, Certifications[] certifications) throws RuntimeException{
         try {
-            if (challengeModuleService.ifCorrectUserIntheFamily(registeredChallenges.getChiefIdFK(),participants,registeredChallenges.getFamilyId()))
-                registeredChallengesDAO.insertRegisteredChallenge(registeredChallenges);
-
-        } catch(Exception e) {
-            throw new NoStoringException();
-        }
-        try {
-            registeredId = registeredChallenges.getRegisteredId();
             challengeModuleService.validateParticipantsNum(participants.length);
             challengeModuleService.ifCorrectParticipants(certifications, registeredChallenges, participants);
             challengeModuleService.validateChallengeDateNum(certifications.length);
         }catch(NoMatchPointException e) {
             throw new NoMatchPointException();
         }
+    }
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public void registerChallenge(RegisteredChallenges registeredChallenges, Participants[] participants, Certifications[] certifications) throws RuntimeException{
+        Long registeredId = Optional.of(registeredChallenges.getRegisteredId()).orElseThrow(NoInformationException::new);
+        this.insertRegisteredChallenge(registeredChallenges, participants, certifications);
+        this.validateRegisteredChallenge(registeredChallenges, participants, certifications);
+        this.initializeCertificationsForChallenge(certifications,registeredId);
+        this.initializeParticipantsForChallenge(participants, registeredId);
+    }
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public void initializeParticipantsForChallenge(Participants[] participants, long registeredId) throws RuntimeException{
         try{
-                for (int i = 0; i < certifications.length; i++){
-                    certifications[i].setRegisteredIdFK(registeredId);
-                    certifications[i].setCertificationPhoto("https://woorigabucket.s3.ap-northeast-2.amazonaws.com/challenge/default.jpg");
-                    certifications[i].setCertificationTrue(0);
-                    certificationsDAO.insertRegisteredDate(certifications[i]);
-                }
-                for (int i = 0; i < participants.length; i++) {
-                    participants[i].setRegisteredIdFK(registeredId);
-                    participantsDAO.insertParticipants(participants[i]);
-                }
+            for (Participants participant : participants) {
+                participant.setRegisteredIdFK(registeredId);
+                participantsDAO.insertParticipants(participant);
+            }
+        }
+        catch(Exception e){
+            log.error(e.toString());
+            throw new NoStoringException();
+        }
+    }
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public void initializeCertificationsForChallenge(Certifications[] certifications,long registeredId) throws RuntimeException{
+        try{
+            for (Certifications certification : certifications){
+                certification = makeResultService.makeCertifications(certification.getRegisteredDate().toString(),
+                        0,registeredId,DEFAULT_IMAGE);
+                certificationsDAO.insertRegisteredDate(certification);
+            }
         }
         catch(Exception e){
             log.error(e.toString());
@@ -73,19 +91,33 @@ public class RegisteredChallengeServiceImpl implements RegisteredChallengeServic
         }
     }
     @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void insertRegisteredChallenge(RegisteredChallenges registeredChallenges, Participants[] participants, Certifications[] certifications) throws RuntimeException {
+        try {
+            if (challengeModuleService.ifCorrectUserIntheFamily(registeredChallenges.getChiefIdFK(),participants,registeredChallenges.getFamilyId()))
+                registeredChallengesDAO.insertRegisteredChallenge(registeredChallenges);
+            else throw new NoInformationException();
+        } catch(Exception e) {
+            throw new NoStoringException();
+        }
+
+    }
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void initializeChallengeCertification(Long registeredId,Date registeredDate) throws RuntimeException{
+            challengeService.updateCertification(makeResultService
+                    .makeCertifications(registeredDate.toString(),0,registeredId
+                    ,DEFAULT_IMAGE));
+    }
+    @Override
+    @Transactional(rollbackFor = Exception.class)
     public void cancelChallengeCertification(Map<String,Object> infoMap) throws RuntimeException{
-        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
         isThereAnyCertificationRow(infoMap);
         try {
-            Certifications certifications = new Certifications();
-            Date registeredDate = new Date( simpleDateFormat.parse((String)infoMap.get("date")).getTime());
-            certifications.setRegisteredDate(registeredDate);
-            int registeredId = (Integer)infoMap.get("registeredId");
-            certifications.setRegisteredIdFK(registeredId);
-            imageS3UploadComponent.fileDelete("challenge"+Integer.toString(registeredId) + registeredDate);
-            certifications.setCertificationPhoto("https://woorigabucket.s3.ap-northeast-2.amazonaws.com/challenge/default.jpg");
-            certifications.setCertificationTrue(0);
-            certificationsDAO.updateCertification(certifications);
+            Long registeredId = Optional.of((Long)infoMap.get("registeredId")).orElseThrow(NoMatchPointException::new);
+            Date registeredDate = new Date( new SimpleDateFormat("yyyy-MM-dd").parse((String)infoMap.get("date")).getTime());
+            this.initializeChallengeCertification(registeredId,registeredDate);
+            imageS3UploadComponent.fileDelete("challenge"+registeredId + registeredDate);
         }catch(Exception e){
             throw new NoMatchPointException();
         }

@@ -64,7 +64,7 @@ public class CalendarController {
     @ApiOperation(value = "챌린지 신청", notes = "response : 200 - 성공 409 - 전송 데이터 중 존재하지 않는 데이터를 포함하고 있어 db에 저장되지 않음 411 - 조건에 맞지 않음")
     @PostMapping(value = "/uid/date/cid")
     public void registerChallenge(@ApiParam(value = "챌린지 등록에 필요한 정보") @RequestBody RegisteredInformation registeredInformation) throws RuntimeException {
-        registeredChallengeService.insertRegisteredChallenge(registeredInformation.getRegisteredChallenges(), registeredInformation.getParticipants()
+        registeredChallengeService.registerChallenge(registeredInformation.getRegisteredChallenges(), registeredInformation.getParticipants()
                 , registeredInformation.getCertifications());
     }
 

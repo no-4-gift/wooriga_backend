@@ -7,14 +7,15 @@ import com.webapp.wooriga.mybatis.challenge.dao.ChallengesDAO;
 import com.webapp.wooriga.mybatis.challenge.dao.ParticipantsDAO;
 import com.webapp.wooriga.mybatis.challenge.result.ChallengeBarInfo;
 import com.webapp.wooriga.mybatis.challenge.result.UserInfo;
+import com.webapp.wooriga.mybatis.challenge.service.MakeArrayListService;
+import com.webapp.wooriga.mybatis.challenge.service.MakeResultService;
+import com.webapp.wooriga.mybatis.exception.NoInformationException;
 import com.webapp.wooriga.mybatis.vo.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class CalendarModuleServiceImpl implements CalendarModuleService {
@@ -22,26 +23,33 @@ public class CalendarModuleServiceImpl implements CalendarModuleService {
     private ChallengesDAO challengesDAO;
     private ParticipantsDAO participantsDAO;
     private UserService userService;
-
+    private MakeResultService makeResultService;
+    private MakeArrayListService makeArrayListService;
     public CalendarModuleServiceImpl() { }
 
     @Autowired
-    public CalendarModuleServiceImpl(UserService userService,ParticipantsDAO participantsDAO,ChallengesDAO challengesDAO, UserDAO userDAO) {
+    public CalendarModuleServiceImpl(MakeArrayListService makeArrayListService,MakeResultService makeResultService,UserService userService,ParticipantsDAO participantsDAO,ChallengesDAO challengesDAO, UserDAO userDAO) {
         this.userDAO = userDAO;
         this.userService = userService;
         this.challengesDAO = challengesDAO;
         this.participantsDAO = participantsDAO;
+        this.makeResultService = makeResultService;
+        this.makeArrayListService = makeArrayListService;
     }
     @Override
     public ArrayList<EmptyDayUserInfo> setEmptyDayUserInfoList(List<EmptyDays> emptyDaysList) {
         ArrayList<EmptyDayUserInfo> emptyDayUserInfoList = new ArrayList<>();
         for (EmptyDays emptyDay : emptyDaysList) {
             User user = userDAO.selectUserForCalendar(emptyDay);
-            EmptyDayUserInfo emptyDayUserInfo = new EmptyDayUserInfo(new UserInfo(user.getRelationship(),user.getName(),
-                    user.getProfile(),user.getColor(),user.getUid()),emptyDay.getEmptydate().toString());
-            emptyDayUserInfoList.add(emptyDayUserInfo);
+            emptyDayUserInfoList.add(makeEmptyDayUserInfo(user,emptyDay.getEmptydate().toString()));
         }
         return emptyDayUserInfoList;
+    }
+    private EmptyDayUserInfo makeEmptyDayUserInfo(User user, String emptydate){
+        return EmptyDayUserInfo.builder()
+                .userInfo(makeResultService.makeUserInfo(user))
+                .emptyDate(emptydate)
+                .build();
     }
 
     @Override
@@ -53,73 +61,70 @@ public class CalendarModuleServiceImpl implements CalendarModuleService {
         return challengeBarInfoList;
     }
 
-    private HashMap<Long, ChallengeBarInfo> setDateListWithHashMap(List<Certifications> certificationsList) {
+    @Override
+    public HashMap<Long, ChallengeBarInfo> returnChallengeBarInfoThatHasRegisteredId(HashMap<Long, ChallengeBarInfo> challengeBarInfoHashMap, long registeredId, Date registeredDate){
+        ChallengeBarInfo challengeBarInfo = challengeBarInfoHashMap.get(registeredId);
+        challengeBarInfo.setDate(this.makeDateListInRegisteredDate(registeredDate));
+        challengeBarInfoHashMap.replace(registeredId,challengeBarInfo);
+        return challengeBarInfoHashMap;
+    }
+    @Override
+    public HashMap<Long, ChallengeBarInfo> setDateListWithHashMap(List<Certifications> certificationsList) {
         HashMap<Long, ChallengeBarInfo> challengeBarInfoHashMap = new HashMap<>();
         for (Certifications certifications : certificationsList) {
-            RegisteredChallenges registeredChallenges = certifications.getRegisteredChallenges();
             long registeredId = certifications.getRegisteredIdFK();
-
-            if (challengeBarInfoHashMap.containsKey(registeredId)) {
-                ChallengeBarInfo challengeBarInfo = challengeBarInfoHashMap.get(registeredId);
-                ArrayList<String> dateList = challengeBarInfo.getDate();
-                dateList.add(new SimpleDateFormat("yyyy-MM-dd").format(certifications.getRegisteredDate()));
-                challengeBarInfo.setDate(dateList);
-                challengeBarInfoHashMap.replace(registeredId,challengeBarInfo);
-            }
+            if (challengeBarInfoHashMap.containsKey(registeredId))
+                challengeBarInfoHashMap = this.returnChallengeBarInfoThatHasRegisteredId(challengeBarInfoHashMap,registeredId,certifications.getRegisteredDate());
             else
                 challengeBarInfoHashMap.put(registeredId, this.setChallengeBar(certifications,
-                        registeredId,registeredChallenges));
+                        registeredId,certifications.getRegisteredChallenges()));
         }
         return challengeBarInfoHashMap;
     }
-    private ChallengeBarInfo setChallengeBar(Certifications certifications,long registeredId, RegisteredChallenges registeredChallenges){
-        User chief = userDAO.selectOne(registeredChallenges.getChiefIdFK());
-
-        ArrayList<UserInfo> userInfoArrayList= new ArrayList<>();
-        userInfoArrayList.add(new UserInfo(chief.getRelationship(),chief.getName(),chief.getProfile(),chief.getColor(),chief.getUid()));
-        userInfoArrayList.addAll(this.setParticipantsInfo(registeredId));
-
-        Challenges challenges = challengesDAO.selectChallenge(registeredChallenges.getChallengeIdFK());
+    @Override
+    public ArrayList<String> makeDateListInRegisteredDate(Date registeredDate){
         ArrayList<String> dateList = new ArrayList<>();
         SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
-        dateList.add(simpleDateFormat.format(certifications.getRegisteredDate()));
-        return setChallengeTitlePlusName(new ChallengeBarInfo(registeredChallenges.getChallengeIdFK(),userInfoArrayList,registeredChallenges.getResolution(),
-                registeredId, challenges.getTitle(), dateList));
+        dateList.add(simpleDateFormat.format(registeredDate));
+        return dateList;
+    }
+    @Override
+    public ChallengeBarInfo setChallengeBar(Certifications certifications,long registeredId, RegisteredChallenges registeredChallenges){
+        User chief = userDAO.selectOne(registeredChallenges.getChiefIdFK());
+        Challenges challenges = Optional.of(challengesDAO.selectChallenge(registeredChallenges.getChallengeIdFK())).orElseThrow(NoInformationException::new);
+        return setChallengeTitlePlusName(makeResultService.makeChallengeBarInfo(
+                registeredChallenges,chief,registeredId,challenges,certifications,
+                this.makeUserInfoArrayListAndMerge(chief,registeredId),
+                this.makeDateListInRegisteredDate(certifications.getRegisteredDate())
+                ));
     }
 
-    private ArrayList<UserInfo> setParticipantsInfo(long registeredId){
+    @Override
+    public ArrayList<UserInfo> setParticipantsInfo(long registeredId){
         List<Participants> participantsList = participantsDAO.selectParticipants(registeredId);
         ArrayList<UserInfo> userInfoArrayList = new ArrayList<>();
-        for(Participants participant : participantsList){
-            User participantUser = userDAO.selectOne(participant.getParticipantFK());
-            UserInfo userInfo = new UserInfo(participantUser.getRelationship(),participantUser.getName(),participantUser.getProfile(),participantUser.getColor(),participantUser.getUid());
-            userInfoArrayList.add(userInfo);
-        }
-        userInfoArrayList.sort((arg0,arg1)->{
-            String name0 = arg0.getName();
-            String name1 = arg1.getName();
-            return userService.sortName(name0,name1);
-        });
-        return userInfoArrayList;
+        for(Participants participant : participantsList)
+            userInfoArrayList = makeArrayListService.convertUserToUserInfoAndAddArrayList(userService.loadUserByUsername(participant.getParticipantFK()),userInfoArrayList);
+        return userService.sortwithUserName(userInfoArrayList);
     }
     private ChallengeBarInfo setChallengeTitlePlusName(ChallengeBarInfo challengeBarInfo){
        String challengeTitle = challengeBarInfo.getChallengeTitle();
        String title = "";
        int count = 0;
        for(UserInfo participant : challengeBarInfo.getUserInfo()){
-           if (count < 2) {
-               if(count > 0) title += ",";
-               title += participant.getName();
-           }
+           title = count < 2 ? count > 0 ? title + "/" : title + participant.getName() : title;
            count++;
        }
-       if(count <= 2) {
-           title += "과(와) \n";
-           title += challengeTitle;
-       }
-       else if(count > 2)
-           title = title + " 등 \n" + Integer.toString(count) + "명과 " + challengeTitle;
+       title = count <= 2 ? title + "과(와) \n" + challengeTitle : title + " 등 \n" + count + "명과 " + challengeTitle;
        challengeBarInfo.setChallengeTitle(title);
        return challengeBarInfo;
     }
+    @Override
+    public ArrayList<UserInfo> makeUserInfoArrayListAndMerge(User chief,long registeredId)  {
+        ArrayList<UserInfo> userInfoArrayList= new ArrayList<>();
+        makeArrayListService.convertUserToUserInfoAndAddArrayList(chief,userInfoArrayList);
+        userInfoArrayList.addAll(this.setParticipantsInfo(registeredId));
+        return userInfoArrayList;
+    }
+
 }
